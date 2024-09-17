@@ -25,7 +25,6 @@
             <div class="page-content">
                 <div class="container-fluid">
                     @yield('content')
-
                 </div>
                 <!-- container-fluid -->
             </div>
@@ -55,7 +54,7 @@
         </div>
     </div>
 
-    @include('layouts.includes.theme-setting')
+    {{-- @include('layouts.includes.theme-setting') --}}
 
     <!-- JAVASCRIPT -->
     @include('layouts.includes.theme-footer')

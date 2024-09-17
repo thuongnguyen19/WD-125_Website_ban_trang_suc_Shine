@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashBoardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
-    return view('layouts.app-theme');
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login');
 });
+
+Route::get('/login',function() {
+   return view('auth.login'); 
+})->name('login');
+
+Route::get('/signup',function() {
+    return view('auth.signup'); 
+ })->name('signup');
+
+ Route::get('/forgot',function() {
+    return view('auth.forgot'); 
+ })->name('forgot');
+
+
+ Route::group(['namespace' => 'App\Http\Controllers'], function () {
+    // Route::middleware(['auth'])->group(function () {
+        Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
+    // });
+ });
