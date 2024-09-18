@@ -81,6 +81,11 @@
       "email": "thuong44@gmail.com",
       "password": "$2a$10$p4v1bkOI7P0hTwFcorcGyueMjfQ/gJUg1B6J3zG.PIITo3uQ9Eb4O",
       "id": 2
+    },
+    {
+      "email": "nhung@gmail.com",
+      "password": "$2a$10$Np1XXRpre4Yw58/zzEAXnOI/z.eq25LgaHPxKhNbuLJs9VNq9kh22",
+      "id": 3
     }
   ]
 }
