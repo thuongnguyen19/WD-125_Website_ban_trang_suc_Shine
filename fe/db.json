@@ -1,0 +1,86 @@
+{
+  "products": [
+    {
+      "id": "4",
+      "name": "Product 4",
+      "price": 14.99,
+      "image": "https://picsum.photos/id/13/300/300",
+      "description": "This is product 4",
+      "discount": 0.2,
+      "quantity": 75,
+      "featured": true
+    },
+    {
+      "id": "5",
+      "name": "Product 5",
+      "price": 9.99,
+      "image": "https://picsum.photos/id/14/300/300",
+      "description": "This is product 5",
+      "discount": 0,
+      "quantity": 150,
+      "featured": false
+    },
+    {
+      "id": "6",
+      "name": "Product 6",
+      "price": 7.99,
+      "image": "https://picsum.photos/id/15/300/300",
+      "description": "This is product 6",
+      "discount": 0.15,
+      "quantity": 100,
+      "featured": false
+    },
+    {
+      "id": "7",
+      "name": "Product 7",
+      "price": 12.99,
+      "image": "https://picsum.photos/id/16/300/300",
+      "description": "This is product 7",
+      "discount": 0,
+      "quantity": 50,
+      "featured": true
+    },
+    {
+      "id": "8",
+      "name": "Product 8",
+      "price": 17.99,
+      "image": "https://picsum.photos/id/17/300/300",
+      "description": "This is product 8",
+      "discount": 0.1,
+      "quantity": 80,
+      "featured": true
+    },
+    {
+      "id": "9",
+      "name": "Product 9",
+      "price": 6.99,
+      "image": "https://picsum.photos/id/18/300/300",
+      "description": "This is product 9",
+      "discount": 0,
+      "quantity": 120,
+      "featured": false
+    },
+    {
+      "id": "10",
+      "name": "Product 10",
+      "price": 11.99,
+      "image": "https://picsum.photos/id/19/300/300",
+      "description": "This is product 10",
+      "discount": 0.25,
+      "quantity": 90,
+      "featured": true
+    }
+  ],
+  "users": [
+    {
+      "email": "thuong@gmail.com",
+      "password": "$2a$10$lP/cFJHU0HGee.ztbjXJOOob6f4HR4CpNkh8uIcKRLom1zbZOpsg2",
+      "id": 1
+    },
+    {
+      "email": "thuong44@gmail.com",
+      "password": "$2a$10$p4v1bkOI7P0hTwFcorcGyueMjfQ/gJUg1B6J3zG.PIITo3uQ9Eb4O",
+      "id": 2
+    }
+  ]
+}
