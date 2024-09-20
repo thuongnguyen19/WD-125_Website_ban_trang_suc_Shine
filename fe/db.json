@@ -81,6 +81,38 @@
       "email": "thuong44@gmail.com",
       "password": "$2a$10$p4v1bkOI7P0hTwFcorcGyueMjfQ/gJUg1B6J3zG.PIITo3uQ9Eb4O",
       "id": 2
+    },
+    {
+      "email": "thuon1g@gmail.com",
+      "password": "$2a$10$T.DA2/m4M7mJVnGxHAOzgu.407h/iMS1RQ0qrailMbySpi68J0KWK",
+      "id": 3
+    },
+    {
+      "email": "thuong1111111@gmail.com",
+      "password": "$2a$10$p5jCOdMfbMSfH1oy0TD7geqX4o7aT6YfDT0qkTJQNPGH9DMG3LoLq",
+      "id": 4
+    },
+    {
+      "email": "thuon2g@gmail.com",
+      "password": "$2a$10$kLKTXWIpGhmhxWR0LSocw.3Mq.U9JNgk1IYRWwCtvdumZFhL9CkZu",
+      "id": 5
+    },
+    {
+      "email": "thuong111111111111@gmail.com",
+      "password": "$2a$10$QC3R7O/HzSv2m35BCfTtgOF7kKMRP39JAFiAyoYrpyXwBDG8r/pbO",
+      "id": 6
+    },
+    {
+      "email": "thuong13@gmail.com",
+      "password": "$2a$10$gKdosLUJXq0C2YGJa9gom.AQkcNe.cj0VGZiu7G8NZ3OJvJjtay5G",
+      "confirmPassword": "123456",
+      "id": 7
+    },
+    {
+      "email": "thuong18@gmail.com",
+      "password": "$2a$10$331tWTpJm6YpVa.yFwh4zOUhoYQ5MWrAo16qAtCfr3ZiauAGtr3ea",
+      "confirmPassword": "123456",
+      "id": 8
     }
   ]
 }
