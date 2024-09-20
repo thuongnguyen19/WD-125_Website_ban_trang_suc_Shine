@@ -133,7 +133,7 @@ const Register = () => {
                                     className="custom-btn"
                                     disabled={loading}
                                 >
-                                    Register
+                                  Đăng kí
                                 </Button>
                             </Form.Item>
 

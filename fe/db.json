@@ -113,6 +113,12 @@
       "password": "$2a$10$331tWTpJm6YpVa.yFwh4zOUhoYQ5MWrAo16qAtCfr3ZiauAGtr3ea",
       "confirmPassword": "123456",
       "id": 8
+    },
+    {
+      "email": "thuong19@gmail.com",
+      "password": "$2a$10$gg5ZRTxet9WczUUPYqN/3uPV9JHcwrL.zcKg7s88tm3vi3BecD4/K",
+      "confirmPassword": "123456",
+      "id": 9
     }
   ]
 }
