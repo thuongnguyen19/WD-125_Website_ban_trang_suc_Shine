@@ -83,7 +83,6 @@
       "id": 2
     },
     {
-
       "email": "thuon1g@gmail.com",
       "password": "$2a$10$T.DA2/m4M7mJVnGxHAOzgu.407h/iMS1RQ0qrailMbySpi68J0KWK",
       "id": 3
@@ -119,8 +118,19 @@
       "email": "thuong19@gmail.com",
       "password": "$2a$10$gg5ZRTxet9WczUUPYqN/3uPV9JHcwrL.zcKg7s88tm3vi3BecD4/K",
       "confirmPassword": "123456",
-      "id": 
-
+      "id": 9
+    },
+    {
+      "email": "thuong55@gmail.com",
+      "password": "$2a$10$5RCDBS6QgSEf.UTr3Pp2geJCUpoEfY7EajS0mRBAjGffl1NzO8aOu",
+      "confirmPassword": "123456",
+      "id": 10
+    },
+    {
+      "email": "thuong124@gmail.com",
+      "password": "$2a$10$K.qdQa9tyOTOJUxS.clfS.vuCEVSkz73VVtVKCSj5boWdOdjtW4QG",
+      "confirmPassword": "123456",
+      "id": 11
     }
   ]
 }

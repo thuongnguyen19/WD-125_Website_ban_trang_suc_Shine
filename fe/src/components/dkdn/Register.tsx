@@ -23,13 +23,13 @@ const Register = () => {
             queryClient.invalidateQueries({
                 queryKey: ["products"],
             });
-            messageAPI.success("Registration successful!");
+            messageAPI.success("Đăng ký thành công!");
             setTimeout(() => {
                 navigate(`/login`);
             }, 2000);
         },
         onError: () => {
-            messageAPI.error("Registration failed. Please try again.");
+            messageAPI.error("Đăng ký không thành công. Vui lòng thử lại.");
         },
         onSettled: () => {
             setLoading(false);
@@ -42,7 +42,7 @@ const Register = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        messageAPI.error("Please check your input.");
+        messageAPI.error("Vui lòng kiểm tra đầu vào của bạn.");
     };
 
     return (
@@ -51,7 +51,7 @@ const Register = () => {
             <div className="register-container">
                 <Card
                     className="register-card"
-                    title="Create Your Account"
+                    title="Đăng kí tài khoản"
                     bordered={false}
                 >
                     <Spin spinning={loading}>
@@ -69,11 +69,11 @@ const Register = () => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Please enter your email!",
+                                        message: "Vui lòng nhập email!",
                                     },
                                     {
                                         type: "email",
-                                        message: "Invalid email format!",
+                                        message: "viết đúng định dạng!",
                                     },
                                 ]}
                             >
@@ -86,7 +86,7 @@ const Register = () => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Please enter your password!",
+                                        message: "Vui lòng điền password!",
                                     },
                                 ]}
                                 hasFeedback
@@ -103,7 +103,7 @@ const Register = () => {
                                     {
                                         required: true,
                                         message:
-                                            "Please confirm your password!",
+                                            "Vui lòng nhập lại password!",
                                     },
                                     ({ getFieldValue }) => ({
                                         validator(_, value) {
@@ -116,7 +116,7 @@ const Register = () => {
                                             }
                                             return Promise.reject(
                                                 new Error(
-                                                    "Passwords do not match!",
+                                                    "Mật khẩu không khớp!",
                                                 ),
                                             );
                                         },
@@ -139,8 +139,8 @@ const Register = () => {
 
                             <Form.Item>
                                 <div className="login-redirect">
-                                    Already have an account?{" "}
-                                    <Link to="/login">Log in here</Link>
+                                   Có tài khoản đăng nhập tại đây?{" "}
+                                    <Link to="/login">Log in</Link>
                                 </div>
                             </Form.Item>
                         </Form>
