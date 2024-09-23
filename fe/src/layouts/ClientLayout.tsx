@@ -1,10 +1,12 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import Header2 from "../../components/Header2";
-import Footer from "../../components/Footer";
+import Header from "../components/common/Header";
+import Header2 from "../components/common/Header2";
+import Footer from "../components/common/Footer";
 import { Button, message, Modal } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import Home from "../pages/(website)/home/page";
+
 
 const Layoutweb = () => {
     const queryClient = useQueryClient();
@@ -43,9 +45,11 @@ const Layoutweb = () => {
                 }}
             >
                 <Header />
+         
                 <Header2 />
             </div>
-            <Outlet />
+            <Home />
+
             <Footer />
             <div style={{ padding: "10px", textAlign: "right" }}>
                 <Button type="primary" onClick={handleLogout}>
