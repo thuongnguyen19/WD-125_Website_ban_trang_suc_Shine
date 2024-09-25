@@ -9,7 +9,8 @@ import Detail from "../pages/(website)/Details/Detail";
 import Od_Detail from "../pages/(website)/History/Od_Detail";
 import OdHistory from "../pages/(website)/History/OdHistory";
 import Pay from "../pages/(website)/Pay/Pay";
-import Success from "../pages/(website)/Pay/success";
+import Success from "../pages/(website)/Pay/Success";
+
 
 
 const Router = () => {
