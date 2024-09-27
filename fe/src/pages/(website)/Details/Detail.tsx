@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Footer from '../../../components/common/Footer';
 import { ShoppingCartOutlined } from '@ant-design/icons';
+import Header from '../../../components/common/Header';
 
 const Detail = () => {
     const [quantity, setQuantity] = useState(1); 
@@ -46,6 +47,7 @@ const Detail = () => {
    const [selectedColor, setSelectedColor] = useState("Beige");
     return (
         <div>
+            <Header/>
             {/* Breadcrumb */}
             <div className="tf-breadcrumb">
                 <div className="container">
