@@ -10,6 +10,7 @@ import Od_Detail from "../pages/(website)/History/Od_Detail";
 import OdHistory from "../pages/(website)/History/OdHistory";
 import Pay from "../pages/(website)/Pay/Pay";
 import Success from "../pages/(website)/Pay/Success";
+import ListProducts from "../pages/(website)/listProducts/ListProducts";
 
 
 
@@ -26,7 +27,7 @@ const Router = () => {
                 <Route path="od_histori" element={<OdHistory />} />
                 <Route path="pay" element={<Pay />} />
                 <Route path="success" element={<Success />}></Route>
-
+                <Route path="product" element={<ListProducts/>}></Route>
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="logout" element={<LogOut />} />
