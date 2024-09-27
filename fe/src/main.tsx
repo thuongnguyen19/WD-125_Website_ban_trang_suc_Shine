@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
+// @ts-ignore
 
-// import $ from 'jquery';
-// import 'bootstrap-select';
+import $ from 'jquery';
+import 'bootstrap-select';
 
 // Import styles
 import './styles/style.scss';

@@ -504,3 +504,28 @@
 // .section-blog-heading {
 //     margin-bottom: 66px;
 // }
+img {
+  width: 100px;
+  height: auto;
+  display: block;
+}
+.btn-buy-now {
+  display: inline-block;
+  width: 100%;
+  padding: 10px   ;
+  text-align: center;
+  background-color: #FFA500;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius:5px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
+.btn-buy-now:hover {
+  background-color: #FFB732;
+}
