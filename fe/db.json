@@ -131,6 +131,12 @@
       "password": "$2a$10$K.qdQa9tyOTOJUxS.clfS.vuCEVSkz73VVtVKCSj5boWdOdjtW4QG",
       "confirmPassword": "123456",
       "id": 11
+    },
+    {
+      "email": "nhung@gmail.com",
+      "password": "$2a$10$DFI2JKqeDl4lveo5ZpkXF.qqTTpbK2PxAX9.aecoPFUmR5iDUOs5a",
+      "confirmPassword": "123456789",
+      "id": 12
     }
   ]
 }
