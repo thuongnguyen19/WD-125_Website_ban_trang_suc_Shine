@@ -8,8 +8,7 @@ const ListProducts = () => {
         <Header/>
         <div className="tf-page-title">
             <div className="container-full">
-                <div className="heading text-center">New Arrival</div>
-                <p className="text-center text-2 text_black-2 mt_5">Shop through our latest selection of Fashion</p> 
+                <div className="heading text-center">Tất cả sản phẩm</div>
             </div>
         </div>
         
@@ -19,7 +18,7 @@ const ListProducts = () => {
             <div className="container">
                 <div className="tf-shop-control grid-3 align-items-center">
                     <div className="tf-control-filter">
-                        <a href="#filterShop" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="tf-btn-filter"><span className="icon icon-filter"></span><span className="text">Filter</span></a>
+                        <a href="#filterShop" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="tf-btn-filter"><span className="icon icon-filter"></span><span className="text">Lọc</span></a>
                     </div>
                     <ul className="tf-control-layout d-flex justify-content-center">
                         <li className="tf-view-layout-switch sw-layout-2" data-value-grid="grid-2">
@@ -41,34 +40,29 @@ const ListProducts = () => {
                     <div className="tf-control-sorting d-flex justify-content-end">
                         <div className="tf-dropdown-sort" data-bs-toggle="dropdown">
                             <div className="btn-select">
-                                <span className="text-sort-value">Featured</span>
+                                <span className="text-sort-value">Nổi bật</span>
                                 <span className="icon icon-arrow-down"></span>
                             </div>
                             <div className="dropdown-menu">
                                 <div className="select-item active">
-                                    <span className="text-value-item">Featured</span>
+                                    <span className="text-value-item">Nổi bật</span>
                                 </div>
                                 <div className="select-item">
-                                    <span className="text-value-item">Best selling</span>
+                                    <span className="text-value-item">Bán chạy nhất</span>
                                 </div>
                                 <div className="select-item">
-                                    <span className="text-value-item">Alphabetically, A-Z</span>
+                                    <span className="text-value-item">Theo thứ tự, A-Y</span>
                                 </div>
                                 <div className="select-item">
-                                    <span className="text-value-item">Alphabetically, Z-A</span>
+                                    <span className="text-value-item">Theo thứ tự, Y-A</span>
                                 </div>
                                 <div className="select-item">
-                                    <span className="text-value-item">Price, low to high</span>
+                                    <span className="text-value-item">Giá, từ thấp đến cao</span>
                                 </div>
                                 <div className="select-item">
-                                    <span className="text-value-item">Price, high to low</span>
+                                    <span className="text-value-item">Giá, từ cao đến thấp</span>
                                 </div>
-                                <div className="select-item">
-                                    <span className="text-value-item">Date, old to new</span>
-                                </div>
-                                <div className="select-item">
-                                    <span className="text-value-item">Date, new to old</span>
-                                </div>
+                                
                             </div>
                         </div>
                         
@@ -81,8 +75,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="16.95" data-color="orange black white">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/orange-1.jpg" src="images/products/orange-1.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/white-1.jpg" src="images/products/white-1.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
                                 </a>
                                 <div className="list-product-btn absolute-2">
                                     <a href="#quick_add" data-bs-toggle="modal" className="box-icon bg_white quick-add tf-btn-loading">
@@ -112,17 +106,17 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Orange</span>
                                         <span className="swatch-value bg_orange-3"></span>
-                                        <img className="lazyload" data-src="images/products/orange-1.jpg" src="images/products/orange-1.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Black</span>
                                         <span className="swatch-value bg_dark"></span>
-                                        <img className="lazyload" data-src="images/products/black-1.jpg" src="images/products/black-1.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">White</span>
                                         <span className="swatch-value bg_white"></span>
-                                        <img className="lazyload" data-src="images/products/white-1.jpg" src="images/products/white-1.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -131,8 +125,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="18.95" data-size="m l xl" data-color="brown light-purple light-green">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/brown.jpg" src="images/products/brown.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/purple.jpg" src="images/products/purple.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                 </a>
                                 <div className="list-product-btn">
                                     <a href="#quick_add" data-bs-toggle="modal" className="box-icon bg_white quick-add tf-btn-loading">
@@ -173,17 +167,17 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Brown</span>
                                         <span className="swatch-value bg_brown"></span>
-                                        <img className="lazyload" data-src="images/products/brown.jpg" src="images/products/brown.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Light Purple</span>
                                         <span className="swatch-value bg_purple"></span>
-                                        <img className="lazyload" data-src="images/products/purple.jpg" src="images/products/purple.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Light Green</span>
                                         <span className="swatch-value bg_light-green"></span>
-                                        <img className="lazyload" data-src="images/products/green.jpg" src="images/products/green.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -192,8 +186,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="10">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/white-3.jpg" src="images/products/white-3.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/white-4.jpg" src="images/products/white-4.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-3.jpg" src="images/products/jewerly-3.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-4.jpg" src="images/products/jewerly-4.jpg" alt="image-product"/>
                                 </a>
                                 <div className="list-product-btn absolute-2">
                                     <a href="#shoppingCart" data-bs-toggle="modal" className="box-icon bg_white quick-add tf-btn-loading">
@@ -225,8 +219,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="16.95" data-size="s m l xl" data-color="white purple black">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/white-2.jpg" src="images/products/white-2.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/pink-1.jpg" src="images/products/pink-1.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                 </a>
                                 <div className="list-product-btn">
                                     <a href="#quick_add" data-bs-toggle="modal" className="box-icon bg_white quick-add tf-btn-loading">
@@ -262,17 +256,17 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">White</span>
                                         <span className="swatch-value bg_white"></span>
-                                        <img className="lazyload" data-src="images/products/white-2.jpg" src="images/products/white-2.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-8.jpg" src="images/products/jewerly-8.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Pink</span>
                                         <span className="swatch-value bg_purple"></span>
-                                        <img className="lazyload" data-src="images/products/pink-1.jpg" src="images/products/pink-1.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-7.jpg" src="images/products/jewerly-7.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Black</span>
                                         <span className="swatch-value bg_dark"></span>
-                                        <img className="lazyload" data-src="images/products/black-2.jpg" src="images/products/black-2.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-5.jpg" src="images/products/jewerly-5.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -281,8 +275,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="114.95" data-size="s m l xl" data-color="brown white">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/brown-2.jpg" src="images/products/brown-2.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/brown-3.jpg" src="images/products/brown-3.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-8.jpg" src="images/products/jewerly-8.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-9.jpg" src="images/products/jewerly-9.jpg" alt="image-product"/>
                                 </a>
                                 <div className="size-list">
                                     <span>S</span>
@@ -318,12 +312,12 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Brown</span>
                                         <span className="swatch-value bg_brown"></span>
-                                        <img className="lazyload" data-src="images/products/brown-2.jpg" src="images/products/brown-2.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-8.jpg" src="images/products/jewerly-8.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">White</span>
                                         <span className="swatch-value bg_white"></span>
-                                        <img className="lazyload" data-src="images/products/white-5.jpg" src="images/products/white-5.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-10.jpg" src="images/products/jewerly-10.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -332,8 +326,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="10.00" data-color="light-green black blue dark-blue white light-grey">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/light-green-1.jpg" src="images/products/light-green-1.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/light-green-2.jpg" src="images/products/light-green-2.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-5.jpg" src="images/products/jewerly-5.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-4.jpg" src="images/products/jewerly-4.jpg" alt="image-product"/>
                                 </a>
                                 <div className="list-product-btn absolute-2">
                                     <a href="#quick_add" data-bs-toggle="modal" className="box-icon bg_white quick-add tf-btn-loading">
@@ -363,32 +357,32 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Light Green</span>
                                         <span className="swatch-value bg_light-green"></span>
-                                        <img className="lazyload" data-src="images/products/light-green-1.jpg" src="images/products/light-green-1.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-5.jpg" src="images/products/jewerly-5.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Black</span>
                                         <span className="swatch-value bg_dark"></span>
-                                        <img className="lazyload" data-src="images/products/black-3.jpg" src="images/products/black-3.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-6.jpg" src="images/products/jewerly-6.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Blue</span>
                                         <span className="swatch-value bg_blue-2"></span>
-                                        <img className="lazyload" data-src="images/products/blue.jpg" src="images/products/blue.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Dark Blue</span>
                                         <span className="swatch-value bg_dark-blue"></span>
-                                        <img className="lazyload" data-src="images/products/dark-blue.jpg" src="images/products/dark-blue.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">White</span>
                                         <span className="swatch-value bg_white"></span>
-                                        <img className="lazyload" data-src="images/products/white-6.jpg" src="images/products/white-6.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-3.jpg" src="images/products/jewerly-3.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Light Grey</span>
                                         <span className="swatch-value bg_light-grey"></span>
-                                        <img className="lazyload" data-src="images/products/light-grey.jpg" src="images/products/light-grey.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-4.jpg" src="images/products/jewerly-4.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -397,8 +391,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="10.00" data-size="s m l" data-color="black dark-blue beige light-blue white">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/black-4.jpg" src="images/products/black-4.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/black-5.jpg" src="images/products/black-5.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-6.jpg" src="images/products/jewerly-6.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-7.jpg" src="images/products/jewerly-7.jpg" alt="image-product"/>
                                 </a>
                                 <div className="size-list">
                                     <span>S</span>
@@ -433,12 +427,12 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Black</span>
                                         <span className="swatch-value bg_dark"></span>
-                                        <img className="lazyload" data-src="images/products/black-4.jpg" src="images/products/black-4.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-9.jpg" src="images/products/jewerly-9.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Dark Blue</span>
                                         <span className="swatch-value bg_dark-blue"></span>
-                                        <img className="lazyload" data-src="images/products/dark-blue-2.jpg" src="images/products/dark-blue-2.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-10.jpg" src="images/products/jewerly-10.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Beige</span>
@@ -448,12 +442,12 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Light Blue</span>
                                         <span className="swatch-value bg_light-blue"></span>
-                                        <img className="lazyload" data-src="images/products/light-blue.jpg" src="images/products/light-blue.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-8.jpg" src="images/products/jewerly-8.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">White</span>
                                         <span className="swatch-value bg_white"></span>
-                                        <img className="lazyload" data-src="images/products/white-7.jpg" src="images/products/white-7.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-7.jpg" src="images/products/jewerly-7.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -462,8 +456,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="9.95" data-size="s m l xl" data-color="white black blue">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/white-8.jpg" src="images/products/white-8.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/black-6.jpg" src="images/products/black-6.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-6.jpg" src="images/products/jewerly-6.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-5.jpg" src="images/products/jewerly-5.jpg" alt="image-product"/>
                                 </a>
                                 <div className="size-list">
                                     <span>S</span>
@@ -499,17 +493,17 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">White</span>
                                         <span className="swatch-value bg_white"></span>
-                                        <img className="lazyload" data-src="images/products/white-8.jpg" src="images/products/white-8.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-4.jpg" src="images/products/jewerly-4.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Black</span>
                                         <span className="swatch-value bg_dark"></span>
-                                        <img className="lazyload" data-src="images/products/black-7.jpg" src="images/products/black-7.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-3.jpg" src="images/products/jewerly-3.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Blue</span>
                                         <span className="swatch-value bg_blue-2"></span>
-                                        <img className="lazyload" data-src="images/products/blue-2.jpg" src="images/products/blue-2.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -518,8 +512,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="14.95" data-size="m l xl" data-color="brown black">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/brown-4.jpg" src="images/products/brown-4.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/black-8.jpg" src="images/products/black-8.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
                                 </a>
                                 <div className="size-list">
                                     <span>M</span>
@@ -554,12 +548,12 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Brown</span>
                                         <span className="swatch-value bg_brown"></span>
-                                        <img className="lazyload" data-src="images/products/brown-4.jpg" src="images/products/brown-4.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-4.jpg" src="images/products/jewerly-4.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Black</span>
                                         <span className="swatch-value bg_dark"></span>
-                                        <img className="lazyload" data-src="images/products/black-8.jpg" src="images/products/black-8.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-8.jpg" src="images/products/jewerly-8.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -568,8 +562,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="18.95" data-size="s m l" data-color="black white">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/black-9.jpg" src="images/products/black-9.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/black-10.jpg" src="images/products/black-10.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-9.jpg" src="images/products/jewerly-9.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-10.jpg" src="images/products/jewerly-10.jpg" alt="image-product"/>
                                 </a>
                                 <div className="size-list">
                                     <span>S</span>
@@ -604,12 +598,12 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Black</span>
                                         <span className="swatch-value bg_dark"></span>
-                                        <img className="lazyload" data-src="images/products/black-9.jpg" src="images/products/black-9.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-9.jpg" src="images/products/jewerly-9.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">White</span>
                                         <span className="swatch-value bg_white"></span>
-                                        <img className="lazyload" data-src="images/products/white-9.jpg" src="images/products/white-9.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-9.jpg" src="images/products/jewerly-9.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -618,8 +612,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="18.95" data-size="s m l" data-color="grey pink light-pink">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/grey-2.jpg" src="images/products/grey-2.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/grey.jpg" src="images/products/grey.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-3.jpg" src="images/products/jewerly-3.jpg" alt="image-product"/>
                                 </a>
                                 <div className="size-list">
                                     <span>S</span>
@@ -654,17 +648,17 @@ const ListProducts = () => {
                                     <li className="list-color-item color-swatch active">
                                         <span className="tooltip">Grey</span>
                                         <span className="swatch-value bg_grey"></span>
-                                        <img className="lazyload" data-src="images/products/grey-2.jpg" src="images/products/grey-2.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Pink</span>
                                         <span className="swatch-value bg_pink"></span>
-                                        <img className="lazyload" data-src="images/products/pink-2.jpg" src="images/products/pink-2.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-4.jpg" src="images/products/jewerly-4.jpg" alt="image-product"/>
                                     </li>
                                     <li className="list-color-item color-swatch">
                                         <span className="tooltip">Light Pink</span>
                                         <span className="swatch-value bg_light-pink"></span>
-                                        <img className="lazyload" data-src="images/products/light-pink.jpg" src="images/products/light-pink.jpg" alt="image-product"/>
+                                        <img className="lazyload" data-src="images/products/jewerly-6.jpg" src="images/products/jewerly-6.jpg" alt="image-product"/>
                                     </li>
                                 </ul>
                             </div>
@@ -673,8 +667,8 @@ const ListProducts = () => {
                         <div className="card-product" data-price="18.95" data-size="s m l">
                             <div className="card-product-wrapper">
                                 <a href="product-detail.html" className="product-img">
-                                    <img className="lazyload img-product" data-src="images/products/black-11.jpg" src="images/products/black-11.jpg" alt="image-product"/>
-                                    <img className="lazyload img-hover" data-src="images/products/black-12.jpg" src="images/products/black-12.jpg" alt="image-product"/>
+                                    <img className="lazyload img-product" data-src="images/products/jewerly-10.jpg" src="images/products/jewerly-10.jpg" alt="image-product"/>
+                                    <img className="lazyload img-hover" data-src="images/products/jewerly-9.jpg" src="images/products/jewerly-9.jpg" alt="image-product"/>
                                 </a>
                                 <div className="size-list">
                                     <span>S</span>
@@ -760,7 +754,7 @@ const ListProducts = () => {
                 <div className="toolbar-icon">
                     <i className="icon-fill"></i>
                 </div>
-                <div className="toolbar-label">Filter</div>
+                <div className="toolbar-label">Lọc</div>
             </a>
         </div>
         <div className="toolbar-item">
@@ -1677,7 +1671,7 @@ const ListProducts = () => {
                                 <div className="tf-loop-item">
                                     <div className="image">
                                         <a href="product-detail.html">
-                                            <img src="images/products/white-2.jpg" alt=""/>
+                                            <img src="images/products/jewerly-8.jpg" alt=""/>
                                         </a>
                                     </div>
                                     <div className="content">
@@ -1690,7 +1684,7 @@ const ListProducts = () => {
                                 <div className="tf-loop-item">
                                     <div className="image">
                                         <a href="product-detail.html">
-                                            <img src="images/products/white-1.jpg" alt=""/>
+                                            <img src="images/products/jewerly-6.jpg" alt=""/>
                                         </a>
                                     </div>
                                     <div className="content">
@@ -2034,7 +2028,7 @@ const ListProducts = () => {
                                     <div className="tf-mini-cart-item">
                                         <div className="tf-mini-cart-image">
                                             <a href="product-detail.html">
-                                                <img src="images/products/white-2.jpg" alt=""/>
+                                                <img src="images/products/jewerly-8.jpg" alt=""/>
                                             </a>
                                         </div>
                                         <div className="tf-mini-cart-info">
@@ -2100,7 +2094,7 @@ const ListProducts = () => {
                                                 <div className="tf-minicart-recommendations-item">
                                                     <div className="tf-minicart-recommendations-item-image">
                                                         <a href="product-detail.html">
-                                                            <img src="images/products/white-2.jpg" alt=""/>
+                                                            <img src="images/products/jewerly-8.jpg" alt=""/>
                                                         </a>
                                                     </div>
                                                     <div className="tf-minicart-recommendations-item-infos flex-grow-1">
@@ -2284,7 +2278,7 @@ const ListProducts = () => {
                                                 <i className="icon-close"></i>
                                             </div>
                                             <a href="product-detail.html">
-                                                <img className="radius-3" src="images/products/pink-1.jpg" alt=""/>
+                                                <img className="radius-3" src="images/products/jewerly-7.jpg" alt=""/>
                                             </a>
                                         </div>
                                     </div>
@@ -2420,7 +2414,7 @@ const ListProducts = () => {
                                 </div>
                                 <div className="swiper-slide">
                                     <div className="item">
-                                        <img src="images/products/pink-1.jpg" alt=""/>
+                                        <img src="images/products/jewerly-7.jpg" alt=""/>
                                     </div>
                                 </div>
                             </div>
@@ -2462,8 +2456,8 @@ const ListProducts = () => {
                                             <span className="btn-checkbox bg-color-black"></span>
                                             <span className="tooltip">Black</span>
                                         </label>
-                                        <input id="values-white-1" type="radio" name="color-1"/>
-                                        <label className="hover-tooltip radius-60" htmlFor="values-white-1" data-value="White">
+                                        <input id="values-jewerly-6" type="radio" name="color-1"/>
+                                        <label className="hover-tooltip radius-60" htmlFor="values-jewerly-6" data-value="White">
                                             <span className="btn-checkbox bg-color-white"></span>
                                             <span className="tooltip">White</span>
                                         </label>
