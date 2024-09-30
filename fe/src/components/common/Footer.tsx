@@ -17,13 +17,13 @@ const Footer = () => {
                                     </div>
                                     <ul>
                                         <li>
-                                            <p>Address: 1234 Fashion Street, Suite 567, <br/> New York, NY 10001</p>
+                                            <p>Địa chỉ:  Tòa nhà FPT Polytechnic, Phố Trịnh Văn Bô, Nam Từ Liêm, Hà Nội</p>
                                         </li>
                                         <li>
                                             <p>Email: <a href="#">info@fashionshop.com</a></p>
                                         </li>
                                         <li>
-                                            <p>Phone: <a href="#">(212) 555-1234</a></p>
+                                            <p>Số điện thoại: <a href="#">(212) 555-1234</a></p>
                                         </li>
                                     </ul>
                                     <a href="contact-1.html" className="tf-btn btn-line">Get direction<i className="icon icon-arrow1-top-left"></i></a>
@@ -38,74 +38,66 @@ const Footer = () => {
                             </div>
                             <div className="col-xl-3 col-md-6 col-12 footer-col-block">
                                 <div className="footer-heading footer-heading-desktop">
-                                    <h6>Help</h6>
+                                    <h6>Giúp đỡ</h6>
                                 </div>
                                 <div className="footer-heading footer-heading-moblie">
-                                    <h6>Help</h6>
+                                    <h6>Giúp đỡ</h6>
                                 </div>
                                 <ul className="footer-menu-list tf-collapse-content">
                                     <li>
-                                        <a href="privacy-policy.html" className="footer-menu_item">Privacy Policy</a>
+                                        <a href="privacy-policy.html" className="footer-menu_item">Chính sách bảo mật</a>
+                                    </li>
+                                    
+                                    <li> 
+                                        <a href="shipping-delivery.html" className="footer-menu_item">Vận chuyển</a>
                                     </li>
                                     <li> 
-                                        <a href="delivery-return.html" className="footer-menu_item">  Returns + Exchanges </a>
+                                        <a href="terms-conditions.html" className="footer-menu_item">Điều khiển &amp; Điều kiện</a>
                                     </li>
                                     <li> 
-                                        <a href="shipping-delivery.html" className="footer-menu_item">Shipping</a>
+                                        <a href="faq-1.html" className="footer-menu_item">Câu hỏi thường gặp</a>
                                     </li>
-                                    <li> 
-                                        <a href="terms-conditions.html" className="footer-menu_item">Terms &amp; Conditions</a>
-                                    </li>
-                                    <li> 
-                                        <a href="faq-1.html" className="footer-menu_item">FAQ’s</a>
-                                    </li>
-                                    <li> 
-                                        <a href="compare.html" className="footer-menu_item">Compare</a>
-                                    </li>
-                                    <li> 
-                                        <a href="wishlist.html" className="footer-menu_item">My Wishlist</a>
-                                    </li>
+                                    
+                                    
                                 </ul>
                             </div>
                             <div className="col-xl-3 col-md-6 col-12 footer-col-block">
                                 <div className="footer-heading footer-heading-desktop">
-                                    <h6>About us</h6>
+                                    <h6>Về chúng tôi</h6>
                                 </div>
                                 <div className="footer-heading footer-heading-moblie">
-                                    <h6>About us</h6>
+                                    <h6>Về chúng tôi</h6>
                                 </div>
                                 <ul className="footer-menu-list tf-collapse-content">
                                     <li>
-                                        <a href="about-us.html" className="footer-menu_item">Our Story</a>
+                                        <a href="about-us.html" className="footer-menu_item">Câu chuyện của chúng tôi</a>
+                                    </li>
+                                   
+                                    <li> 
+                                        <a href="contact-1.html" className="footer-menu_item">liên hệ</a>
                                     </li>
                                     <li> 
-                                        <a href="our-store.html" className="footer-menu_item">Visit Our Store</a>
-                                    </li>
-                                    <li> 
-                                        <a href="contact-1.html" className="footer-menu_item">Contact Us</a>
-                                    </li>
-                                    <li> 
-                                        <a href="login.html" className="footer-menu_item">Account</a>
+                                        <a href="login.html" className="footer-menu_item">Tài khoản</a>
                                     </li>
                                 </ul>
                             </div>
                             <div className="col-xl-3 col-md-6 col-12">
                                 <div className="footer-newsletter footer-col-block">
                                     <div className="footer-heading footer-heading-desktop">
-                                        <h6>Sign Up for Email</h6>
+                                        <h6>Đăng ký nhận Email</h6>
                                     </div>
                                     <div className="footer-heading footer-heading-moblie">
-                                        <h6>Sign Up for Email</h6>
+                                        <h6>Đăng ký nhận Email</h6>
                                     </div>
                                     <div className="tf-collapse-content">
-                                        <div className="footer-menu_item">Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!</div>
-                                        <form className="form-newsletter" id="subscribe-form" action="#" method="post" accept-charset="utf-8" data-mailchimp="true">
+                                        <div className="footer-menu_item">Đăng ký để được ưu tiên nhận thông tin về hàng mới về, chương trình khuyến mại, nội dung độc quyền, sự kiện và nhiều hơn nữa!</div>
+                                        <form className="form-newsletter" id="subscribe-form" action="#" method="post" acceptCharset="utf-8" data-mailchimp="true">
                                             <div id="subscribe-content">
                                                 <fieldset className="email">
                                                     <input type="email" name="email-form" id="subscribe-email" placeholder="Enter your email...."  aria-required="true"/>
                                                 </fieldset>
                                                 <div className="button-submit">
-                                                    <button id="subscribe-button" className="tf-btn btn-sm radius-3 btn-fill btn-icon animate-hover-btn" type="button">Subscribe<i className="icon icon-arrow1-top-left"></i></button>
+                                                    <button id="subscribe-button" className="tf-btn btn-sm radius-3 btn-fill btn-icon animate-hover-btn" type="button">Đăng ký<i className="icon icon-arrow1-top-left"></i></button>
                                                 </div>
                                             </div>
                                             <div id="subscribe-msg"></div>
@@ -113,10 +105,10 @@ const Footer = () => {
                                         <div className="tf-cur">
                                             <div className="tf-currencies">
                                                 <select className="image-select center style-default type-currencies">
-                                                    <option data-thumbnail="images/country/fr.svg">EUR <span>€ | France</span></option>
-                                                    <option data-thumbnail="images/country/de.svg">EUR <span>€ | Germany</span></option>
-                                                    <option selected data-thumbnail="images/country/us.svg">USD <span>$ | United States</span></option>
-                                                    <option data-thumbnail="images/country/vn.svg">VND <span>₫ | Vietnam</span></option>
+                                                    <option data-thumbnail="images/country/fr.svg">EUR € | Pháp</option>
+                                                    <option data-thumbnail="images/country/de.svg">EUR € | Đức</option>
+                                                    <option selected data-thumbnail="images/country/us.svg">USD $ | Mỹ</option>
+                                                    <option data-thumbnail="images/country/vn.svg">VND ₫ | Vietnam</option>
                                                 </select>
                                             </div>
                                             <div className="tf-languages">

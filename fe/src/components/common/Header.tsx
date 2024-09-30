@@ -16,7 +16,7 @@ const Header = () => {
           </div>
           <div className="col-xl-3 col-md-4 col-6">
             <a href="index.html" className="logo-header">
-              <img src="https://i.imgur.com/K5Y2gy9.png" alt="logo" className="logo" />
+              <img src="images/logo/logo@2x.png" alt="logo" className="logo" />
             </a>
           </div>
           <div className="col-xl-6 tf-md-hidden">
@@ -24,148 +24,78 @@ const Header = () => {
               <ul className="box-nav-ul d-flex align-items-center justify-content-center gap-30">
                 <li className="menu-item">
                   <Link to="/" className="item-link">
-                    Home<i className="icon icon-arrow-down" />
+                    Trang chủ
                   </Link>    
                 </li>
                 <li className="menu-item">
-                  <a href="#" className="item-link">Shop<i className="icon icon-arrow-down" /></a>
-                  <div className="sub-menu mega-menu">
-                    <div className="container">
-                      <div className="row">
-                        <div className="col-lg-2">
-                          <div className="mega-menu-item">
-                            <ul className="menu-list">
-                              <li><a href="shop-default.html" className="menu-link-text link">Default</a></li>
-                              <li><a href="shop-left-sidebar.html" className="menu-link-text link">Left sidebar</a></li>
-                              <li><a href="shop-right-sidebar.html" className="menu-link-text link">Right sidebar</a></li>
-                              <li><a href="shop-fullwidth.html" className="menu-link-text link">Fullwidth</a></li>
-                              <li><a href="shop-collection-sub.html" className="menu-link-text link">Sub collection</a></li>
-                              <li><a href="shop-collection-list.html" className="menu-link-text link">Collections list</a></li>
-                            </ul>
-                            
-                          </div>
-                        </div>
-                       
-                     
-                      </div>
-                    </div>
+                  <a href="#" className="item-link">Danh mục<i className="icon icon-arrow-down" /></a>
+                  <div className="sub-menu submenu-default">
+                      <ul className="menu-list">
+                          <li>
+                              <a href="about-us.html" className="menu-link-text link text_black-2">Nhẫn</a>
+                          </li>
+                          <li>
+                              <a href="about-us.html" className="menu-link-text link text_black-2">Vòng - Lắc</a>
+                          </li>
+                          
+                          <li><a href="view-cart.html" className="menu-link-text link text_black-2 ">Dây chuyền</a></li>
+
+                          <li><a href="view-cart.html" className="menu-link-text link text_black-2 ">Khuyên tai</a></li>
+                          
+                          <li className="menu-item-2">
+                              <a href="#" className="menu-link-text link text_black-2">Bộ sưu tập</a>
+                              <div className="sub-menu submenu-default">
+                                  <ul className="menu-list">
+                                      <li><a href="my-account.html" className="menu-link-text link text_black-2">Trang sức cưới</a></li>
+                                      <li><a href="my-account-orders.html" className="menu-link-text link text_black-2">Trang sức đôi</a></li>
+                                      <li><a href="my-account-address.html" className="menu-link-text link text_black-2">Trang sức đính đá</a></li>
+                                      
+                                  </ul>
+                              </div>
+                          </li>
+
+                      </ul>
                   </div>
                 </li>
                 <li className="menu-item">
                   
                   <Link to="/product" className="item-link">
-                    Products <i className="icon icon-arrow-down" />
+                    Sản phẩm <i className="icon icon-arrow-down" />
                   </Link> 
-                  <div className="sub-menu mega-menu">
-                    <div className="container">
-                      <div className="row">
-                        <div className="col-lg-2">
-                          <div className="mega-menu-item">
-                            <div className="menu-heading">Product layouts</div>
-                            <ul className="menu-list">
-                              <li><a href="product-detail.html" className="menu-link-text link">Product default</a></li>
-                              <li><a href="product-grid-1.html" className="menu-link-text link">Product grid 1</a></li>
-                              <li><a href="product-grid-2.html" className="menu-link-text link">Product grid 2</a></li>
-                              <li><a href="product-stacked.html" className="menu-link-text link">Product stacked</a></li>
-                              
-                            </ul>
-                          </div>
-                        </div>
-                     
-                      </div>
-                    </div>
-                  </div>
+                  
                 </li>
                 <li className="menu-item position-relative">
-                  <a href="#" className="item-link">Pages<i className="icon icon-arrow-down" /></a>
+                  <a href="#" className="item-link">Trang<i className="icon icon-arrow-down" /></a>
                   <div className="sub-menu submenu-default">
-                    <ul className="menu-list">
-                      <li>
-                        <a href="about-us.html" className="menu-link-text link text_black-2">About us</a>
-                      </li>
-                      <li className="menu-item-2">
-                        <a href="#" className="menu-link-text link text_black-2">Brands</a>
-                        <div className="sub-menu submenu-default">
-                          <ul className="menu-list">
-                            <li>
-                              <a href="brands.html" className="menu-link-text link text_black-2 position-relative">Brands
-                                <div className="demo-label"><span className="demo-new">New</span></div> 
-                              </a>
-                            </li>
-                            <li><a href="brands-v2.html" className="menu-link-text link text_black-2">Brand V2</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li className="menu-item-2">
-                        <a href="#" className="menu-link-text link text_black-2">Contact</a>
-                        <div className="sub-menu submenu-default">
-                          <ul className="menu-list">
-                            <li><a href="contact-1.html" className="menu-link-text link text_black-2">Contact 1</a></li>
-                            <li><a href="contact-2.html" className="menu-link-text link text_black-2">Contact 2</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li className="menu-item-2">
-                        <a href="#" className="menu-link-text link text_black-2">FAQ</a>
-                        <div className="sub-menu submenu-default">
-                          <ul className="menu-list">
-                            <li><a href="faq-1.html" className="menu-link-text link text_black-2">FAQ 01</a></li>
-                            <li><a href="faq-2.html" className="menu-link-text link text_black-2">FAQ 02</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li className="menu-item-2">
-                        <a href="#" className="menu-link-text link text_black-2">Store</a>
-                        <div className="sub-menu submenu-default">
-                          <ul className="menu-list">
-                            <li><a href="our-store.html" className="menu-link-text link text_black-2">Our store</a></li>
-                            <li><a href="store-locations.html" className="menu-link-text link text_black-2">Store locator</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li><a href="timeline.html" className="menu-link-text link text_black-2 position-relative">Timeline <div className="demo-label"><span className="demo-new">New</span></div> </a></li>
-                      <li><a href="view-cart.html" className="menu-link-text link text_black-2 position-relative">View cart</a></li>
-                      <li><a href="checkout.html" className="menu-link-text link text_black-2 position-relative">Check out</a></li>
-                      <li className="menu-item-2">
-                        <a href="#" className="menu-link-text link text_black-2">Payment</a>
-                        <div className="sub-menu submenu-default">
-                          <ul className="menu-list">
-                            <li><a href="payment-confirmation.html" className="menu-link-text link text_black-2">Payment Confirmation</a></li>
-                            <li><a href="payment-failure.html" className="menu-link-text link text_black-2">Payment Failure</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li className="menu-item-2">
-                        <a href="#" className="menu-link-text link text_black-2">My account</a>
-                        <div className="sub-menu submenu-default">
-                          <ul className="menu-list">
-                            <li><a href="my-account.html" className="menu-link-text link text_black-2">My account</a></li>
-                            <li><a href="my-account-orders.html" className="menu-link-text link text_black-2">My order</a></li>
-                            <li><a href="my-account-orders-details.html" className="menu-link-text link text_black-2">My order details</a></li>
-                            <li><a href="my-account-address.html" className="menu-link-text link text_black-2">My address</a></li>
-                            <li><a href="my-account-edit.html" className="menu-link-text link text_black-2">My account details</a></li>
-                            <li><a href="my-account-wishlist.html" className="menu-link-text link text_black-2">My wishlist</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li><a href="invoice.html" className="menu-link-text link text_black-2 position-relative">Invoice</a></li>
-                      <li><a href="404.html" className="menu-link-text link text_black-2 position-relative">404</a></li>
-                    </ul>
+                      <ul className="menu-list">
+                          <li>
+                              <a href="about-us.html" className="menu-link-text link text_black-2">Về chúng tôi</a>
+                          </li>
+                          <li>
+                              <a href="about-us.html" className="menu-link-text link text_black-2">Liên hệ</a>
+                          </li>
+                          
+                          <li><a href="view-cart.html" className="menu-link-text link text_black-2 position-relative">Xem giỏ hàng</a></li>
+                          
+                          <li className="menu-item-2">
+                              <a href="#" className="menu-link-text link text_black-2">Tài khoản của tôi</a>
+                              <div className="sub-menu submenu-default">
+                                  <ul className="menu-list">
+                                      <li><a href="my-account.html" className="menu-link-text link text_black-2">Tài khoản của tôi</a></li>
+                                      <li><a href="my-account-orders.html" className="menu-link-text link text_black-2">Đơn hàng của tôi</a></li>
+                                      <li><a href="my-account-orders-details.html" className="menu-link-text link text_black-2">Chi tiết đơn hàng</a></li>
+                                      <li><a href="my-account-address.html" className="menu-link-text link text_black-2">Lịch sử mua hàng</a></li>
+                                      
+                                  </ul>
+                              </div>
+                          </li>
+                          <li><a href="invoice.html" className="menu-link-text link text_black-2 position-relative">Hóa đơn</a></li>
+
+                      </ul>
                   </div>
                 </li>
-                <li className="menu-item position-relative">
-                  <a href="#" className="item-link">Blog<i className="icon icon-arrow-down" /></a>
-                  <div className="sub-menu submenu-default">
-                    <ul className="menu-list">
-                      <li><a href="blog-grid.html" className="menu-link-text link text_black-2">Grid layout</a></li>
-                      <li><a href="blog-sidebar-left.html" className="menu-link-text link text_black-2">Left sidebar</a></li>
-                      <li><a href="blog-sidebar-right.html" className="menu-link-text link text_black-2">Right sidebar</a></li>
-                      <li><a href="blog-list.html" className="menu-link-text link text_black-2">Blog list</a></li>
-                      <li><a href="blog-detail.html" className="menu-link-text link text_black-2">Single Post</a></li>
-                    </ul>
-                  </div>
-                </li>
-                <li className="menu-item"><a href="https://themeforest.net/item/ecomus-ultimate-html5-template/53417990?s_rank=3" className="item-link">Buy now</a></li>
+               
+                <li className="menu-item"><a href="https://themeforest.net/item/ecomus-ultimate-html5-template/53417990?s_rank=3" className="item-link">Khuyến mãi</a></li>
               </ul>
             </nav>
           </div>
