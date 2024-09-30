@@ -11,23 +11,28 @@ import OdHistory from "../pages/(website)/History/OdHistory";
 import Pay from "../pages/(website)/Pay/Pay";
 import Success from "../pages/(website)/Pay/Success";
 import ListProducts from "../pages/(website)/listProducts/ListProducts";
-
-
+import Profile from "../layouts/profile";
+import OrderHistory from "../pages/(website)/History/OdHistory";
 
 const Router = () => {
     return (
         <>
             <Routes>
-                <Route path="/" element={<Layoutweb />}>
-                    <Route index element={<Home />} />
+                {/* Nested routes under "/profile" */}
+                <Route path="/profile" element={<Profile />}>
+                    <Route path="od_histori" element={<OrderHistory />} />
                 </Route>
+
+                <Route path="/" element={<Layoutweb />}></Route>
+                {/* Define all child routes under the layout */}
                 <Route path="cart" element={<ListCart />} />
+
                 <Route path="detail" element={<Detail />} />
                 <Route path="od_detail" element={<Od_Detail />} />
                 <Route path="od_histori" element={<OdHistory />} />
                 <Route path="pay" element={<Pay />} />
-                <Route path="success" element={<Success />}></Route>
-                <Route path="product" element={<ListProducts/>}></Route>
+                <Route path="success" element={<Success />} />
+                <Route path="product" element={<ListProducts />} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="logout" element={<LogOut />} />

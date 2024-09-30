@@ -29,7 +29,9 @@ const Register = () => {
             }, 2000);
         },
         onError: () => {
-            messageAPI.error("Đăng ký không thành công. Vui lòng thử lại.");
+            messageAPI.error(
+                "Đăng ký không thành công. Tài khoản này đã được đăng kí. Vui lòng nhập email khác.",
+            );
         },
         onSettled: () => {
             setLoading(false);
@@ -73,7 +75,7 @@ const Register = () => {
                                     },
                                     {
                                         type: "email",
-                                        message: "viết đúng định dạng!",
+                                        message: "Viết đúng định dạng!",
                                     },
                                 ]}
                             >
@@ -81,12 +83,12 @@ const Register = () => {
                             </Form.Item>
 
                             <Form.Item
-                                label="Password"
+                                label="Mật khẩu"
                                 name="password"
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Vui lòng điền password!",
+                                        message: "Vui lòng điền mật khẩu!",
                                     },
                                 ]}
                                 hasFeedback
@@ -95,15 +97,14 @@ const Register = () => {
                             </Form.Item>
 
                             <Form.Item
-                                label="Confirm Password"
+                                label="Nhập lại mật khẩu"
                                 name="confirmPassword"
                                 dependencies={["password"]}
                                 hasFeedback
                                 rules={[
                                     {
                                         required: true,
-                                        message:
-                                            "Vui lòng nhập lại password!",
+                                        message: "Vui lòng nhập lại mật khẩu!",
                                     },
                                     ({ getFieldValue }) => ({
                                         validator(_, value) {
@@ -133,14 +134,14 @@ const Register = () => {
                                     className="custom-btn"
                                     disabled={loading}
                                 >
-                                  Đăng kí
+                                    Đăng kí
                                 </Button>
                             </Form.Item>
 
                             <Form.Item>
                                 <div className="login-redirect">
-                                   Có tài khoản đăng nhập tại đây?{" "}
-                                    <Link to="/login">Log in</Link>
+                                    Có tài khoản? Đăng nhập tại đây:{" "}
+                                    <Link to="/login">đăng nhập</Link>
                                 </div>
                             </Form.Item>
                         </Form>
