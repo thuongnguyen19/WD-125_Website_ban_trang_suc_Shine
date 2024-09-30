@@ -17,20 +17,19 @@ import './styles/photoswipe.css';
 import './styles/styles.css';
 import './styles/swiper-bundle.min.css';
 
-// Import JavaScript files
 import './js/bootstrap.min.js';
 import './js/bootstrap-select.min.js';
 import './js/carousel.js';
-import '/src/js/count-down.js';
-import '/src/js/drift.min.js';
-import '/src/js/jquery-validate.js';
-import '/src/js/jquery.min.js';
-import '/src/js/lazysize.min.js';
-import '/src/js/main.js';
-import '/src/js/shop.js';
-import '/src/js/wow.min.js';
-import '/src/js/swiper-bundle.min.js';
-import '/src/js/shop.js';
+import "/src/js/count-down.js";
+import "/src/js/drift.min.js";
+import "/src/js/jquery-validate.js";
+import "/src/js/jquery.min.js";
+import "/src/js/lazysize.min.js";
+import "/src/js/main.js";
+import "/src/js/shop.js";
+import "/src/js/wow.min.js";
+import "/src/js/swiper-bundle.min.js";
+import "/src/js/shop.js";
 
 
 
@@ -48,4 +47,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             </BrowserRouter>
         </QueryClientProvider>
     </React.StrictMode>
+     
 );
