@@ -12245,7 +12245,7 @@ blockquote .text {
   justify-content: center;
 }
 .tf-img-video-text .content-wrap .heading {
-  font-size: 52px;
+  font-size: 50px;
   line-height: 62.4px;
   margin-bottom: 18px;
 }
@@ -15930,7 +15930,7 @@ blockquote .text {
     row-gap: 80px;
   }
   .flat-iconbox .wrap-iconbox {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
   .wrap-mobile .grid-mobile-1 {
     grid-template-columns: repeat(3, 1fr);
