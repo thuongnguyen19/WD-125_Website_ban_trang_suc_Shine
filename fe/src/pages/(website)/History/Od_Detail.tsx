@@ -1,11 +1,10 @@
-import React from 'react';
 import Footer from '../../../components/common/Footer';
 import Header from '../../../components/common/Header';
 
 const Od_Detail = () => {
     return (
         <>
-            {/* <Header /> */}
+        {/* <Header /> */}
             <section className="flat-spacing-11">
                 {/* <div className="container">
                     <div className="row">
@@ -58,7 +57,7 @@ const Od_Detail = () => {
                                 </li>
                             </ul>
                         </div> */}
-                        <div className="col-lg-9">
+                        <div className="col-lg-15 ">
                             <div className="wd-form-order">
                                 <div className="order-head">
                                     <figure className="img-product">
@@ -71,7 +70,7 @@ const Od_Detail = () => {
                                         <div className="badge">
                                             Đang giao hàng
                                         </div>
-                                        <h6 className="mt-8 fw-5">
+                                        <h6 className="mt-2 fw-5">
                                             Đơn hàng #17493
                                         </h6>
                                     </div>
