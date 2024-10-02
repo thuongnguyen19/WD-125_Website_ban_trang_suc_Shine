@@ -33,6 +33,8 @@ import './js/main.js';
 import './js/shop.js';
 import './js/wow.min.js';
 import './js/swiper-bundle.min.js';
+import './js/rangle-slider.js';
+
 
 
 

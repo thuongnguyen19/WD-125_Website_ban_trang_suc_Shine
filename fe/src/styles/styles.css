@@ -1716,7 +1716,7 @@ label {
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 2px;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -ms-transition: all 0.3s ease;
@@ -1827,7 +1827,7 @@ label {
 }
 .box-nav-ul .menu-item-2::after {
   position: absolute;
-  content: "\e906";
+  
   font-family: "icomoon";
   font-size: 11px;
   right: 0;
@@ -1842,7 +1842,7 @@ label {
 .box-nav-ul .menu-item-2 .sub-menu::after {
   position: absolute;
   display: block;
-  content: "";
+  
   width: 60px;
   height: 45px;
   background-color: transparent;
@@ -2182,7 +2182,7 @@ label {
   transition: background-color 0.15s ease;
 }
 .header-list-categories .categories-item a::after {
-  content: "";
+
   position: absolute;
   left: 0;
   width: 100%;
@@ -11644,7 +11644,7 @@ blockquote .text {
   gap: 10px;
 }
 .widget-price .caption-price div {
-  width: 68px;
+  width: 100px;
   display: flex;
   justify-content: space-between;
   padding: 8px 10px;
@@ -12745,6 +12745,37 @@ blockquote .text {
   gap: 14px;
   align-items: center;
   font-size: 17px;
+}
+
+.range-input input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: #ddd;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.range-input input[type="range"]:hover {
+  opacity: 1;
+}
+
+.range-input input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #db1215;
+  cursor: pointer;
+}
+
+.range-input input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #db1215;
+  cursor: pointer;
 }
 
 .tf-brands-filter {
