@@ -6,7 +6,7 @@ import { Button, message, Modal } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Home from "../pages/(website)/home/page";
-import { CaretDownOutlined, DownOutlined, SearchOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, DownOutlined, MenuOutlined, SearchOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 
 
 const Layoutweb = () => {
@@ -50,12 +50,10 @@ const Layoutweb = () => {
             <div className="container-full px_15 lg-px_40">
                 <div className="row wrapper-header align-items-center">
                     <div className="col-md-4 col-3 tf-lg-hidden">
-                        <a href="#mobileMenu" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="btn-mobile">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" viewBox="0 0 24 16" fill="none">
-                                <path d="M2.00056 2.28571H16.8577C17.1608 2.28571 17.4515 2.16531 17.6658 1.95098C17.8802 1.73665 18.0006 1.44596 18.0006 1.14286C18.0006 0.839753 17.8802 0.549063 17.6658 0.334735C17.4515 0.120408 17.1608 0 16.8577 0H2.00056C1.69745 0 1.40676 0.120408 1.19244 0.334735C0.978109 0.549063 0.857702 0.839753 0.857702 1.14286C0.857702 1.44596 0.978109 1.73665 1.19244 1.95098C1.40676 2.16531 1.69745 2.28571 2.00056 2.28571ZM0.857702 8C0.857702 7.6969 0.978109 7.40621 1.19244 7.19188C1.40676 6.97755 1.69745 6.85714 2.00056 6.85714H22.572C22.8751 6.85714 23.1658 6.97755 23.3801 7.19188C23.5944 7.40621 23.7148 7.6969 23.7148 8C23.7148 8.30311 23.5944 8.59379 23.3801 8.80812C23.1658 9.02245 22.8751 9.14286 22.572 9.14286H2.00056C1.69745 9.14286 1.40676 9.02245 1.19244 8.80812C0.978109 8.59379 0.857702 8.30311 0.857702 8ZM0.857702 14.8571C0.857702 14.554 0.978109 14.2633 1.19244 14.049C1.40676 13.8347 1.69745 13.7143 2.00056 13.7143H12.2863C12.5894 13.7143 12.8801 13.8347 13.0944 14.049C13.3087 14.2633 13.4291 14.554 13.4291 14.8571C13.4291 15.1602 13.3087 15.4509 13.0944 15.6653C12.8801 15.8796 12.5894 16 12.2863 16H2.00056C1.69745 16 1.40676 15.8796 1.19244 15.6653C0.978109 15.4509 0.857702 15.1602 0.857702 14.8571Z" fill="currentColor"></path>
-                            </svg>
+                        <a href="#mobileMenu" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft">
+                            <MenuOutlined style={{ fontSize: '24px' }} />
                         </a>
-                    </div>
+                        </div>
                     <div className="col-xl-3 col-md-4 col-6">
                         <a href="index.html" className="logo-header">
                             <img src="images/logo/logo-white@2x.png" alt="logo" className="logo"/>
@@ -75,6 +73,9 @@ const Layoutweb = () => {
                                     <div className="sub-menu submenu-default" >
                                         <ul className="menu-list">
                                             <li>
+                                                <Link to="/detail" className="item-link">
+                                                    Trang chủ 
+                                                </Link>
                                                 <a href="about-us.html" className="menu-link-text link text_black-2">Nhẫn</a>
                                             </li>
                                             <li>
@@ -148,13 +149,14 @@ const Layoutweb = () => {
                     <SearchOutlined style={{ fontSize: '24px' }} />
                   </a>
                 </li>
-                <li className="nav-account">
-                  <a href="#login" data-bs-toggle="modal" className="nav-icon-item">
+                <li className="nav-cart">
+                  <Link to="/login" className="nav-icon-item">
                     <UserOutlined style={{ fontSize: '24px' }} />
-                  </a>
+                    
+                  </Link>
                 </li>
                 <li className="nav-cart">
-                  <Link to="/cart" data-bs-toggle="modal" className="nav-icon-item">
+                  <Link to="/cart" className="nav-icon-item">
                     <ShoppingCartOutlined style={{ fontSize: '24px' }} />
                     <span className="count-box">0</span>
                   </Link>
@@ -164,6 +166,176 @@ const Layoutweb = () => {
                 </div>
             </div>
         </header>
+        <div className="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
+        <span className="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></span>
+        <div className="mb-canvas-content">
+            <div className="mb-body">
+                <ul className="nav-ul-mb" id="wrapper-menu-navigation">
+                    <li className="nav-mb-item">
+                        <a href="#dropdown-menu-one" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-one">
+                            <span>Trang chủ</span>
+                            <span className="btn-open-sub"></span>
+                        </a>
+                      
+                        
+                    </li>
+                    <li className="nav-mb-item">
+                        <a href="#dropdown-menu-two" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-two">
+                            <span>Danh mục</span>
+                            <span className="btn-open-sub"></span>
+                        </a>
+                        <div id="dropdown-menu-two" className="collapse">
+                            <ul className="sub-nav-menu" id="sub-menu-navigation">
+                                <li><a href="#sub-shop-one" className="sub-nav-link collapsed"  data-bs-toggle="collapse" aria-expanded="true" aria-controls="sub-shop-one">
+                                        <span>Shop layouts</span>
+                                        <span className="btn-open-sub"></span>
+                                    </a>
+                                    <div id="sub-shop-one" className="collapse">
+                                        <ul className="sub-nav-menu sub-menu-level-2">
+                                            <li><a href="shop-default.html" className="sub-nav-link">Default</a></li>
+                                            <li><a href="shop-left-sidebar.html" className="sub-nav-link">Left sidebar</a></li>
+                                            <li><a href="shop-right-sidebar.html" className="sub-nav-link">Right sidebar</a></li>
+                                            <li><a href="shop-fullwidth.html" className="sub-nav-link">Fullwidth</a></li>
+                                            <li><a href="shop-collection-sub.html" className="sub-nav-link">Sub collection</a></li>
+                                            <li><a href="shop-collection-list.html" className="sub-nav-link">Collections list</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a href="#sub-shop-two" className="sub-nav-link collapsed"  data-bs-toggle="collapse" aria-expanded="true" aria-controls="sub-shop-two">
+                                        <span>Features</span>
+                                        <span className="btn-open-sub"></span>
+                                    </a>
+                                    <div id="sub-shop-two" className="collapse">
+                                        <ul className="sub-nav-menu sub-menu-level-2">
+                                            <li><a href="shop-link.html" className="sub-nav-link">Pagination links</a></li>
+                                            <li><a href="shop-loadmore.html" className="sub-nav-link">Pagination loadmore</a></li>
+                                            <li><a href="shop-infinite-scrolling.html" className="sub-nav-link">Pagination infinite scrolling</a></li>
+                                            <li><a href="shop-filter-sidebar.html" className="sub-nav-link">Filter sidebar</a></li>
+                                            <li><a href="shop-filter-hidden.html" className="sub-nav-link">Filter hidden</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a href="#sub-shop-three" className="sub-nav-link collapsed"  data-bs-toggle="collapse" aria-expanded="true" aria-controls="sub-shop-three">
+                                        <span>Product styles</span>
+                                        <span className="btn-open-sub"></span>
+                                    </a>
+                                    <div id="sub-shop-three" className="collapse">
+                                        <ul className="sub-nav-menu sub-menu-level-2">
+                                            <li><a href="product-style-list.html" className="sub-nav-link">Product style list</a></li>
+                                            <li><a href="product-style-01.html" className="sub-nav-link">Product style 01</a></li>
+                                            <li><a href="product-style-02.html" className="sub-nav-link">Product style 02</a></li>
+                                            <li><a href="product-style-03.html" className="sub-nav-link">Product style 03</a></li>
+                                            <li><a href="product-style-04.html" className="sub-nav-link">Product style 04</a></li>
+                                            <li><a href="product-style-05.html" className="sub-nav-link">Product style 05</a></li>
+                                            <li><a href="product-style-06.html" className="sub-nav-link">Product style 06</a></li>
+                                            <li><a href="product-style-07.html" className="sub-nav-link">Product style 07</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li className="nav-mb-item">
+                        <a href="#dropdown-menu-three" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-three">
+                            <span>Products</span>
+                            <span className="btn-open-sub"></span>
+                        </a>
+                    
+                    </li>
+                    <li className="nav-mb-item">
+                        <a href="#dropdown-menu-four" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-four">
+                            <span>Pages</span>
+                            <span className="btn-open-sub"></span>
+                        </a>
+                        <div id="dropdown-menu-four" className="collapse">
+                            <ul className="sub-nav-menu" id="sub-menu-navigation">
+                                <li><a href="about-us.html" className="sub-nav-link">About us</a></li>
+                                <li><a href="brands.html" className="sub-nav-link line-clamp">Brands<div className="demo-label"><span className="demo-new">New</span></div></a></li>
+                                <li><a href="brands-v2.html" className="sub-nav-link">Brands V2</a></li>
+                                <li><a href="contact-1.html" className="sub-nav-link">Contact 1</a></li>
+                                <li><a href="contact-2.html" className="sub-nav-link">Contact 2</a></li>
+                               
+                                <li><a href="#sub-account" className="sub-nav-link collapsed"  data-bs-toggle="collapse" aria-expanded="true" aria-controls="sub-account">
+                                    <span>My Account</span>
+                                    <span className="btn-open-sub"></span>
+                                    </a>
+                                    <div id="sub-account" className="collapse">
+                                        <ul className="sub-nav-menu sub-menu-level-2">
+                                            <li><a href="my-account.html" className="sub-nav-link">My account</a></li>
+                                            <li><a href="my-account-orders.html" className="sub-nav-link">My order</a></li>
+                                            <li><a href="my-account-orders-details.html" className="sub-nav-link">My order details</a></li>
+                                            <li><a href="my-account-address.html" className="sub-nav-link">My address</a></li>
+                                            <li><a href="my-account-edit.html" className="sub-nav-link">My account details</a></li>
+                                            <li><a href="my-account-wishlist.html" className="sub-nav-link">My wishlist</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><a href="invoice.html" className="sub-nav-link line-clamp">Invoice</a></li>
+                                <li><a href="404.html" className="sub-nav-link line-clamp">404</a></li>
+                            </ul>
+                        </div>
+                        
+                    </li>
+                    <li className="nav-mb-item">
+                        <a href="#dropdown-menu-five" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-five">
+                            <span>Blog</span>
+                            <span className="btn-open-sub"></span>
+                        </a>
+                        <div id="dropdown-menu-five" className="collapse">
+                            <ul className="sub-nav-menu" >
+                                <li><a href="blog-grid.html" className="sub-nav-link">Grid layout</a></li>
+                                <li><a href="blog-sidebar-left.html" className="sub-nav-link">Left sidebar</a></li>
+                                <li><a href="blog-sidebar-right.html" className="sub-nav-link">Right sidebar</a></li>
+                                <li><a href="blog-list.html" className="sub-nav-link">Blog list</a></li>
+                                <li><a href="blog-detail.html" className="sub-nav-link">Single Post</a></li>
+                            </ul>
+                        </div>
+                        
+                    </li>
+                    <li className="nav-mb-item">
+                        <a href="https://themeforest.net/item/ecomus-ultimate-html5-template/53417990?s_rank=3" className="mb-menu-link">Buy now</a>
+                    </li>
+                </ul>
+                <div className="mb-other-content">
+                    <div className="d-flex group-icon">
+                        <a href="wishlist.html" className="site-nav-icon"><i className="icon icon-heart"></i>Wishlist</a>
+                        <a href="home-search.html" className="site-nav-icon"><i className="icon icon-search"></i>Search</a>
+                    </div>
+                    <div className="mb-notice">
+                        <a href="contact-1.html" className="text-need">Need help ?</a>
+                    </div>
+                    <ul className="mb-info">
+                        <li>Address: 1234 Fashion Street, Suite 567, <br/> New York, NY 10001</li>
+                        <li>Email: <b>info@fashionshop.com</b></li>
+                        <li>Phone: <b>(212) 555-1234</b></li>
+                    </ul>
+                </div>
+            </div>
+            <div className="mb-bottom">
+                <a href="login.html" className="site-nav-icon"><i className="icon icon-account"></i>Login</a>
+                <div className="bottom-bar-language">
+                    <div className="tf-currencies">
+                        <select className="image-select center style-default type-currencies">
+                            <option data-thumbnail="images/country/fr.svg">EUR <span>€ | France</span></option>
+                            <option data-thumbnail="images/country/de.svg">EUR <span>€ | Germany</span></option>
+                            <option selected data-thumbnail="images/country/us.svg">USD <span>$ | United States</span></option>
+                            <option data-thumbnail="images/country/vn.svg">VND <span>₫ | Vietnam</span></option>
+                        </select>
+                    </div>
+                    <div className="tf-languages">
+                        <select className="image-select center style-default type-languages">
+                            <option>English</option>
+                            <option>العربية</option>
+                            <option>简体中文</option>
+                            <option>اردو</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>       
+    </div>
     </div>
          
                 <Header2 />

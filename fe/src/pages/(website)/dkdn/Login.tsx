@@ -103,7 +103,12 @@ const Login = () => {
                                 </Button>
                             </Form.Item>
 
-                            
+                            <Form.Item>
+                                <div className="login-redirect">
+                                    {" "}
+                                    <Link to="/register">Khách hàng mới? Tạo tài khoản mới tại đây</Link>
+                                </div>
+                            </Form.Item>
                         </Form>
                     </Spin>
                 </Card>
