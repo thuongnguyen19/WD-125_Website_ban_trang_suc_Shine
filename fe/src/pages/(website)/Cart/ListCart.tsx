@@ -320,7 +320,7 @@ const ListCart = () => {
                             <div className="tf-page-cart-footer">
                                 <div className="tf-cart-footer-inner">
                                     <div className="tf-free-shipping-bar">
-                                        <div className="tf-progress-bar">
+                                        {/* <div className="tf-progress-bar">
                                             <span style={{ width: "50%" }}>
                                                 <div className="progress-car">
                                                     <svg
@@ -338,8 +338,8 @@ const ListCart = () => {
                                                     </svg>
                                                 </div>
                                             </span>
-                                        </div>
-                                        <div className="tf-progress-msg">
+                                        </div> */}
+                                        {/* <div className="tf-progress-msg">
                                             Mua{" "}
                                             <span className="price fw-6">
                                                 thêm
@@ -348,7 +348,7 @@ const ListCart = () => {
                                             <span className="fw-6">
                                                 Miễn phí vận chuyển
                                             </span>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <div className="tf-page-cart-checkout">
                                         <div className="shipping-calculator">
