@@ -43,7 +43,7 @@
  }
 
  .menu-item:not(:last-child)::after {
-   content: "|";
+   
    position: absolute;
    right: 0;
    top: 50%;
@@ -594,7 +594,7 @@ img {
 
 .card-product-wrapper {
   flex: 1 1 calc(33.33% - 20px);
-  max-width: calc(33.33% - 20px);
+  
   box-sizing: border-box;
 }
 

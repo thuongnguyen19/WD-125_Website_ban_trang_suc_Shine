@@ -1,4 +1,64 @@
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Swiper, Swiper as SwiperComponent, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+
+interface Product {
+  id: number;
+  name: string;
+  price: string;
+  img: string;
+  hoverImg: string;
+  link: string;
+}
+
+// Dữ liệu giả lập sản phẩm
+const products: Product[] = [
+  {
+    id: 1,
+    name: 'Natural Moisturizing Factors',
+    price: '$32.00',
+    img: 'images/products/jewerly-1.jpg',
+    hoverImg: 'images/products/jewerly-2.jpg',
+    link: '/detail'
+  },
+  {
+    id: 2,
+    name: 'Anhydrous Solution Pore Serum',
+    price: 'From $65.00',
+    img: 'images/products/jewerly-3.jpg',
+    hoverImg: 'images/products/jewerly-4.jpg',
+    link: '/detail'
+  },
+  {
+    id: 3,
+    name: 'Serum for Hair Density',
+    price: '$65.00',
+    img: 'images/products/jewerly-5.jpg',
+    hoverImg: 'images/products/jewerly-6.jpg',
+    link: '/detail'
+  },
+  {
+    id: 4,
+    name: 'Anhydrous Solution Pore Serum',
+    price: '$22.00',
+    img: 'images/products/jewerly-7.jpg',
+    hoverImg: 'images/products/jewerly-8.jpg',
+    link: '/detail'
+  },
+  {
+    id: 5,
+    name: 'Anhydrous Solution Pore Serum',
+    price: '$52.00',
+    img: 'images/products/jewerly-9.jpg',
+    hoverImg: 'images/products/jewerly-10.jpg',
+    link: '/detail'
+  }
+];
 
 const Home = () => {
     return (
@@ -8,10 +68,10 @@ const Home = () => {
                 <div className="flat-tab-store flat-animate-tab overflow-unset">
                     <ul className="widget-tab-3 d-flex justify-content-center flex-wrap wow fadeInUp" data-wow-delay="0s" role="tablist">
                         <li className="nav-tab-item" role="presentation">   
-                            <a href="#essentials" className="active" data-bs-toggle="tab">Trang sức cưới</a>
+                            <a href="#essentials" className="active" data-bs-toggle="tab">Sản phẩm mới</a>
                         </li>
                         <li className="nav-tab-item" role="presentation">
-                            <a href="#gift_sets"  data-bs-toggle="tab">Trang sức đôi</a>
+                            <a href="#gift_sets"  data-bs-toggle="tab">Sản phẩm nổi bật</a>
                         </li>
                     </ul>
                     <div className="tab-content">
@@ -19,7 +79,53 @@ const Home = () => {
                             <div className="wrap-carousel">
                                 <div className="swiper tf-sw-product-sell-1" data-preview="4" data-tablet="3" data-mobile="2" data-space-lg="30" data-space-md="15" data-pagination="2" data-pagination-md="3" data-pagination-lg="3">
                                     <div className="swiper-wrapper">
-                                        <div className="swiper-slide" >
+                                         {/* Nút điều hướng slider */}
+                                        <div className="swiper-button-prev" style={{color:'black'}}>
+                                            <LeftOutlined />
+                                        </div>
+                                        <div className="swiper-button-next" style={{color:'black'}}>
+                                            <RightOutlined />
+                                        </div>
+
+                                        <Swiper
+                                            modules={[Navigation]} // Sử dụng module Navigation cho Swiper
+                                            spaceBetween={20}
+                                            slidesPerView={3} // Hiển thị 3 sản phẩm mỗi lần
+                                            navigation={{
+                                            nextEl: '.swiper-button-next',
+                                            prevEl: '.swiper-button-prev',
+                                            }}
+                                            loop={true} // Cho phép slider chạy vòng lặp
+                                            className="swiper-container"
+                                        >
+                                            {products.map((product) => (
+                                            <SwiperSlide key={product.id}>
+                                                <div className="card-product style-skincare">
+                                                <div className="card-product-wrapper">
+                                                    <Link to={product.link} className="product-img">
+                                                    <img
+                                                        className="lazyload img-product"
+                                                        src={product.img}
+                                                        alt={product.name}
+                                                    />
+                                                    <img
+                                                        className="lazyload img-hover"
+                                                        src={product.hoverImg}
+                                                        alt={product.name}
+                                                    />
+                                                    </Link>
+                                                </div>
+                                                <div className="card-product-info text-center">
+                                                    <Link to={product.link} className="title link">
+                                                    {product.name}
+                                                    </Link>
+                                                    <span className="price">{product.price}</span>
+                                                </div>
+                                                </div>
+                                            </SwiperSlide>
+                                            ))}
+                                        </Swiper>
+                                        {/* <div className="swiper-slide" >
                                             <div className="card-product style-skincare">
                                                 <div className="card-product-wrapper">
                                                     <a href="product-detail.html" className="product-img">
@@ -38,8 +144,8 @@ const Home = () => {
                                                     
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="swiper-slide" >
+                                        </div> */}
+                                        {/* <div className="swiper-slide" >
                                             <div className="card-product style-skincare">
                                                 <div className="card-product-wrapper">
                                                     <a href="product-detail.html" className="product-img">
@@ -56,8 +162,8 @@ const Home = () => {
                                                     
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="swiper-slide" >
+                                        </div> */}
+                                        {/* <div className="swiper-slide" >
                                             <div className="card-product style-skincare">
                                                 <div className="card-product-wrapper">
                                                     <a href="product-detail.html" className="product-img">
@@ -74,8 +180,8 @@ const Home = () => {
                                                     
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="swiper-slide" >
+                                        </div> */}
+                                        {/* <div className="swiper-slide" >
                                             <div className="card-product style-skincare">
                                                 <div className="card-product-wrapper">
                                                     <a href="product-detail.html" className="product-img">
@@ -91,8 +197,8 @@ const Home = () => {
                                                     <span className="price">$22.00</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="swiper-slide" >
+                                        </div> */}
+                                        {/* <div className="swiper-slide" >
                                             <div className="card-product style-skincare">
                                                 <div className="card-product-wrapper">
                                                     <a href="product-detail.html" className="product-img">
@@ -109,12 +215,12 @@ const Home = () => {
                                                     
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         
                                     </div>
                                 </div>
-                                <div className="nav-sw style-not-line nav-next-slider nav-next-sell-1 box-icon w_46 round"><span className="icon icon-arrow-left"></span></div>
-                                <div className="nav-sw style-not-line nav-prev-slider nav-prev-sell-1 box-icon w_46 round"><span className="icon icon-arrow-right"></span></div>
+                                {/* <div className="nav-sw style-not-line nav-next-slider nav-next-sell-1 box-icon w_46 round"><span className="icon icon-arrow-left"></span></div>
+                                <div className="nav-sw style-not-line nav-prev-slider nav-prev-sell-1 box-icon w_46 round"><span className="icon icon-arrow-right"></span></div> */}
                                 <div className="sw-dots style-2 sw-pagination-sell-1 justify-content-center"></div>
                             </div>
                         </div>
@@ -122,7 +228,53 @@ const Home = () => {
                             <div className="wrap-carousel">
                                 <div className="swiper tf-sw-product-sell" data-preview="4" data-tablet="3" data-mobile="2" data-space-lg="30" data-space-md="15" data-pagination="2" data-pagination-md="3" data-pagination-lg="3">
                                     <div className="swiper-wrapper">
-                                        <div className="swiper-slide" >
+                                         {/* Nút điều hướng slider */}
+                                        <div className="swiper-button-prev" style={{color:'black'}}>
+                                            <LeftOutlined />
+                                        </div>
+                                        <div className="swiper-button-next" style={{color:'black'}}>
+                                            <RightOutlined />
+                                        </div>
+
+                                        <Swiper
+                                            modules={[Navigation]} // Sử dụng module Navigation cho Swiper
+                                            spaceBetween={20}
+                                            slidesPerView={3} // Hiển thị 3 sản phẩm mỗi lần
+                                            navigation={{
+                                            nextEl: '.swiper-button-next',
+                                            prevEl: '.swiper-button-prev',
+                                            }}
+                                            loop={true} // Cho phép slider chạy vòng lặp
+                                            className="swiper-container"
+                                        >
+                                            {products.map((product) => (
+                                            <SwiperSlide key={product.id}>
+                                                <div className="card-product style-skincare">
+                                                <div className="card-product-wrapper">
+                                                    <Link to={product.link} className="product-img">
+                                                    <img
+                                                        className="lazyload img-product"
+                                                        src={product.img}
+                                                        alt={product.name}
+                                                    />
+                                                    <img
+                                                        className="lazyload img-hover"
+                                                        src={product.hoverImg}
+                                                        alt={product.name}
+                                                    />
+                                                    </Link>
+                                                </div>
+                                                <div className="card-product-info text-center">
+                                                    <Link to={product.link} className="title link">
+                                                    {product.name}
+                                                    </Link>
+                                                    <span className="price">{product.price}</span>
+                                                </div>
+                                                </div>
+                                            </SwiperSlide>
+                                            ))}
+                                        </Swiper> 
+                                        {/* <div className="swiper-slide" >
                                             <div className="card-product style-skincare">
                                                 <div className="card-product-wrapper">
                                                     <a href="product-detail.html" className="product-img">
@@ -219,12 +371,12 @@ const Home = () => {
                                                    
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         
                                     </div>
                                 </div>
-                                <div className="nav-sw nav-next-slider nav-next-product box-icon w_46 round"><span className="icon icon-arrow-left"></span></div>
-                                <div className="nav-sw nav-prev-slider nav-prev-product box-icon w_46 round"><span className="icon icon-arrow-right"></span></div>
+                                {/* <div className="nav-sw nav-next-slider nav-next-product box-icon w_46 round"><span className="icon icon-arrow-left"></span></div>
+                                <div className="nav-sw nav-prev-slider nav-prev-product box-icon w_46 round"><span className="icon icon-arrow-right"></span></div> */}
                                 <div className="sw-dots style-2 sw-pagination-product justify-content-center"></div>
                             </div>
                         </div>
@@ -341,25 +493,23 @@ const Home = () => {
                 <div className="flat-tab-store flat-animate-tab overflow-unset">
                     <ul className="widget-tab-3 d-flex justify-content-center flex-wrap" role="tablist">
                         <li className="nav-tab-item" role="presentation">   
-                            <a href="#organic" className="active" data-bs-toggle="tab">Khuyên tai</a>
+                            <a href="#organic" className="active" data-bs-toggle="tab">Trang sức cưới</a>
                         </li>
                         <li className="nav-tab-item" role="presentation">
-                            <a href="#cruelty"  data-bs-toggle="tab">Dây chuyền</a>
+                            <a href="#cruelty"  data-bs-toggle="tab">Trang sức đôi</a>
                         </li>
-                        <li className="nav-tab-item" role="presentation">
-                            <a href="#sustainable"  data-bs-toggle="tab">Vòng - Lắc</a>
-                        </li>
+                        
                     </ul>
                     <div className="tab-content">
                         <div className="tab-pane active show" id="organic" role="tabpanel">
                             <div className="widget-card-store radius-20 overflow-hidden type-1 align-items-center tf-grid-layout md-col-2">
                                 <div className="store-img">
-                                    <img className="lazyload" data-src="images/collections/jewerly-7.jpg" src="images/collections/jewerly-7.jpg" alt="store-img"/>
+                                    <img className="lazyload" data-src="images/collections/jewerly-16.jpg" src="images/collections/jewerly-16.jpg" alt="store-img"/>
                                 </div>
                                 <div className="store-item-info text-center">
-                                    <h5 className="store-heading text-white"></h5>
+                                    <h5 className="store-heading text-white">Cưới thôi nào!</h5>
                                     <div className="description">
-                                        <p className="text-white">Điểm nhấn sang trọng, tỏa sáng cả ngày dài.</p>
+                                        <p className="text-white">Nơi tình yêu tỏa sáng trong từng món trang sức.</p>
                                     </div>
                                     <div className="wow fadeInUp" data-wow-delay="0s">
                                         <Link to="/product" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
@@ -372,12 +522,12 @@ const Home = () => {
                         <div className="tab-pane" id="cruelty" role="tabpanel">
                             <div className="widget-card-store radius-20 overflow-hidden type-1 align-items-center tf-grid-layout md-col-2">
                                 <div className="store-img">
-                                    <img className="lazyload" data-src="images/collections/jewerly-8.jpg" src="images/collections/jewerly-8.jpg" alt="store-img"/>
+                                    <img className="lazyload" data-src="images/collections/jewerly-17.jpg" src="images/collections/jewerly-17.jpg" alt="store-img"/>
                                 </div>
                                 <div className="store-item-info text-center">
-                                    <h5 className="store-heading text-white">Trang sức dây chuyền</h5>
+                                    <h5 className="store-heading text-white">Gắn kết yêu thương</h5>
                                     <div className="description">
-                                        <p className="text-white">Kết nối yêu thương, tỏa sáng từng khoảnh khắc.</p>
+                                        <p className="text-white">Cùng nhau tỏa sáng, cùng nhau khắc ghi kỷ niệm.</p>
                                     </div>
                                     <div className="wow fadeInUp" data-wow-delay="0s">
                                         <Link to="/product" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
@@ -387,24 +537,7 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="tab-pane" id="sustainable" role="tabpanel">
-                            <div className="widget-card-store radius-20 overflow-hidden type-1 align-items-center tf-grid-layout md-col-2">
-                                <div className="store-img">
-                                    <img className="lazyload" data-src="images/collections/jewerly-6.jpg" src="images/collections/jewerly-6.jpg" alt="store-img"/>
-                                </div>
-                                <div className="store-item-info text-center">
-                                    <h5 className="store-heading text-white">Vòng tay - Lắc tay</h5>
-                                    <div className="description">
-                                        <p className="text-white">Phong cách đẳng cấp, tỏa sáng nơi cổ tay.</p>
-                                    </div>
-                                    <div className="wow fadeInUp" data-wow-delay="0s">
-                                        <Link to="/product" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
-                                <span/>Bộ sưu tập
-                            </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -418,7 +551,53 @@ const Home = () => {
                 <div className="wrap-carousel">
                     <div className="swiper tf-sw-recent" data-preview="4" data-tablet="3" data-mobile="2" data-space-lg="30" data-space-md="15" data-space="15" data-pagination="2" data-pagination-md="3" data-pagination-lg="3">
                         <div className="swiper-wrapper">
-                            <div className="swiper-slide" >
+                             {/* Nút điều hướng slider */}
+                            <div className="swiper-button-prev" style={{color:'black'}}>
+                                <LeftOutlined />
+                            </div>
+                            <div className="swiper-button-next"style={{color:'black'}}>
+                                <RightOutlined />
+                            </div>
+
+                            <Swiper
+                                modules={[Navigation]} // Sử dụng module Navigation cho Swiper
+                                spaceBetween={20}
+                                slidesPerView={3} // Hiển thị 3 sản phẩm mỗi lần
+                                navigation={{
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                                }}
+                                loop={true} // Cho phép slider chạy vòng lặp
+                                className="swiper-container"
+                            >
+                                {products.map((product) => (
+                                <SwiperSlide key={product.id}>
+                                    <div className="card-product style-skincare">
+                                    <div className="card-product-wrapper">
+                                        <Link to={product.link} className="product-img">
+                                        <img
+                                            className="lazyload img-product"
+                                            src={product.img}
+                                            alt={product.name}
+                                        />
+                                        <img
+                                            className="lazyload img-hover"
+                                            src={product.hoverImg}
+                                            alt={product.name}
+                                        />
+                                        </Link>
+                                    </div>
+                                    <div className="card-product-info text-center">
+                                        <Link to={product.link} className="title link">
+                                        {product.name}
+                                        </Link>
+                                        <span className="price">{product.price}</span>
+                                    </div>
+                                    </div>
+                                </SwiperSlide>
+                                ))}
+                            </Swiper>
+                            {/* <div className="swiper-slide" >
                                 <div className="card-product style-skincare">
                                     <div className="card-product-wrapper">
                                         <a href="product-detail.html" className="product-img">
@@ -519,12 +698,12 @@ const Home = () => {
                                         
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         
                         </div>
                     </div>
-                    <div className="nav-sw style-not-line nav-next-slider nav-next-recent box-icon w_46 round"><span className="icon icon-arrow-left"></span></div>
-                    <div className="nav-sw style-not-line nav-prev-slider nav-prev-recent box-icon w_46 round"><span className="icon icon-arrow-right"></span></div>
+                    {/* <div className="nav-sw style-not-line nav-next-slider nav-next-recent box-icon w_46 round"><span className="icon icon-arrow-left"></span></div>
+                    <div className="nav-sw style-not-line nav-prev-slider nav-prev-recent box-icon w_46 round"><span className="icon icon-arrow-right"></span></div> */}
                     <div className="sw-dots style-2 sw-pagination-recent justify-content-center"></div>
                 </div>
             </div>
@@ -543,7 +722,7 @@ const Home = () => {
                                     </div>
                                     <div className="content">
                                         <div className="title fw-4">Miễn phí vận chuyển</div>
-                                        <p>Miễn phí vận chuyển cho đơn hàng trên 1.000.000đ</p>
+                                        <p>Miễn phí vận chuyển cho mọi đơn hàng</p>
                                     </div>
                                 </div>
                             </div>
