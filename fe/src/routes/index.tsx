@@ -13,6 +13,7 @@ import Success from "../pages/(website)/Pay/Success";
 import ListProducts from "../pages/(website)/listProducts/ListProducts";
 import Profile from "../layouts/profile";
 import OrderHistory from "../pages/(website)/History/OdHistory";
+import ProductList from "../pages/(website)/listProducts/Filter";
 
 const Router = () => {
     return (
@@ -39,6 +40,7 @@ const Router = () => {
                 <Route path="pay" element={<Pay />} />
                 <Route path="success" element={<Success />} />
                 <Route path="product" element={<ListProducts />} />
+                <Route path="pricefilter" element={<ProductList/>} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="logout" element={<LogOut />} />
