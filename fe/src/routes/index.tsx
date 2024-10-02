@@ -18,13 +18,19 @@ const Router = () => {
     return (
         <>
             <Routes>
-                {/* Nested routes under "/profile" */}
+       
                 <Route path="/profile" element={<Profile />}>
-                    <Route path="od_histori" element={<OrderHistory />} />
+                
+                  
+                    <Route path="od_histori" element={<OrderHistory />} />{" "}
+                
+                    <Route
+                        path="od_histori/detail"
+                        element={<Od_Detail />}
+                    />
                 </Route>
 
                 <Route path="/" element={<Layoutweb />}></Route>
-                {/* Define all child routes under the layout */}
                 <Route path="cart" element={<ListCart />} />
 
                 <Route path="detail" element={<Detail />} />

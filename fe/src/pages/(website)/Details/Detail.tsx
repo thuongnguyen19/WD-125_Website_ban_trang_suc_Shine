@@ -521,10 +521,10 @@ const Detail = () => {
                                                         >
                                                             <span>
                                                                 Thêm vào giỏ
-                                                                hangfz -&nbsp;
+                                                                hàng &nbsp;
                                                             </span>
                                                             <span className="tf-qty-price">
-                                                                $
+                                                                
                                                                 {totalPrice.toFixed(
                                                                     2,
                                                                 )}
