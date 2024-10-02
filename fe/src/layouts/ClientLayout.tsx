@@ -6,6 +6,7 @@ import { Button, message, Modal } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Home from "../pages/(website)/home/page";
+import { CaretDownOutlined, DownOutlined, SearchOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 
 
 const Layoutweb = () => {
@@ -65,13 +66,13 @@ const Layoutweb = () => {
                             <ul className="box-nav-ul d-flex align-items-center justify-content-center gap-30">
                                 <li className="menu-item">
                                     <Link to="/" className="item-link">
-                                        Trang chủ <i className="icon icon-arrow-down" />
+                                        Trang chủ 
                                     </Link>
                                     
                                 </li>
                                 <li className="menu-item">
-                                    <a href="#" className="item-link">Danh mục<i className="icon icon-arrow-down"></i></a>
-                                    <div className="sub-menu submenu-default">
+                                    <a href="#" className="item-link">Danh mục<CaretDownOutlined /></a>
+                                    <div className="sub-menu submenu-default" >
                                         <ul className="menu-list">
                                             <li>
                                                 <a href="about-us.html" className="menu-link-text link text_black-2">Nhẫn</a>
@@ -101,12 +102,12 @@ const Layoutweb = () => {
                                 </li>
                                 <li className="menu-item">
                                     <Link to="/product" className="item-link">
-                                        Sản phẩm <i className="icon icon-arrow-down" />
+                                        Sản phẩm 
                                     </Link>
                                     
                                 </li>
                                 <li className="menu-item position-relative">
-                                    <a href="#" className="item-link">Trang<i className="icon icon-arrow-down"></i></a>
+                                    <a href="#" className="item-link">Trang <CaretDownOutlined /></a>
                                     <div className="sub-menu submenu-default">
                                         <ul className="menu-list">
                                             <li>
@@ -142,14 +143,23 @@ const Layoutweb = () => {
                     </div>
                     <div className="col-xl-3 col-md-4 col-3">
                         <ul className="nav-icon d-flex justify-content-end align-items-center gap-20">
-                            <li className="nav-search"><a href="#canvasSearch" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="nav-icon-item"><i className="icon icon-search"></i></a></li>
-                            <li className="nav-account"><a href="#login" data-bs-toggle="modal" className="nav-icon-item"><i className="icon icon-account"></i></a></li>
-                            <li className="nav-cart">
-                                <Link to="/cart" data-bs-toggle="modal" className="nav-icon-item" >
-                                    <i className="icon icon-bag" /><span className="count-box">0</span>
-                                </Link>
-                            </li>
-                        </ul>
+                <li className="nav-search">
+                  <a href="#canvasSearch" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="nav-icon-item">
+                    <SearchOutlined style={{ fontSize: '24px' }} />
+                  </a>
+                </li>
+                <li className="nav-account">
+                  <a href="#login" data-bs-toggle="modal" className="nav-icon-item">
+                    <UserOutlined style={{ fontSize: '24px' }} />
+                  </a>
+                </li>
+                <li className="nav-cart">
+                  <Link to="/cart" data-bs-toggle="modal" className="nav-icon-item">
+                    <ShoppingCartOutlined style={{ fontSize: '24px' }} />
+                    <span className="count-box">0</span>
+                  </Link>
+                </li>
+              </ul>
                     </div>
                 </div>
             </div>
