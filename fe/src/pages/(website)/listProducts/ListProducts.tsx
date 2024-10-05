@@ -3,7 +3,7 @@ import Header from '../../../components/common/Header'
 import Footer from '../../../components/common/Footer'
 
 import { Link } from 'react-router-dom'
-import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+
 
 
 
@@ -569,7 +569,7 @@ const ListProducts: React.FC = () => {
                 <ul className="nav-ul-mb" id="wrapper-menu-navigation">
                     <li className="nav-mb-item">
                         <a href="#dropdown-menu-one" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-one">
-                            <span>Home</span>
+                            <span>Trang chủ</span>
                             <span className="btn-open-sub"></span>
                         </a>
                       
@@ -577,7 +577,7 @@ const ListProducts: React.FC = () => {
                     </li>
                     <li className="nav-mb-item">
                         <a href="#dropdown-menu-two" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-two">
-                            <span>Shop</span>
+                            <span>Danh mục</span>
                             <span className="btn-open-sub"></span>
                         </a>
                         <div id="dropdown-menu-two" className="collapse">
