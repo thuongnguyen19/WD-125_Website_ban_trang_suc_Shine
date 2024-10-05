@@ -1,3 +1,4 @@
+import { FacebookOutlined, InstagramOutlined, PinterestOutlined, TikTokOutlined } from '@ant-design/icons'
 import React from 'react'
 
 const Footer = () => {
@@ -26,13 +27,11 @@ const Footer = () => {
                                             <p>Số điện thoại: <a href="#">(212) 555-1234</a></p>
                                         </li>
                                     </ul>
-                                    <a href="contact-1.html" className="tf-btn btn-line">Get direction<i className="icon icon-arrow1-top-left"></i></a>
                                     <ul className="tf-social-icon d-flex gap-10">
-                                        <li><a href="#" className="box-icon w_34 round social-facebook social-line"><i className="icon fs-14 icon-fb"></i></a></li>
-                                        <li><a href="#" className="box-icon w_34 round social-twiter social-line"><i className="icon fs-12 icon-Icon-x"></i></a></li>
-                                        <li><a href="#" className="box-icon w_34 round social-instagram social-line"><i className="icon fs-14 icon-instagram"></i></a></li>
-                                        <li><a href="#" className="box-icon w_34 round social-tiktok social-line"><i className="icon fs-14 icon-tiktok"></i></a></li>
-                                        <li><a href="#" className="box-icon w_34 round social-pinterest social-line"><i className="icon fs-14 icon-pinterest-1"></i></a></li>
+                                        <li><a href="#" className="box-icon w_34 round social-facebook social-line"><FacebookOutlined /></a></li>
+                                        <li><a href="#" className="box-icon w_34 round social-instagram social-line"><InstagramOutlined /></a></li>
+                                        <li><a href="#" className="box-icon w_34 round social-tiktok social-line"><TikTokOutlined /></a></li>
+                                        <li><a href="#" className="box-icon w_34 round social-pinterest social-line"><PinterestOutlined /></a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -94,7 +93,7 @@ const Footer = () => {
                                         <form className="form-newsletter" id="subscribe-form" action="#" method="post" acceptCharset="utf-8" data-mailchimp="true">
                                             <div id="subscribe-content">
                                                 <fieldset className="email">
-                                                    <input type="email" name="email-form" id="subscribe-email" placeholder="Enter your email...."  aria-required="true"/>
+                                                    <input type="email" name="email-form" id="subscribe-email" placeholder="Nhập email của bạn...."  aria-required="true"/>
                                                 </fieldset>
                                                 <div className="button-submit">
                                                     <button id="subscribe-button" className="tf-btn btn-sm radius-3 btn-fill btn-icon animate-hover-btn" type="button">Đăng ký<i className="icon icon-arrow1-top-left"></i></button>
@@ -108,7 +107,7 @@ const Footer = () => {
                                                     <option data-thumbnail="images/country/fr.svg">EUR € | Pháp</option>
                                                     <option data-thumbnail="images/country/de.svg">EUR € | Đức</option>
                                                     <option selected data-thumbnail="images/country/us.svg">USD $ | Mỹ</option>
-                                                    <option data-thumbnail="images/country/vn.svg">VND ₫ | Vietnam</option>
+                                                    <option data-thumbnail="images/country/vn.svg">VND ₫ | Việt Nam</option>
                                                 </select>
                                             </div>
                                             <div className="tf-languages">

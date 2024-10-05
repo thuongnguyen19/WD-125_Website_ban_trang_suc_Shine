@@ -1,7 +1,7 @@
 import React from 'react';
 import { Swiper, Swiper as SwiperComponent, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { CreditCardOutlined, CustomerServiceOutlined, InboxOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -394,7 +394,7 @@ const Home = () => {
                         <h1 className="heading text-white">Trang sức đính đá</h1>
                         <p className="description text-white">Những viên đá sáng lấp lánh nâng tầm vẻ đẹp của bạn.</p>
                         <div className="wow fadeInUp" data-wow-delay="0s">
-                             <Link to="/product" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
+                             <Link to="/products" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
                                 <span/>Bộ sưu tập
                             </Link>
                         </div>
@@ -512,7 +512,7 @@ const Home = () => {
                                         <p className="text-white">Nơi tình yêu tỏa sáng trong từng món trang sức.</p>
                                     </div>
                                     <div className="wow fadeInUp" data-wow-delay="0s">
-                                        <Link to="/product" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
+                                        <Link to="/products" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
                                 <span/>Bộ sưu tập
                             </Link>
                                     </div>
@@ -530,7 +530,7 @@ const Home = () => {
                                         <p className="text-white">Cùng nhau tỏa sáng, cùng nhau khắc ghi kỷ niệm.</p>
                                     </div>
                                     <div className="wow fadeInUp" data-wow-delay="0s">
-                                        <Link to="/product" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
+                                        <Link to="/products" className="tf-btn btn-md btn-light-icon btn-icon radius-3 animate-hover-btn" >
                                 <span/>Bộ sưu tập
                             </Link>
                                     </div>
@@ -718,7 +718,7 @@ const Home = () => {
                             <div className="swiper-slide">
                                 <div className="tf-icon-box style-row">
                                     <div className="icon">
-                                        <i className="icon-shipping"></i>
+                                        <InboxOutlined />
                                     </div>
                                     <div className="content">
                                         <div className="title fw-4">Miễn phí vận chuyển</div>
@@ -729,7 +729,7 @@ const Home = () => {
                             <div className="swiper-slide">
                                 <div className="tf-icon-box style-row">
                                     <div className="icon">
-                                        <i className="icon-payment fs-22"></i>
+                                        <CreditCardOutlined />
                                     </div>
                                     <div className="content">
                                         <div className="title fw-4">Thanh toán linh hoạt</div>
@@ -741,7 +741,7 @@ const Home = () => {
                             <div className="swiper-slide">
                                 <div className="tf-icon-box style-row">
                                     <div className="icon">
-                                        <i className="icon-suport"></i>
+                                        <CustomerServiceOutlined />
                                     </div>
                                     <div className="content">
                                         <div className="title fw-4">Hỗ trợ</div>
