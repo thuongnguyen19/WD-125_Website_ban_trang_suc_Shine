@@ -1,9 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../../components/common/Footer";
 import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import Header from "../../../components/common/Header";
+import { useSearchParams } from "react-router-dom";
+import axios from "../../../configs/axios";
 
 const Detail = () => {
+
+//  const [searchParams] = useSearchParams(); // Lấy query parameters từ URL
+//  const [product, setProduct] = useState(null);
+//  const [loading, setLoading] = useState(true);
+//  const [error, setError] = useState(null);
+ 
+//    useEffect(() => {
+//        const fetchProduct = async () => {
+//            try {
+//                const response = await axios.get(
+//                    `http://localhost:8000/api/detailProduct/${id}`,
+//                );
+//                setProduct(response.data); // Lưu dữ liệu sản phẩm vào state
+//                setLoading(false); // Tắt trạng thái loading
+//            } catch (error) {
+//                setError("error");
+//                setLoading(false);
+//            }
+//        };
+
+//        fetchProduct();
+//    }, [id]); // Mỗi khi id thay đổi, useEffect sẽ được gọi lại
+
+//    // Hiển thị Loading
+//    if (loading) {
+//        return <p>Loading...</p>;
+//    }
+
+//    // Hiển thị lỗi nếu có
+//    if (error) {
+//        return <p>{error}</p>;
+//    }
+
+ const [searchParams] = useSearchParams(); // Sử dụng hook useSearchParams để lấy query parameters từ URL
+ const id = searchParams.get("id"); // Lấy giá trị 'id' từ query parameters
+ console.log("ID sản phẩm:", id);
+
+
+
+
     const [quantity, setQuantity] = useState(1);
     const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
 
