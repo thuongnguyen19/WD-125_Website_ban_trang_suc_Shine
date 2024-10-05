@@ -102,7 +102,7 @@ const Layoutweb = () => {
                                     </div>
                                 </li>
                                 <li className="menu-item">
-                                    <Link to="/product" className="item-link">
+                                    <Link to="/products" className="item-link">
                                         Sản phẩm 
                                     </Link>
                                     
