@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SearchOutlined, UserOutlined, ShoppingCartOutlined, MenuOutlined, DownOutlined, CaretDownOutlined } from '@ant-design/icons';
+import { Category, fetchCategorys } from '../../Interface/Category';
 
-const Header = () => {
+const Header: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    const loadCategorys = async () => {
+      try {
+        const data = await fetchCategorys();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+
+      }
+      setLoading(false);
+    };
+
+    loadCategorys();
+  }, []);
+
+  if (loading) {
+    return <p>Đang tải...</p>;
+  }
   return (
     <div>
       <header id="header" className="header-default">
@@ -31,29 +52,18 @@ const Header = () => {
                     <div className="sub-menu submenu-default">
                       <ul className="menu-list">
                         <li>
-                          <a href="about-us.html" className="menu-link-text link text_black-2">Nhẫn</a>
-                        </li>
-                        <li>
-                          <a href="about-us.html" className="menu-link-text link text_black-2">Vòng - Lắc</a>
-                        </li>
-                        <li><a href="view-cart.html" className="menu-link-text link text_black-2">Dây chuyền</a></li>
-                        <li><a href="view-cart.html" className="menu-link-text link text_black-2">Khuyên tai</a></li>
-                        <li className="menu-item-2">
-                          <a href="#" className="menu-link-text link text_black-2">Bộ sưu tập</a>
-                          <div className="sub-menu submenu-default">
-                            <ul className="menu-list">
-                              <li><a href="my-account.html" className="menu-link-text link text_black-2">Trang sức cưới</a></li>
-                              <li><a href="my-account-orders.html" className="menu-link-text link text_black-2">Trang sức đôi</a></li>
-                              <li><a href="my-account-address.html" className="menu-link-text link text_black-2">Trang sức đính đá</a></li>
-                            </ul>
-                          </div>
+                          {categories.map((category) => (
+                            <li key={category.id}>
+                              <Link to={category.name}>{category.name}</Link>
+                            </li>
+                          ))}
                         </li>
                       </ul>
                     </div>
                   </li>
                   <li className="menu-item">
                     <Link to="/products" className="item-link">
-                      Sản phẩm 
+                      Sản phẩm
                     </Link>
                   </li>
                   <li className="menu-item position-relative">
@@ -93,13 +103,14 @@ const Header = () => {
                     <SearchOutlined style={{ fontSize: '24px' }} />
                   </a>
                 </li>
-                <li className="nav-account">
-                  <a href="#login" data-bs-toggle="modal" className="nav-icon-item">
+                <li className="nav-cart">
+                  <Link to="/login" className="nav-icon-item">
                     <UserOutlined style={{ fontSize: '24px' }} />
-                  </a>
+
+                  </Link>
                 </li>
                 <li className="nav-cart">
-                  <Link to="/cart" data-bs-toggle="modal" className="nav-icon-item">
+                  <Link to="/cart" className="nav-icon-item">
                     <ShoppingCartOutlined style={{ fontSize: '24px' }} />
                     <span className="count-box">0</span>
                   </Link>

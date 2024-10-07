@@ -12,12 +12,17 @@ import {
 } from "@ant-design/icons";
 import axios from "axios";
 import Home from "../pages/(website)/home/page";
+import { Category, fetchCategorys } from "../Interface/Category";
 
-const Layoutweb = () => {
+const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
     const [messageAPI, contextHolder] = message.useMessage();
     const [user, setUser] = useState<{ name: string } | null>(null); // Storing user information
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Check if user is logged in
+
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
 
     // Check if the user is authenticated
     useEffect(() => {
@@ -41,6 +46,25 @@ const Layoutweb = () => {
                 });
         }
     }, []);
+
+    //API Danh muc
+    useEffect(() => {
+        const loadCategorys = async () => {
+            try {
+                const data = await fetchCategorys();
+                setCategories(data);
+            } catch (error) {
+            }
+            setLoading(false);
+        };
+
+        loadCategorys();
+    }, []);
+
+
+    if (loading) {
+        return <p>Đang tải...</p>;
+    }
 
     // Navigate to the profile page
     const goToProfile = () => {
@@ -110,13 +134,24 @@ const Layoutweb = () => {
                                                 </Link>
                                             </li>
                                             <li className="menu-item">
-                                                <a
-                                                    href="#"
-                                                    className="item-link"
-                                                >
-                                                    Danh mục
-                                                    <CaretDownOutlined />
-                                                </a>
+                                                <a href="#" className="item-link">Danh mục<CaretDownOutlined /></a>
+                                                <div className="sub-menu submenu-default" >
+                                                    <ul className="menu-list">
+                                                        <li>
+                                                            <Link to="/detail" className="item-link">
+                                                                Trang chủ
+                                                            </Link>
+                                                            {categories.map((category) => (
+                                                                <li key={category.id}>
+                                                                    <Link to={category.name}>{category.name}</Link>
+                                                                </li>
+                                                            ))}
+                                                        </li>
+                                                        <li>
+                                                        </li>
+
+                                                    </ul>
+                                                </div>
                                             </li>
                                             <li className="menu-item">
                                                 <Link
@@ -155,7 +190,7 @@ const Layoutweb = () => {
                                                         Xin chào, {user?.name}
                                                     </span>
 =======
-                                  
+
                                                 </div>
                                             ) : (
                                                 <Link
