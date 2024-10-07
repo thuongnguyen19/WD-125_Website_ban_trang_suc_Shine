@@ -93,14 +93,13 @@ const Header = () => {
                     <SearchOutlined style={{ fontSize: '24px' }} />
                   </a>
                 </li>
-                <li className="nav-cart">
-                  <Link to="/login" className="nav-icon-item">
+                <li className="nav-account">
+                  <a href="#login" data-bs-toggle="modal" className="nav-icon-item">
                     <UserOutlined style={{ fontSize: '24px' }} />
-                    
-                  </Link>
+                  </a>
                 </li>
                 <li className="nav-cart">
-                  <Link to="/cart" className="nav-icon-item">
+                  <Link to="/cart" data-bs-toggle="modal" className="nav-icon-item">
                     <ShoppingCartOutlined style={{ fontSize: '24px' }} />
                     <span className="count-box">0</span>
                   </Link>

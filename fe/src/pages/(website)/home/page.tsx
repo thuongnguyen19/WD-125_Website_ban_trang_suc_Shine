@@ -10,7 +10,7 @@ import 'swiper/css/navigation';
 interface Product {
   id: number;
   name: string;
-  price: number;
+  price: string;
   img: string;
   hoverImg: string;
   link: string;
@@ -20,40 +20,40 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
-    name: 'Nhẫn ngọc trai',
-    price: 2000000,
+    name: 'Natural Moisturizing Factors',
+    price: '$32.00',
     img: 'images/products/jewerly-1.jpg',
     hoverImg: 'images/products/jewerly-2.jpg',
     link: '/detail'
   },
   {
     id: 2,
-    name: 'Khuyên tai đính đá',
-    price: 8000000,
+    name: 'Anhydrous Solution Pore Serum',
+    price: 'From $65.00',
     img: 'images/products/jewerly-3.jpg',
     hoverImg: 'images/products/jewerly-4.jpg',
     link: '/detail'
   },
   {
     id: 3,
-    name: 'Dây chuyền đĩa',
-    price: 4500000,
+    name: 'Serum for Hair Density',
+    price: '$65.00',
     img: 'images/products/jewerly-5.jpg',
     hoverImg: 'images/products/jewerly-6.jpg',
     link: '/detail'
   },
   {
     id: 4,
-    name: 'Nhẫn xà cừ',
-    price: 300000,
+    name: 'Anhydrous Solution Pore Serum',
+    price: '$22.00',
     img: 'images/products/jewerly-7.jpg',
     hoverImg: 'images/products/jewerly-8.jpg',
     link: '/detail'
   },
   {
     id: 5,
-    name: 'Nhẫn 3 đá',
-    price: 5000000,
+    name: 'Anhydrous Solution Pore Serum',
+    price: '$52.00',
     img: 'images/products/jewerly-9.jpg',
     hoverImg: 'images/products/jewerly-10.jpg',
     link: '/detail'
@@ -119,7 +119,7 @@ const Home = () => {
                                                     <Link to={product.link} className="title link">
                                                     {product.name}
                                                     </Link>
-                                                    <span className="price">{product.price.toLocaleString('vi-VN')} đ</span>
+                                                    <span className="price">{product.price}</span>
                                                 </div>
                                                 </div>
                                             </SwiperSlide>
@@ -268,7 +268,7 @@ const Home = () => {
                                                     <Link to={product.link} className="title link">
                                                     {product.name}
                                                     </Link>
-                                                    <span className="price">{product.price.toLocaleString('vi-VN')} đ</span>
+                                                    <span className="price">{product.price}</span>
                                                 </div>
                                                 </div>
                                             </SwiperSlide>
@@ -591,7 +591,7 @@ const Home = () => {
                                         <Link to={product.link} className="title link">
                                         {product.name}
                                         </Link>
-                                        <span className="price">{product.price.toLocaleString('vi-VN')} đ</span>
+                                        <span className="price">{product.price}</span>
                                     </div>
                                     </div>
                                 </SwiperSlide>
