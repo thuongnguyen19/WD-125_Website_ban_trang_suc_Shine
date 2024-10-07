@@ -4,46 +4,55 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-type FieldType = {
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-};
-
 const Register = () => {
     const queryClient = useQueryClient();
     const [loading, setLoading] = useState(false);
     const [messageAPI, contextHolder] = message.useMessage();
     const navigate = useNavigate();
 
+    // Xử lý đăng ký
     const { mutate } = useMutation({
-        mutationFn: (user: FieldType) =>
-            axios.post(`http://localhost:3000/register`, user),
+        mutationFn: (user) =>
+            axios.post(`http://localhost:8000/api/register`, user, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["products"],
             });
             messageAPI.success("Đăng ký thành công!");
             setTimeout(() => {
-                navigate(`/login`);
+                navigate(`/`);
             }, 2000);
         },
-        onError: () => {
-            messageAPI.error(
-                "Đăng ký không thành công. Tài khoản này đã được đăng kí. Vui lòng nhập email khác.",
-            );
+        onError: (error) => {
+            const errors = error.response?.data?.errors || {};
+            if (errors.email) {
+                messageAPI.error(errors.email[0]);
+            } else if (errors.password) {
+                messageAPI.error(errors.password[0]);
+            } else {
+                messageAPI.error("Đăng ký không thành công. Vui lòng thử lại.");
+            }
         },
         onSettled: () => {
             setLoading(false);
         },
     });
 
-    const onFinish = (values: FieldType) => {
+    const onFinish = (values) => {
         setLoading(true);
-        mutate(values);
+        mutate({
+            name: values.name, // Thêm trường name
+            email: values.email,
+            password: values.password,
+            password_confirmation: values.confirmPassword, // Laravel yêu cầu password confirmation
+        });
     };
 
-    const onFinishFailed = (errorInfo: any) => {
+    const onFinishFailed = () => {
         messageAPI.error("Vui lòng kiểm tra đầu vào của bạn.");
     };
 
@@ -66,6 +75,23 @@ const Register = () => {
                             autoComplete="off"
                         >
                             <Form.Item
+                                label="Tên"
+                                name="name"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng nhập tên!",
+                                    },
+                                    {
+                                        min: 2,
+                                        message: "Tên phải có ít nhất 2 ký tự!",
+                                    },
+                                ]}
+                            >
+                                <Input className="custom-input" />
+                            </Form.Item>
+
+                            <Form.Item
                                 label="Email"
                                 name="email"
                                 rules={[
@@ -75,7 +101,7 @@ const Register = () => {
                                     },
                                     {
                                         type: "email",
-                                        message: "Viết đúng định dạng!",
+                                        message: "Viết đúng định dạng email!",
                                     },
                                 ]}
                             >
@@ -88,7 +114,12 @@ const Register = () => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Vui lòng điền mật khẩu!",
+                                        message: "Vui lòng nhập mật khẩu!",
+                                    },
+                                    {
+                                        min: 8,
+                                        message:
+                                            "Mật khẩu phải có ít nhất 8 ký tự!",
                                     },
                                 ]}
                                 hasFeedback
@@ -140,8 +171,8 @@ const Register = () => {
 
                             <Form.Item>
                                 <div className="login-redirect">
-                                    Có tài khoản? Đăng nhập tại đây:{" "}
-                                    <Link to="/login">đăng nhập</Link>
+                                    Đã có tài khoản?{" "}
+                                    <Link to="/login">Đăng nhập</Link>
                                 </div>
                             </Form.Item>
                         </Form>
