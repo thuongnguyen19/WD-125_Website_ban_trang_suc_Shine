@@ -39,7 +39,7 @@ const Router = () => {
                 <Route path="od_histori" element={<OdHistory />} />
                 <Route path="pay" element={<Pay />} />
                 <Route path="success" element={<Success />} />
-                <Route path="product" element={<ListProducts />} />
+                <Route path="products" element={<ListProducts />} />
                 <Route path="pricefilter" element={<ProductList/>} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
