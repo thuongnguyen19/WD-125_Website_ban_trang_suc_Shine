@@ -6,6 +6,7 @@ import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "swiper/css";
+import { Navigation } from "swiper/modules";
 
 interface Variant {
     id: number;
@@ -466,7 +467,7 @@ const Detail: React.FC = () => {
                                 style={{
                                     textAlign: "center",
                                     fontSize: "24px",
-                                    fontWeight: "bold", 
+                                    fontWeight: "bold",
                                     marginBottom: "16px",
                                 }}
                             >
@@ -489,6 +490,7 @@ const Detail: React.FC = () => {
                                         </div>
 
                                         <Swiper
+                                            modules={[Navigation]}
                                             spaceBetween={20}
                                             slidesPerView={3}
                                             navigation={{
