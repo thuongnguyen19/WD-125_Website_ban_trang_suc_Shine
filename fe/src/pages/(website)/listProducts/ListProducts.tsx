@@ -3,7 +3,8 @@ import Header from '../../../components/common/Header'
 import Footer from '../../../components/common/Footer'
 import { Link } from 'react-router-dom'
 
-import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+import { AlignCenterOutlined, CloseOutlined, DoubleLeftOutlined, DoubleRightOutlined, EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+import { fetchFilteredProducts, fetchProducts, Product } from '../../../Interface/Product'
 
 
 
