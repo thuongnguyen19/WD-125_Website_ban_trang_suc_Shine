@@ -155,7 +155,7 @@ const Layoutweb: React.FC = () => {
                                             </li>
                                             <li className="menu-item">
                                                 <Link
-                                                    to="/product"
+                                                    to="/products"
                                                     className="item-link"
                                                 >
                                                     Sản phẩm
