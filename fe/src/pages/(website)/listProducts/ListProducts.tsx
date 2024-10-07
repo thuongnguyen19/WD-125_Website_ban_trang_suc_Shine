@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     AlignCenterOutlined,
     DoubleLeftOutlined,
@@ -27,10 +27,11 @@ const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [sortBy, setSortBy] = useState("none"); // Đặt giá trị mặc định cho sortBy
-  const [sortOrder, setSortOrder] = useState("asc");
+    const [sortOrder, setSortOrder] = useState("asc");
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const perPage = 12; // Số sản phẩm trên mỗi trang
+    const navigate = useNavigate();
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
@@ -75,6 +76,10 @@ const ListProducts: React.FC = () => {
             setSortOrder(value === "Theo thứ tự, A-Z" ? "asc" : "desc");
         }
     };
+
+    const handleProductClick = (id: number) => {
+    navigate(`/detail/${id}`);
+  };
 
     if (loading) {
         return <p>Đang tải...</p>;
@@ -138,23 +143,26 @@ const ListProducts: React.FC = () => {
                             {products.map((product) => (
                                 <div key={product.id} className="card-product">
                                     <div className="card-product-wrapper">
-                                        <Link
-                                            to="/detail"
+                                        
+                                        <div    
                                             className="product-img"
+                                            onClick={() => handleProductClick(product.id)}
+                                            style={{ cursor: "pointer" }}
                                         >
                                             <img
                                                 className="lazyload img-product"
                                                 src={product.thumbnail}
                                                 alt={product.name}
                                             />
-                                        </Link>
+                                        </div>
                                         <div className="card-product-info">
-                                            <a
-                                                href="product-detail.html"
+                                            <h3
+                                                onClick={() => handleProductClick(product.id)}
+                                                style={{ cursor: "pointer" }}
                                                 className="title link"
                                             >
                                                 {product.name}
-                                            </a>
+                                            </h3>
                                             <span className="price">
                                                 {product.variants[0]?.selling_price?.toLocaleString()}{" "}
                                                 VND
