@@ -11,17 +11,39 @@ export interface Product {
 }
 
 // Hàm lấy danh sách sản phẩm từ API
-export const fetchProducts = async (): Promise<Product[]> => {
-  const response = await axiosInstance.get<Product[]>("/products");
-  return response.data;
-};
 
-export const fetchFilteredProducts = async (sort: string, type: string): Promise<Product[]> => {
-  const response = await axiosInstance.get<Product[]>("/products/filter", {
+export const fetchProducts = async (
+ 
+  page: number,
+  perPage: number
+): Promise<{ data: Product[]; total_pages: number }> => {
+  const response = await axiosInstance.get<{ data: Product[]; total_pages: number }>("/products", {
     params: {
-      sort: sort,
-      type: type, // Đảm bảo type được truyền vào
+      
+      page: page,
+      per_page: perPage,
     },
   });
-  return response.data;
+  
+  return response.data; // Đảm bảo bạn trả về đúng cấu trúc dữ liệu
 };
+
+// Hàm lấy sản phẩm lọc theo sắp xếp, loại và phân trang
+export const fetchFilteredProducts = async (
+  sort: string,
+  type: string,
+  page: number,
+  perPage: number
+): Promise<{ data: Product[]; total_pages: number }> => {
+  const response = await axiosInstance.get<{ data: Product[]; total_pages: number }>("/products/filter", {
+    params: {
+      sort: sort,
+      type: type,
+      page: page,
+      per_page: perPage
+    },
+  });
+  
+  return response.data; // Đảm bảo bạn trả về đúng cấu trúc dữ liệu
+};
+

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../../components/common/Header'
 import Footer from '../../../components/common/Footer'
 import { Link } from 'react-router-dom'
-import { AlignCenterOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons';
+import { AlignCenterOutlined, CaretDownOutlined, CloseOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import { fetchFilteredProducts, fetchProducts, Product } from '../../../Interface/Product';
 
 
@@ -12,63 +12,75 @@ const ListProducts: React.FC = () => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedItem, setSelectedItem] = useState('Nổi bật');
-  const [isOpen, setIsOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<'name' | 'price'>('price');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const perPage = 12; // Số sản phẩm trên mỗi trang
 
-  // Cập nhật danh sách sản phẩm được lọc mỗi khi giá min hoặc max thay đổi
-  useEffect(() => {
+  
+   useEffect(() => {
     const loadProducts = async () => {
+      setLoading(true); // Bắt đầu tải
       try {
-        const data = await fetchProducts();
-        setProducts(data);
+        let response;
+        // Gọi hàm lấy sản phẩm
+        if (sortBy) { // Nếu có tiêu chí lọc
+          response = await fetchFilteredProducts(sortBy, sortOrder, page, perPage);
+        } else { // Gọi hàm lấy tất cả sản phẩm
+          response = await fetchProducts(page, perPage);
+        }
+        setProducts(response.data); // Lưu danh sách sản phẩm
+        setTotalPages(response.total_pages); // Lưu tổng số trang
+        
       } catch (error) {
         console.error("Error fetching products:", error);
-        
+      } finally {
+        setLoading(false); // Kết thúc tải
       }
-      setLoading(false);
     };
 
-    loadProducts();
-  }, []);
+    loadProducts(); // Gọi hàm tải sản phẩm
+  }, [sortBy, sortOrder,page]); // Gọi lại hàm khi page thay đổi
 
-  const handleSort = async (value: string) => {
-    setSelectedItem(value);
-     let type = "default";
-    if (value.includes('Giá')) {
-      const sortOrder = value === 'Giá, từ thấp đến cao' ? 'asc' : 'desc';
-      const filteredProducts = await fetchFilteredProducts(sortOrder, type);
-      setProducts(filteredProducts);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage); // Cập nhật trang hiện tại
+  };
+
+  // Hàm thay đổi bộ lọc sắp xếp
+  const handleSortChange = (value: string) => {
+    if (value.includes("Giá")) {
+      setSortBy("price");
+      setSortOrder(value === "Giá, từ thấp đến cao" ? "asc" : "desc");
     } else {
-      // Lọc theo tên
-      const sortedProducts = filterProducts(products, value);
-      setProducts(sortedProducts);
+      setSortBy("name");
+      setSortOrder(value === "Theo thứ tự, A-Z" ? "asc" : "desc");
     }
   };
 
-   // Hàm sắp xếp theo giá
-  const filterProducts = (products: Product[], selectedItem: string) => {
-  switch (selectedItem) {
-    case 'Nổi bật':
-      return products; // Hiển thị sản phẩm nổi bật
-    // case 'Bán chạy nhất':
-    //   return products.sort((a, b) => b.sold - a.sold); // Sắp xếp theo bán chạy
-    case 'Theo thứ tự, A-Y':
-      return products.sort((a, b) => a.name.localeCompare(b.name)); // Sắp xếp theo A-Y
-    case 'Theo thứ tự, Y-A':
-      return products.sort((a, b) => b.name.localeCompare(a.name)); // Sắp xếp theo Y-A
-    default:
-        return products;
-    }
-};
+//   const filterProducts = (products: Product[], selectedItem: string) => {
+//     switch (selectedItem) {
+//       case 'Nổi bật':
+//         return products; // Hiển thị sản phẩm nổi bật
+//       // case 'Bán chạy nhất':
+//       //   return products.sort((a, b) => b.sold - a.sold); // Sắp xếp theo bán chạy
+//       case 'Theo thứ tự, A-Z':
+//         return products.sort((a, b) => a.name.localeCompare(b.name)); // Sắp xếp theo A-Z
+//       case 'Theo thứ tự, Z-A':
+//         return products.sort((a, b) => b.name.localeCompare(a.name)); // Sắp xếp theo Z-A
+//       default:
+//         return products; // Trả về danh sách sản phẩm gốc
+//     }
+//   };
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+//   const toggleDropdown = () => {
+//     setIsOpen(!isOpen);
+//   };
 
-  const handleSelect = (value: string) => {
-    handleSort(value); // Gọi hàm xử lý sắp xếp
-    setIsOpen(false); // Đóng dropdown sau khi chọn
-  };
+//   const handleSelect = (value: string) => {
+//     handleSortChange(value); // Gọi hàm xử lý sắp xếp
+//     setIsOpen(false); // Đóng dropdown sau khi chọn
+//   };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -90,7 +102,7 @@ const ListProducts: React.FC = () => {
                     <div className="tf-control-filter">
                         <a href="#filterShop" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="tf-btn-filter"><AlignCenterOutlined /><span className="text">Lọc</span></a>
                     </div>
-                    <ul className="tf-control-layout d-flex justify-content-center">
+                    {/* <ul className="tf-control-layout d-flex justify-content-center">
 
                         <li className="tf-view-layout-switch sw-layout-3" data-value-grid="grid-3">
                             <div className="item"><span className="icon icon-grid-3"></span></div>
@@ -104,34 +116,17 @@ const ListProducts: React.FC = () => {
                         <li className="tf-view-layout-switch sw-layout-6" data-value-grid="grid-6">
                             <div className="item"><span className="icon icon-grid-6"></span></div>
                         </li>
-                    </ul>
+                    </ul> */}
                     <div className="tf-control-sorting d-flex justify-content-end">
                         <div className="tf-dropdown-sort">
-                        <div className="btn-select" onClick={toggleDropdown}>
-                            <span className="text-sort-value">{selectedItem}</span>
-                            <span ><CaretDownOutlined /></span>
+                            
+                            <select onChange={(e) => handleSortChange(e.target.value)}>
+                            <option value="Giá, từ thấp đến cao">Giá, từ thấp đến cao</option>
+                            <option value="Giá, từ cao đến thấp">Giá, từ cao đến thấp</option>
+                            <option value="Theo thứ tự, A-Z">Theo thứ tự, A-Z</option>
+                            <option value="Theo thứ tự, Z-A">Theo thứ tự, Z-A</option>
+                            </select>
                         </div>
-                        <div className={`dropdown-menu ${isOpen ? 'show' : ''}`}>
-                            <div className={`select-item ${selectedItem === 'Nổi bật' ? 'active' : ''}`} onClick={() => handleSelect('Nổi bật')}>
-                                <span className="text-value-item">Nổi bật</span>
-                            </div>
-                            {/* <div className={`select-item ${selectedItem === 'Bán chạy nhất' ? 'active' : ''}`} onClick={() => handleSelect('Bán chạy nhất')}>
-                                <span className="text-value-item">Bán chạy nhất</span>
-                            </div> */}
-                            <div className={`select-item ${selectedItem === 'Theo thứ tự, A-Y' ? 'active' : ''}`} onClick={() => handleSelect('Theo thứ tự, A-Y')}>
-                                <span className="text-value-item">Theo thứ tự, A-Y</span>
-                            </div>
-                            <div className={`select-item ${selectedItem === 'Theo thứ tự, Y-A' ? 'active' : ''}`} onClick={() => handleSelect('Theo thứ tự, Y-A')}>
-                                <span className="text-value-item">Theo thứ tự, Y-A</span>
-                            </div>
-                            <div className={`select-item ${selectedItem === 'Giá, từ thấp đến cao' ? 'active' : ''}`} onClick={() => handleSelect('Giá, từ thấp đến cao')}>
-                                <span className="text-value-item">Giá, từ thấp đến cao</span>
-                            </div>
-                            <div className={`select-item ${selectedItem === 'Giá, từ cao đến thấp' ? 'active' : ''}`} onClick={() => handleSelect('Giá, từ cao đến thấp')}>
-                                <span className="text-value-item">Giá, từ cao đến thấp</span>
-                            </div>
-                        </div>
-                    </div>
                         
                     </div>
                 </div>
@@ -142,7 +137,10 @@ const ListProducts: React.FC = () => {
                         Sắp xếp theo giá: {sortByPrice === "asc" ? "Thấp đến cao" : "Cao đến thấp"}
                     </button> */}
                     <div className="grid-layout wrapper-shop" data-grid="grid-4">
-                        {filterProducts(products, selectedItem).map((product) => (
+                       {loading ? (
+          <p>Đang tải...</p>
+        ) : (
+          products.map((product) => (
                             <div key={product.id} className="card-product" >
                             <div className="card-product-wrapper">
                                 <Link to='/detail' className="product-img">
@@ -168,31 +166,57 @@ const ListProducts: React.FC = () => {
                     
                     
                     </div>
-                    ))}
+                    )))}
                     
                     
                 </div>
                 <div className='phantrang'>
-                        <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
-                        <li className="active">
-                            <a href="#" className="pagination-link">1</a>
+                    <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
+                    {/* Nút quay về trang trước */}
+                    <li className={page === 1 ? "disabled" : ""}>
+                        <a 
+                        href="#" 
+                        className="pagination-link"
+                        onClick={(e) => {
+                            e.preventDefault(); // Ngăn chặn mặc định
+                            if (page > 1) handlePageChange(page - 1); // Điều kiện không cho click nếu ở trang đầu
+                        }}
+                        >
+                        <span className=""><DoubleLeftOutlined /></span>
+                        </a>
+                    </li>
+
+                    {/* Render các số trang */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                        <li key={pageNumber} className={page === pageNumber ? "active" : ""}>
+                        <a 
+                            href="#" 
+                            className="pagination-link animate-hover-btn"
+                            onClick={(e) => {
+                            e.preventDefault(); // Ngăn chặn mặc định
+                            handlePageChange(pageNumber); // Gọi hàm thay đổi trang
+                            }}
+                        >
+                            {pageNumber}
+                        </a>
                         </li>
-                        <li>
-                            <a href="#" className="pagination-link animate-hover-btn">2</a>
-                        </li>
-                        <li>
-                            <a href="#" className="pagination-link animate-hover-btn">3</a>
-                        </li>
-                        <li>
-                            <a href="#" className="pagination-link animate-hover-btn">4</a>
-                        </li>
-                        <li>
-                            <a href="#" className="pagination-link animate-hover-btn">
-                                <span className="icon icon-arrow-right"></span>
-                            </a>
-                        </li>
+                    ))}
+
+                    {/* Nút tới trang sau */}
+                    <li className={page === totalPages ? "disabled" : ""}>
+                        <a 
+                        href="#" 
+                        className="pagination-link"
+                        onClick={(e) => {
+                            e.preventDefault(); // Ngăn chặn mặc định
+                            if (page < totalPages) handlePageChange(page + 1); // Điều kiện không cho click nếu ở trang cuối
+                        }}
+                        >
+                        <span className=""><DoubleRightOutlined /></span>
+                        </a>
+                    </li>
                     </ul>
-                    </div>
+                </div>
                 
                 </div>
             </div>
@@ -287,10 +311,10 @@ const ListProducts: React.FC = () => {
                                     </a>
                                     <div id="sub-account" className="collapse">
                                         <ul className="sub-nav-menu sub-menu-level-2">
-                                            <li><a href="my-account.html" className="sub-nav-link">Trang sức cưới</a></li>
-                                            <li><a href="my-account-orders.html" className="sub-nav-link">Trang sức đôi</a></li>
-                                            <li><a href="my-account-orders-details.html" className="sub-nav-link">Trang sức đính đá</a></li>
-                                            <li><a href="my-account-edit.html" className="sub-nav-link">Lịch sử mua hàng</a></li>
+                                            <li><a href="mZ-Account.html" className="sub-nav-link">Trang sức cưới</a></li>
+                                            <li><a href="mZ-Account-orders.html" className="sub-nav-link">Trang sức đôi</a></li>
+                                            <li><a href="mZ-Account-orders-details.html" className="sub-nav-link">Trang sức đính đá</a></li>
+                                            <li><a href="mZ-Account-edit.html" className="sub-nav-link">Lịch sử mua hàng</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -323,10 +347,10 @@ const ListProducts: React.FC = () => {
                                     </a>
                                     <div id="sub-account" className="collapse">
                                         <ul className="sub-nav-menu sub-menu-level-2">
-                                            <li><a href="my-account.html" className="sub-nav-link">Tài khoản của tôi</a></li>
-                                            <li><a href="my-account-orders.html" className="sub-nav-link">Đơn hàng của tôi</a></li>
-                                            <li><a href="my-account-orders-details.html" className="sub-nav-link">Chi tiết đơn hàng</a></li>
-                                            <li><a href="my-account-edit.html" className="sub-nav-link">Lịch sử mua hàng</a></li>
+                                            <li><a href="mZ-Account.html" className="sub-nav-link">Tài khoản của tôi</a></li>
+                                            <li><a href="mZ-Account-orders.html" className="sub-nav-link">Đơn hàng của tôi</a></li>
+                                            <li><a href="mZ-Account-orders-details.html" className="sub-nav-link">Chi tiết đơn hàng</a></li>
+                                            <li><a href="mZ-Account-edit.html" className="sub-nav-link">Lịch sử mua hàng</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -655,7 +679,7 @@ const ListProducts: React.FC = () => {
                     <span className="icon-close icon-close-popup" data-bs-dismiss="modal"></span>
                 </div>
                 <div className="tf-login-form">
-                    <form className="" action="https://themesflat.co/html/ecomus/my-account.html" accept-charset="utf-8">
+                    <form className="" action="https://themesflat.co/html/ecomus/mZ-Account.html" acceptCharset="utf-8">
                         <div className="tf-field style-1">
                             <input className="tf-field-input tf-input" placeholder=" " type="email"  name=""/>
                             <label className="tf-field-label" htmlFor="">Email</label>
