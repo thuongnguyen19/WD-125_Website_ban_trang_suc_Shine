@@ -3,51 +3,17 @@ import Header from '../../../components/common/Header'
 import Footer from '../../../components/common/Footer'
 import { Link } from 'react-router-dom'
 import { AlignCenterOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons';
-import { fetchProducts, Product } from '../../../Interface/Product';
+import { fetchFilteredProducts, fetchProducts, Product } from '../../../Interface/Product';
 
 
 
-
-
-// interface PriceFilterProps {
-//   minPrice: number;
-//   maxPrice: number;
-//   onPriceChange: (min: number, max: number) => void;
-// }
-
-
-
-
-//   const PriceFilter: React.FC<PriceFilterProps> = ({ minPrice, maxPrice, onPriceChange }) => {
-//   const handleMinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const value = parseInt(event.target.value);
-//     if (value < maxPrice) {
-//       onPriceChange(value, maxPrice);
-//     }
-//   };
-
-//   const handleMaxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const value = parseInt(event.target.value);
-//     if (value > minPrice) {
-//       onPriceChange(minPrice, value);
-//     }
-//   };
-//    return (
-//     <div className="price-filter">
-//       <label>Giá thấp nhất:</label>
-//       <input type="number" value={minPrice} onChange={handleMinChange} />
-//       <label>Giá cao nhất:</label>
-//       <input type="number" value={maxPrice} onChange={handleMaxChange} />
-//     </div>
-//   );
-// };
 
 const ListProducts: React.FC = () => {
-//   const [minPrice, setMinPrice] = useState(100000);
-//   const [maxPrice, setMaxPrice] = useState(10000000);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [sortByPrice, setSortByPrice] = useState<"asc" | "desc">("asc");
+  const [selectedItem, setSelectedItem] = useState('Nổi bật');
+  const [isOpen, setIsOpen] = useState(false);
 
   // Cập nhật danh sách sản phẩm được lọc mỗi khi giá min hoặc max thay đổi
   useEffect(() => {
@@ -56,7 +22,7 @@ const ListProducts: React.FC = () => {
         const data = await fetchProducts();
         setProducts(data);
       } catch (error) {
-        // console.error("Error fetching products:", error);
+        console.error("Error fetching products:", error);
         
       }
       setLoading(false);
@@ -65,32 +31,50 @@ const ListProducts: React.FC = () => {
     loadProducts();
   }, []);
 
+  const handleSort = async (value: string) => {
+    setSelectedItem(value);
+     let type = "default";
+    if (value.includes('Giá')) {
+      const sortOrder = value === 'Giá, từ thấp đến cao' ? 'asc' : 'desc';
+      const filteredProducts = await fetchFilteredProducts(sortOrder, type);
+      setProducts(filteredProducts);
+    } else {
+      // Lọc theo tên
+      const sortedProducts = filterProducts(products, value);
+      setProducts(sortedProducts);
+    }
+  };
+
    // Hàm sắp xếp theo giá
-  const handleSortByPrice = () => {
-    const sortedProducts = [...products].sort((a, b) =>
-      sortByPrice === "asc"
-        ? a.variants[0].selling_price - b.variants[0].selling_price
-        : b.variants[0].selling_price - a.variants[0].selling_price
-    );
-    setProducts(sortedProducts);
-    setSortByPrice(sortByPrice === "asc" ? "desc" : "asc");
+  const filterProducts = (products: Product[], selectedItem: string) => {
+  switch (selectedItem) {
+    case 'Nổi bật':
+      return products; // Hiển thị sản phẩm nổi bật
+    // case 'Bán chạy nhất':
+    //   return products.sort((a, b) => b.sold - a.sold); // Sắp xếp theo bán chạy
+    case 'Theo thứ tự, A-Y':
+      return products.sort((a, b) => a.name.localeCompare(b.name)); // Sắp xếp theo A-Y
+    case 'Theo thứ tự, Y-A':
+      return products.sort((a, b) => b.name.localeCompare(a.name)); // Sắp xếp theo Y-A
+    default:
+        return products;
+    }
+};
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleSelect = (value: string) => {
+    handleSort(value); // Gọi hàm xử lý sắp xếp
+    setIsOpen(false); // Đóng dropdown sau khi chọn
   };
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
-//   const [isOpen, setIsOpen] = useState(false);
-//     const [selectedItem, setSelectedItem] = useState('Nổi bật');
-
-//     const toggleDropdown = () => {
-//         setIsOpen(!isOpen);
-//     };
-
-//     const handleSelect = (value: string) => {
-//         setSelectedItem(value);
-//         setIsOpen(false); // Đóng dropdown sau khi chọn
-//     };
+  
   return (
     <div>
         <Header/>
@@ -99,8 +83,6 @@ const ListProducts: React.FC = () => {
                 <div className="heading text-center">Tất cả sản phẩm</div>
             </div>
         </div>
-        
-        
        
         <section className="flat-spacing-2">
             <div className="container">
@@ -109,9 +91,7 @@ const ListProducts: React.FC = () => {
                         <a href="#filterShop" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="tf-btn-filter"><AlignCenterOutlined /><span className="text">Lọc</span></a>
                     </div>
                     <ul className="tf-control-layout d-flex justify-content-center">
-                        <li className="tf-view-layout-switch sw-layout-2" data-value-grid="grid-2">
-                            <div className="item"><span className="icon icon-grid-2"></span></div>
-                        </li>
+
                         <li className="tf-view-layout-switch sw-layout-3" data-value-grid="grid-3">
                             <div className="item"><span className="icon icon-grid-3"></span></div>
                         </li>
@@ -126,6 +106,32 @@ const ListProducts: React.FC = () => {
                         </li>
                     </ul>
                     <div className="tf-control-sorting d-flex justify-content-end">
+                        <div className="tf-dropdown-sort">
+                        <div className="btn-select" onClick={toggleDropdown}>
+                            <span className="text-sort-value">{selectedItem}</span>
+                            <span ><CaretDownOutlined /></span>
+                        </div>
+                        <div className={`dropdown-menu ${isOpen ? 'show' : ''}`}>
+                            <div className={`select-item ${selectedItem === 'Nổi bật' ? 'active' : ''}`} onClick={() => handleSelect('Nổi bật')}>
+                                <span className="text-value-item">Nổi bật</span>
+                            </div>
+                            {/* <div className={`select-item ${selectedItem === 'Bán chạy nhất' ? 'active' : ''}`} onClick={() => handleSelect('Bán chạy nhất')}>
+                                <span className="text-value-item">Bán chạy nhất</span>
+                            </div> */}
+                            <div className={`select-item ${selectedItem === 'Theo thứ tự, A-Y' ? 'active' : ''}`} onClick={() => handleSelect('Theo thứ tự, A-Y')}>
+                                <span className="text-value-item">Theo thứ tự, A-Y</span>
+                            </div>
+                            <div className={`select-item ${selectedItem === 'Theo thứ tự, Y-A' ? 'active' : ''}`} onClick={() => handleSelect('Theo thứ tự, Y-A')}>
+                                <span className="text-value-item">Theo thứ tự, Y-A</span>
+                            </div>
+                            <div className={`select-item ${selectedItem === 'Giá, từ thấp đến cao' ? 'active' : ''}`} onClick={() => handleSelect('Giá, từ thấp đến cao')}>
+                                <span className="text-value-item">Giá, từ thấp đến cao</span>
+                            </div>
+                            <div className={`select-item ${selectedItem === 'Giá, từ cao đến thấp' ? 'active' : ''}`} onClick={() => handleSelect('Giá, từ cao đến thấp')}>
+                                <span className="text-value-item">Giá, từ cao đến thấp</span>
+                            </div>
+                        </div>
+                    </div>
                         
                     </div>
                 </div>
@@ -136,7 +142,7 @@ const ListProducts: React.FC = () => {
                         Sắp xếp theo giá: {sortByPrice === "asc" ? "Thấp đến cao" : "Cao đến thấp"}
                     </button> */}
                     <div className="grid-layout wrapper-shop" data-grid="grid-4">
-                        {products.map((product) => (
+                        {filterProducts(products, selectedItem).map((product) => (
                             <div key={product.id} className="card-product" >
                             <div className="card-product-wrapper">
                                 <Link to='/detail' className="product-img">
@@ -147,7 +153,7 @@ const ListProducts: React.FC = () => {
                                 </Link>
                                 <div className="card-product-info">
                                         <a href="product-detail.html" className="title link">{product.name}</a>
-                                        <span className="price">Giá: {product.variants[0]?.selling_price.toLocaleString()} VND</span>
+                                        <span className="price">{product.variants[0]?.selling_price.toLocaleString()} VND <span className="old-price price">{product.variants[0]?.list_price.toLocaleString()} VND</span></span>
                                         {/* <ul className="list-color-product">
                                             <li className="list-color-item color-swatch">
                                             <span className="tooltip">{product.color}</span>
@@ -163,7 +169,10 @@ const ListProducts: React.FC = () => {
                     
                     </div>
                     ))}
-                    <div className='phantrang'>
+                    
+                    
+                </div>
+                <div className='phantrang'>
                         <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
                         <li className="active">
                             <a href="#" className="pagination-link">1</a>
@@ -184,8 +193,6 @@ const ListProducts: React.FC = () => {
                         </li>
                     </ul>
                     </div>
-                    
-                </div>
                 
                 </div>
             </div>
@@ -421,24 +428,10 @@ const ListProducts: React.FC = () => {
                     
                     
                    
-                    <div className="widget-facet">
-                    <div className="facet-title">
-                        <span>Giá</span>
-                    </div>
                     
-                        {/* <PriceFilter
-                    minPrice={minPrice}
-                    maxPrice={maxPrice}
-                    onPriceChange={(min, max) => {
-                    setMinPrice(min);
-                    setMaxPrice(max);
-                    }}
-                /> */}
-                    
-                    </div>
         <div className="widget-facet">
                         <div className="facet-title" data-bs-target="#color" data-bs-toggle="collapse" aria-expanded="true" aria-controls="color">
-                            <span>Color</span>
+                            <span>Màu sắc</span>
                             
                         </div>
                         <div id="color" className="collapsing show" style={{height: 236}}>
@@ -446,8 +439,8 @@ const ListProducts: React.FC = () => {
                                
                                 
                                 <li className="list-item d-flex gap-12 align-items-center">
-                                    <input type="checkbox" name="color" className="tf-check-color bg_pink" id="pink" value="pink"/>
-                                    <label htmlFor="pink" className="label"><span>Vàng</span>&nbsp;<span>(2)</span></label>
+                                    <input type="checkbox" name="color" className="tf-check-color bg_grey" id="grey" value="grey"/>
+                                    <label htmlFor="grey" className="label"><span>Silver</span>&nbsp;<span>(2)</span></label>
                                 </li>
                                
                                 <li className="list-item d-flex gap-12 align-items-center">
@@ -456,7 +449,7 @@ const ListProducts: React.FC = () => {
                                 </li>
                                 <li className="list-item d-flex gap-12 align-items-center">
                                     <input type="checkbox" name="color" className="tf-check-color bg_yellow" id="yellow" value="yellow"/>
-                                    <label htmlFor="yellow" className="label"><span>Silver</span>&nbsp;<span>(1)</span></label>
+                                    <label htmlFor="yellow" className="label"><span>Vàng</span>&nbsp;<span>(1)</span></label>
                                 </li>
                             </ul>
                         </div>
@@ -497,7 +490,7 @@ const ListProducts: React.FC = () => {
         <div className="canvas-wrapper">
             <header className="tf-search-head">
                 <div className="title fw-5">
-                    Search our site
+                    Tìm kiếm
                     <div className="close">
                         <span className="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></span>
                     </div>
@@ -522,13 +515,13 @@ const ListProducts: React.FC = () => {
                                     <a href="shop-default.html" className="">Nhẫn</a>
                                 </li>
                                 <li className="tf-quicklink-item">
-                                    <a href="shop-default.html" className=""></a>
+                                    <a href="shop-default.html" className="">Vòng - Lắc</a>
                                 </li>
                                 <li className="tf-quicklink-item">
-                                    <a href="shop-default.html" className="">Women</a>
+                                    <a href="shop-default.html" className="">Dây chuyền</a>
                                 </li>
                                 <li className="tf-quicklink-item">
-                                    <a href="shop-default.html" className="">Accessories</a>
+                                    <a href="shop-default.html" className="">Khuyên tai</a>
                                 </li>
                             </ul>
                         </div>
