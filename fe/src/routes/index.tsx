@@ -34,7 +34,7 @@ const Router = () => {
                 <Route path="/" element={<Layoutweb />}></Route>
                 <Route path="cart" element={<ListCart />} />
 
-                <Route path="detail" element={<Detail />} />
+                <Route path="detail/:id" element={<Detail />} />
                 <Route path="od_detail" element={<Od_Detail />} />
                 <Route path="od_histori" element={<OdHistory />} />
                 <Route path="pay" element={<Pay />} />

@@ -1,42 +1,91 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, message } from "antd";
-import { useNavigate, Outlet, Link, useLocation } from "react-router-dom"; // Import useLocation
+import { useNavigate, Link, useLocation, Outlet } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 
 const Profile = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const location = useLocation(); // Get the current location
+    const location = useLocation();
     const [messageAPI, contextHolder] = message.useMessage();
+    const [user, setUser] = useState<{ name: string } | null>(null); // User state to store user's name
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Auth state
 
+    // Fetch user data when component mounts
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+
+        if (token) {
+            setIsAuthenticated(true);
+
+            // Fetch user data from API using the token
+            axios
+                .get("http://localhost:8000/api/user", {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Sending the token to authorize the request
+                    },
+                })
+                .then((response) => {
+                    if (response.data.user && response.data.user.name) {
+                        setUser(response.data.user); // Store user data, particularly the name
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching user data:", error);
+                });
+        }
+    }, []);
+
+    // Handle logout functionality
     const handleLogout = () => {
         Modal.confirm({
             title: "Xác nhận",
             content: "Bạn có muốn đăng xuất không?",
             okText: "Đăng xuất",
             cancelText: "Hủy",
-            onOk: () => {
-                localStorage.removeItem("authToken");
-                queryClient.clear();
-                messageAPI.success("Đã đăng xuất thành công!");
-                setTimeout(() => {
-                    navigate("/login");
-                }, 1000);
+            onOk: async () => {
+                try {
+                    const token = localStorage.getItem("authToken");
+
+                    // Call API to log out
+                    await axios.post(
+                        "http://localhost:8000/api/logout",
+                        {},
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        },
+                    );
+
+                    // Remove token from localStorage and clear cache
+                    localStorage.removeItem("authToken");
+                    queryClient.clear();
+                    messageAPI.success("Đã đăng xuất thành công!");
+
+                    setTimeout(() => {
+                        navigate("/login");
+                    }, 1000);
+                } catch (error) {
+                    messageAPI.error(
+                        "Đăng xuất không thành công. Vui lòng thử lại.",
+                    );
+                }
             },
         });
     };
 
-    // Determine if the current path is "od_histori"
     const pageTitle = location.pathname.includes("od_histori")
         ? "Lịch sử đơn hàng của bạn"
-        : "Trang của tôi";
+        : `Bảng điều khiển của ${user?.name || "người dùng"}`;
 
     return (
         <div>
             <Header />
-            {contextHolder} {/* For displaying message API */}
+            {contextHolder}
             <div className="col-xl-3 col-md-4 col-3">
                 <ul className="nav-icon d-flex justify-content-end align-items-center gap-20">
                     <li className="nav-search">
@@ -62,8 +111,7 @@ const Profile = () => {
             </div>
             <div className="tf-page-title">
                 <div className="container-full">
-                    <div className="heading text-center">{pageTitle}</div>{" "}
-                    {/* Dynamic title */}
+                    <div className="heading text-center">{pageTitle}</div>
                 </div>
             </div>
             <section className="flat-spacing-11">
@@ -77,7 +125,9 @@ const Profile = () => {
                                         className={`my-account-nav-item ${location.pathname === "/profile" ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
-                                        Bảng điều khiển người dùng
+                                        {user?.name
+                                            ? `Bảng điều khiển của ${user.name}`
+                                            : "Bảng điều khiển người dùng"}
                                     </Link>
                                 </li>
                                 <li>
@@ -94,7 +144,7 @@ const Profile = () => {
                                         href="my-account-address.html"
                                         className="my-account-nav-item"
                                     >
-                                        địa chỉ
+                                        Địa chỉ
                                     </a>
                                 </li>
                                 <li>
@@ -103,13 +153,12 @@ const Profile = () => {
                                         className="my-account-nav-item"
                                         style={{ cursor: "pointer" }}
                                     >
-                                        đăng xuất
+                                        Đăng xuất
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div className="col-lg-9">
-                            {/* Display child route content here */}
                             <Outlet />
                         </div>
                     </div>
