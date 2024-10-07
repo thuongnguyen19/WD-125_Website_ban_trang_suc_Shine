@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../../components/common/Header'
 import Footer from '../../../components/common/Footer'
 import { Link } from 'react-router-dom'
-import { AlignCenterOutlined, CaretDownOutlined, CloseOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
-import { fetchFilteredProducts, fetchProducts, Product } from '../../../Interface/Product';
+
+import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 
 
 
@@ -287,15 +287,17 @@ const ListProducts: React.FC = () => {
                 <ul className="nav-ul-mb" id="wrapper-menu-navigation">
                     <li className="nav-mb-item">
                         <a href="#dropdown-menu-one" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-one">
-                            <span>Trang chủ</span>
+                            <span>Home</span>
                             <span className="btn-open-sub"></span>
                         </a>
                       
                         
                     </li>
                     <li className="nav-mb-item">
-                        <a href="#dropdown-menu-four" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-four">
-                            <span>Danh mục</span>
+
+                        <a href="#dropdown-menu-two" className="collapsed mb-menu-link current" data-bs-toggle="collapse" aria-expanded="true" aria-controls="dropdown-menu-two">
+                            <span>Shop</span>
+
                             <span className="btn-open-sub"></span>
                         </a>
                         <div id="dropdown-menu-four" className="collapse">
