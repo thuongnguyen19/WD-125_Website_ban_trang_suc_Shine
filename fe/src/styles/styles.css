@@ -1748,6 +1748,24 @@ label {
   /* Căn giữa theo chiều dọc */
   
 }
+.phantrang ul {
+  display: flex;
+  list-style-type: none;
+}
+
+.phantrang ul li {
+  margin-right: 8px;
+}
+
+.phantrang ul li.active a {
+  background-color: #007bff;
+  color: white;
+}
+
+.phantrang ul li.disabled a {
+  pointer-events: none;
+  opacity: 0.5;
+}
 
 #header .box-nav-ul .item-link {
   font-size: 16px;
