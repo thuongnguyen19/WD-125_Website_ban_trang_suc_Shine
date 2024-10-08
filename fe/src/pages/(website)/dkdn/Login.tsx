@@ -20,14 +20,25 @@ const Login = () => {
         mutationFn: (user: FieldType) =>
             axios.post(`http://localhost:8000/api/login`, user), // Gọi API login từ Laravel
         onSuccess: (response) => {
-            const token = response.data.data; // Lấy token từ phản hồi
+            const { token, role } = response.data.data; // Lấy token và vai trò từ phản hồi
             localStorage.setItem("authToken", token); // Lưu token vào localStorage
+            localStorage.setItem("userRole", role); // Lưu vai trò vào localStorage
+
             queryClient.invalidateQueries({
                 queryKey: ["products"],
             });
+
             messageAPI.success("Đăng nhập thành công!");
+
+         
             setTimeout(() => {
-                navigate(`/`); // Chuyển hướng về trang chủ sau khi đăng nhập
+                if (role === 2) {
+                    window.location.href = `http://127.0.0.1:8000/dashboard`; 
+                } else if (role === 1) {
+                    window.location.href = `http://localhost:5173`; 
+                } else {
+                    messageAPI.error("Vai trò không hợp lệ."); 
+                }
             }, 2000);
         },
         onError: () => {
@@ -117,7 +128,6 @@ const Login = () => {
                     </Card>
                 </div>
             </div>
-
         </>
     );
 };
