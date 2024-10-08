@@ -68,7 +68,7 @@ const Layoutweb: React.FC = () => {
 
     // Navigate to the profile page
     const goToProfile = () => {
-        navigate("/profile");
+        navigate("/profile");   
     };
 
     return (
@@ -189,7 +189,7 @@ const Layoutweb: React.FC = () => {
                                                     >
                                                         Xin chào, {user?.name}
                                                     </span>
-=======
+
 
                                                 </div>
                                             ) : (

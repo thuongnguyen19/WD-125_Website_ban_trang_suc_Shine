@@ -3,9 +3,11 @@ import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { message } from "antd"; // Thêm thư viện message từ Ant Design
 import { Swiper, SwiperSlide } from "swiper/react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "swiper/css";
+import { Navigation } from "swiper/modules";
 
 interface Variant {
     id: number;
@@ -53,11 +55,14 @@ const Detail: React.FC = () => {
         null,
     );
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [availableSizes, setAvailableSizes] = useState<string[]>([]);
     const [totalPrice, setTotalPrice] = useState<number | null>(null);
     const [listPrice, setListPrice] = useState<number | null>(null);
     const [remainingQuantity, setRemainingQuantity] = useState<number | null>(
         null,
     );
+    const [minSellingPrice, setMinSellingPrice] = useState<number | null>(null); // Giá khuyến mãi thấp nhất
+    const [minListPrice, setMinListPrice] = useState<number | null>(null); // Giá niêm yết thấp nhất
 
     useEffect(() => {
         const fetchProductDetails = async () => {
@@ -69,14 +74,26 @@ const Detail: React.FC = () => {
 
                 if (productData) {
                     setProduct(productData);
-                    const firstVariant = productData.variant[0];
-                    setSelectedColor(firstVariant.colors.name);
-                    setSelectedColorName(firstVariant.colors.name);
-                    setSelectedSize(firstVariant.sizes.name);
-                    setTotalPrice(parseFloat(firstVariant.selling_price));
-                    setListPrice(parseFloat(firstVariant.list_price));
-                    setRemainingQuantity(firstVariant.quantity);
                     fetchRelatedProducts(productData.id);
+
+                    // Tìm giá bán thấp nhất và giá niêm yết thấp nhất
+                    const minVariant = productData.variant.reduce(
+                        (prev, curr) =>
+                            parseFloat(prev.selling_price) <
+                            parseFloat(curr.selling_price)
+                                ? prev
+                                : curr,
+                    );
+                    const minListVariant = productData.variant.reduce(
+                        (prev, curr) =>
+                            parseFloat(prev.list_price) <
+                            parseFloat(curr.list_price)
+                                ? prev
+                                : curr,
+                    );
+
+                    setMinSellingPrice(parseFloat(minVariant.selling_price)); 
+                    setMinListPrice(parseFloat(minListVariant.list_price)); 
                 } else {
                     setError("Giá không khả dụng");
                 }
@@ -128,12 +145,24 @@ const Detail: React.FC = () => {
     const handleColorChange = (colorName: string) => {
         setSelectedColor(colorName);
         setSelectedColorName(colorName);
-        updateRemainingQuantityAndPrice(colorName, selectedSize);
+
+        // Khi màu thay đổi, không tự động chọn size
+        setSelectedSize(null);
+
+        // Cập nhật các kích thước có sẵn cho màu đã chọn
+        const sizesForSelectedColor = product?.variant
+            .filter((variant) => variant.colors.name === colorName)
+            .map((variant) => variant.sizes.name);
+        setAvailableSizes(sizesForSelectedColor || []);
+
+        setRemainingQuantity(null);
     };
 
     const handleSizeChange = (sizeName: string) => {
-        setSelectedSize(sizeName);
-        updateRemainingQuantityAndPrice(selectedColor, sizeName);
+        if (availableSizes.includes(sizeName)) {
+            setSelectedSize(sizeName);
+            updateRemainingQuantityAndPrice(selectedColor, sizeName);
+        }
     };
 
     const updateRemainingQuantityAndPrice = (
@@ -155,7 +184,21 @@ const Detail: React.FC = () => {
     };
 
     const handleBuyNow = () => {
-        navigate("/pay");
+        if (!selectedColor || !selectedSize) {
+            message.error("Vui lòng chọn màu sắc và kích thước trước khi mua.");
+        } else {
+            navigate("/pay");
+        }
+    };
+
+    const handleAddToCart = () => {
+        if (!selectedColor || !selectedSize) {
+            message.error(
+                "Vui lòng chọn màu sắc và kích thước trước khi thêm vào giỏ hàng.",
+            );
+        } else {
+            message.success("Sản phẩm đã được thêm vào giỏ hàng.");
+        }
     };
 
     if (loading) {
@@ -210,39 +253,63 @@ const Detail: React.FC = () => {
                                     <div className="tf-product-info-title">
                                         <h5>{product?.name}</h5>
                                     </div>
-                                    <div className="tf-product-info-price">
-                                        {listPrice !== null &&
-                                        totalPrice !== null ? (
-                                            <div>
-                                                <div className="price-list">
-                                                    <span
-                                                        style={{
-                                                            textDecoration:
-                                                                "line-through",
-                                                            color: "#999",
-                                                        }}
-                                                    >
-                                                        {listPrice.toLocaleString(
+                                    {selectedColor && selectedSize ? (
+                                        <div className="tf-product-info-price">
+                                            {listPrice !== null &&
+                                            totalPrice !== null ? (
+                                                <div>
+                                                    <div className="price-list">
+                                                        <span
+                                                            style={{
+                                                                textDecoration:
+                                                                    "line-through",
+                                                                color: "#999",
+                                                            }}
+                                                        >
+                                                            {listPrice.toLocaleString(
+                                                                "vi-VN",
+                                                            )}{" "}
+                                                            đ
+                                                        </span>
+                                                    </div>
+                                                    <div className="price-on-sale">
+                                                        {totalPrice.toLocaleString(
                                                             "vi-VN",
                                                         )}{" "}
                                                         đ
-                                                    </span>
+                                                    </div>
                                                 </div>
-                                                <div className="price-on-sale">
-                                                    {totalPrice.toLocaleString(
+                                            ) : (
+                                                <div className="price-unavailable">
+                                                    Giá không khả dụng
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="tf-product-info-price">
+                                            <div className="price-list">
+                                                <span
+                                                    style={{
+                                                        textDecoration:
+                                                            "line-through",
+                                                        color: "#999",
+                                                    }}
+                                                >
+                                                    {minListPrice?.toLocaleString(
                                                         "vi-VN",
                                                     )}{" "}
-                                                    đ
-                                                </div>
+                                                    đ{" "}
+                                                </span>
                                             </div>
-                                        ) : (
-                                            <div className="price-unavailable">
-                                                Giá không khả dụng
+                                            <div className="price-on-sale">
+                                                {minSellingPrice?.toLocaleString(
+                                                    "vi-VN",
+                                                )}{" "}
+                                                đ{" "}
                                             </div>
-                                        )}
-                                    </div>
-
-                                    {/* Color Variant Selection */}
+                                        </div>
+                                    )}
+<br/>
                                     <div className="tf-color-selection">
                                         <div>
                                             {selectedColorName && (
@@ -317,7 +384,12 @@ const Detail: React.FC = () => {
                                                         }
                                                         style={{
                                                             marginRight: "10px",
-                                                            cursor: "pointer",
+                                                            cursor: availableSizes.includes(
+                                                                variant.sizes
+                                                                    .name,
+                                                            )
+                                                                ? "pointer"
+                                                                : "not-allowed", // Chỉ có thể nhấn vào kích thước khả dụng
                                                             padding: "8px",
                                                             fontSize: "16px",
                                                             borderRadius: "8px",
@@ -327,20 +399,28 @@ const Detail: React.FC = () => {
                                                                     .name
                                                                     ? "3px solid #000"
                                                                     : "2px solid #ccc",
-                                                            transition:
-                                                                "background-color 0.3s, color 0.3s, border 0.3s",
                                                             backgroundColor:
-                                                                selectedSize ===
-                                                                variant.sizes
-                                                                    .name
-                                                                    ? "#000"
-                                                                    : "#fff",
-                                                            color:
-                                                                selectedSize ===
-                                                                variant.sizes
-                                                                    .name
+                                                                availableSizes.includes(
+                                                                    variant
+                                                                        .sizes
+                                                                        .name,
+                                                                )
                                                                     ? "#fff"
-                                                                    : "#000",
+                                                                    : "#f0f0f0", // Màu mờ cho kích thước không khả dụng
+                                                            color: availableSizes.includes(
+                                                                variant.sizes
+                                                                    .name,
+                                                            )
+                                                                ? "#000"
+                                                                : "#999", // Màu chữ cho kích thước không khả dụng
+                                                            pointerEvents:
+                                                                availableSizes.includes(
+                                                                    variant
+                                                                        .sizes
+                                                                        .name,
+                                                                )
+                                                                    ? "auto"
+                                                                    : "none", // Ngăn không thể click vào size không khả dụng
                                                         }}
                                                     >
                                                         {variant.sizes.name}
@@ -351,16 +431,17 @@ const Detail: React.FC = () => {
                                     </div>
 
                                     {/* Show remaining quantity for the selected variant */}
-                                    {remainingQuantity !== null && (
-                                        <div className="remaining-quantity mt-3">
-                                            <p>
-                                                Số lượng còn lại:{" "}
-                                                <strong>
-                                                    {remainingQuantity}
-                                                </strong>
-                                            </p>
-                                        </div>
-                                    )}
+                                    {remainingQuantity !== null &&
+                                        selectedSize && (
+                                            <div className="remaining-quantity mt-3">
+                                                <p>
+                                                    Số lượng còn lại:{" "}
+                                                    <strong>
+                                                        {remainingQuantity}
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        )}
 
                                     {/* Quantity Selection */}
                                     <div className="tf-product-info-quantity mt-4">
@@ -404,6 +485,7 @@ const Detail: React.FC = () => {
                                                 alignItems: "center",
                                                 height: "50px",
                                             }}
+                                            onClick={handleAddToCart}
                                         >
                                             Thêm vào giỏ hàng
                                         </button>
@@ -466,7 +548,7 @@ const Detail: React.FC = () => {
                                 style={{
                                     textAlign: "center",
                                     fontSize: "24px",
-                                    fontWeight: "bold", 
+                                    fontWeight: "bold",
                                     marginBottom: "16px",
                                 }}
                             >
@@ -489,6 +571,7 @@ const Detail: React.FC = () => {
                                         </div>
 
                                         <Swiper
+                                            modules={[Navigation]}
                                             spaceBetween={20}
                                             slidesPerView={3}
                                             navigation={{
