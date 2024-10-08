@@ -64,6 +64,7 @@ const Home: React.FC = () => {
                                                 <RightOutlined />
                                             </div>
 
+
                                             <Swiper
                                                 modules={[Navigation]} // Sử dụng module Navigation cho Swiper
                                                 spaceBetween={20}
@@ -75,6 +76,9 @@ const Home: React.FC = () => {
                                                 loop={true} // Cho phép slider chạy vòng lặp
                                                 className="swiper-container"
                                             >
+
+
+
                                                 {productsnew.map((product) => (
                                                     <SwiperSlide key={product.id}>
                                                         <div className="card-product style-skincare">

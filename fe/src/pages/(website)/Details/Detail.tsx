@@ -3,9 +3,17 @@ import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { message } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "swiper/css";
+import { Navigation } from "swiper/modules";
+
+interface Image {
+    id_product: number;
+    id_attribute_color: number;
+    link_image: string;
+}
 
 interface Variant {
     id: number;
@@ -13,6 +21,7 @@ interface Variant {
     list_price: string;
     selling_price: string;
     quantity: number;
+    image_color: string;
     colors: {
         id: number;
         name: string;
@@ -36,6 +45,7 @@ interface Product {
     thumbnail: string;
     variant: Variant[];
     description: string;
+    images: Image[];
 }
 
 const Detail: React.FC = () => {
@@ -49,15 +59,21 @@ const Detail: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    const [selectedColorImage, setSelectedColorImage] = useState<string | null>(
+        null,
+    );
     const [selectedColorName, setSelectedColorName] = useState<string | null>(
         null,
     );
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [availableSizes, setAvailableSizes] = useState<string[]>([]);
     const [totalPrice, setTotalPrice] = useState<number | null>(null);
     const [listPrice, setListPrice] = useState<number | null>(null);
     const [remainingQuantity, setRemainingQuantity] = useState<number | null>(
         null,
     );
+    const [minSellingPrice, setMinSellingPrice] = useState<number | null>(null);
+    const [minListPrice, setMinListPrice] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchProductDetails = async () => {
@@ -69,14 +85,25 @@ const Detail: React.FC = () => {
 
                 if (productData) {
                     setProduct(productData);
-                    const firstVariant = productData.variant[0];
-                    setSelectedColor(firstVariant.colors.name);
-                    setSelectedColorName(firstVariant.colors.name);
-                    setSelectedSize(firstVariant.sizes.name);
-                    setTotalPrice(parseFloat(firstVariant.selling_price));
-                    setListPrice(parseFloat(firstVariant.list_price));
-                    setRemainingQuantity(firstVariant.quantity);
                     fetchRelatedProducts(productData.id);
+
+                    const minVariant = productData.variant.reduce(
+                        (prev, curr) =>
+                            parseFloat(prev.selling_price) <
+                            parseFloat(curr.selling_price)
+                                ? prev
+                                : curr,
+                    );
+                    const minListVariant = productData.variant.reduce(
+                        (prev, curr) =>
+                            parseFloat(prev.list_price) <
+                            parseFloat(curr.list_price)
+                                ? prev
+                                : curr,
+                    );
+
+                    setMinSellingPrice(parseFloat(minVariant.selling_price));
+                    setMinListPrice(parseFloat(minListVariant.list_price));
                 } else {
                     setError("Giá không khả dụng");
                 }
@@ -128,12 +155,30 @@ const Detail: React.FC = () => {
     const handleColorChange = (colorName: string) => {
         setSelectedColor(colorName);
         setSelectedColorName(colorName);
-        updateRemainingQuantityAndPrice(colorName, selectedSize);
+        setSelectedSize(null);
+
+        const selectedVariant = product?.variant.find(
+            (variant) => variant.colors.name === colorName,
+        );
+
+        if (selectedVariant) {
+            setSelectedColorImage(selectedVariant.image_color);
+        }
+
+        const sizesForSelectedColor = product?.variant
+            .filter((variant) => variant.colors.name === colorName)
+            .map((variant) => variant.sizes.name)
+            .sort((a, b) => parseFloat(a) - parseFloat(b));
+
+        setAvailableSizes(sizesForSelectedColor || []);
+        setRemainingQuantity(null);
     };
 
     const handleSizeChange = (sizeName: string) => {
-        setSelectedSize(sizeName);
-        updateRemainingQuantityAndPrice(selectedColor, sizeName);
+        if (availableSizes.includes(sizeName)) {
+            setSelectedSize(sizeName);
+            updateRemainingQuantityAndPrice(selectedColor, sizeName);
+        }
     };
 
     const updateRemainingQuantityAndPrice = (
@@ -155,7 +200,39 @@ const Detail: React.FC = () => {
     };
 
     const handleBuyNow = () => {
-        navigate("/pay");
+        if (!selectedColor || !selectedSize) {
+            message.error("Vui lòng chọn màu sắc và kích thước trước khi mua.");
+        } else {
+            navigate("/pay");
+        }
+    };
+
+    const handleAddToCart = () => {
+        if (!selectedColor || !selectedSize) {
+            message.error(
+                "Vui lòng chọn màu sắc và kích thước trước khi thêm vào giỏ hàng.",
+            );
+        } else {
+            message.success("Sản phẩm đã được thêm vào giỏ hàng.");
+        }
+    };
+
+    const uniqueColors =
+        product?.variant.reduce((unique, item) => {
+            if (
+                !unique.some((color) => color.colors.name === item.colors.name)
+            ) {
+                unique.push(item);
+            }
+            return unique;
+        }, [] as Variant[]) || [];
+
+    const allSizes = Array.from(
+        new Set(product?.variant.map((variant) => variant.sizes.name)),
+    ).sort((a, b) => parseFloat(a) - parseFloat(b));
+
+    const isSizeAvailable = (sizeName: string) => {
+        return availableSizes.includes(sizeName);
     };
 
     if (loading) {
@@ -187,21 +264,61 @@ const Detail: React.FC = () => {
                 </div>
             </div>
 
-            {/* Product Detail Section */}
             <section className="flat-spacing-4 pt_0">
                 <div className="tf-main-product section-image-zoom">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="tf-product-media-wrap sticky-top">
-                                    <Swiper>
-                                        <SwiperSlide>
-                                            <img
-                                                src={product?.thumbnail}
-                                                alt={product?.name}
-                                                style={{ width: "100%" }}
-                                            />
-                                        </SwiperSlide>
+                                    <div
+                                        className="swiper-button-prev"
+                                        style={{ color: "black" }}
+                                    >
+                                        <LeftOutlined />
+                                    </div>
+                                    <div
+                                        className="swiper-button-next"
+                                        style={{ color: "black" }}
+                                    >
+                                        <RightOutlined />
+                                    </div>
+                                    <Swiper
+                                        modules={[Navigation]}
+                                        spaceBetween={20}
+                                        slidesPerView={1}
+                                        navigation={{
+                                            nextEl: ".swiper-button-next",
+                                            prevEl: ".swiper-button-prev",
+                                        }}
+                                        loop={true}
+                                    >
+                                        {selectedColorImage ? (
+                                            <SwiperSlide>
+                                                <img
+                                                    src={selectedColorImage}
+                                                    alt={`Image selected`}
+                                                    style={{
+                                                        width: "100%",
+                                                    }}
+                                                />
+                                            </SwiperSlide>
+                                        ) : (
+                                            product?.images.map(
+                                                (image, index) => (
+                                                    <SwiperSlide key={index}>
+                                                        <img
+                                                            src={
+                                                                image.link_image
+                                                            }
+                                                            alt={`Image ${index + 1}`}
+                                                            style={{
+                                                                width: "100%",
+                                                            }}
+                                                        />
+                                                    </SwiperSlide>
+                                                ),
+                                            )
+                                        )}
                                     </Swiper>
                                 </div>
                             </div>
@@ -210,11 +327,70 @@ const Detail: React.FC = () => {
                                     <div className="tf-product-info-title">
                                         <h5>{product?.name}</h5>
                                     </div>
-                                    <div className="tf-product-info-price">
-                                        {listPrice !== null &&
-                                        totalPrice !== null ? (
-                                            <div>
-                                                <div className="price-list">
+                                    {selectedColor && selectedSize ? (
+                                        <div className="tf-product-info-price">
+                                            {listPrice !== null &&
+                                            totalPrice !== null ? (
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                    }}
+                                                >
+                                                    <div
+                                                        className="price-list"
+                                                        style={{
+                                                            marginRight: "10px",
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                textDecoration:
+                                                                    "line-through",
+                                                                color: "#999",
+                                                            }}
+                                                        >
+                                                            {listPrice.toLocaleString(
+                                                                "vi-VN",
+                                                            )}{" "}
+                                                            đ
+                                                        </span>
+                                                    </div>
+                                                    <div className="price-on-sale">
+                                                        <span
+                                                            style={{
+                                                                fontWeight:
+                                                                    "bold",
+                                                                color: "#f00",
+                                                            }}
+                                                        >
+                                                            {totalPrice.toLocaleString(
+                                                                "vi-VN",
+                                                            )}{" "}
+                                                            đ
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="price-unavailable">
+                                                    Giá không khả dụng
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="tf-product-info-price">
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <div
+                                                    className="price-list"
+                                                    style={{
+                                                        marginRight: "10px",
+                                                    }}
+                                                >
                                                     <span
                                                         style={{
                                                             textDecoration:
@@ -222,76 +398,80 @@ const Detail: React.FC = () => {
                                                             color: "#999",
                                                         }}
                                                     >
-                                                        {listPrice.toLocaleString(
+                                                        {minListPrice?.toLocaleString(
                                                             "vi-VN",
                                                         )}{" "}
                                                         đ
                                                     </span>
                                                 </div>
                                                 <div className="price-on-sale">
-                                                    {totalPrice.toLocaleString(
-                                                        "vi-VN",
-                                                    )}{" "}
-                                                    đ
+                                                    <span
+                                                        style={{
+                                                            fontWeight: "bold",
+                                                            color: "#f00",
+                                                        }}
+                                                    >
+                                                        {minSellingPrice?.toLocaleString(
+                                                            "vi-VN",
+                                                        )}{" "}
+                                                        đ
+                                                    </span>
                                                 </div>
                                             </div>
-                                        ) : (
-                                            <div className="price-unavailable">
-                                                Giá không khả dụng
+                                        </div>
+                                    )}
+
+                                    <br />
+                                    <div className="tf-color-selection d-flex align-items-center">
+                                        <h6 style={{ marginRight: "10px" }}>
+                                            Màu sắc:
+                                        </h6>
+                                        {selectedColorName && (
+                                            <div style={{ marginLeft: "10px" }}>
+                                                <h6>
+                                                     {selectedColorName}
+                                                </h6>
                                             </div>
                                         )}
                                     </div>
 
-                                    {/* Color Variant Selection */}
-                                    <div className="tf-color-selection">
-                                        <div>
-                                            {selectedColorName && (
-                                                <h6>
-                                                    Tên màu: {selectedColorName}
-                                                </h6>
-                                            )}
-                                        </div>
-                                        <div className="tf-variant-colors d-flex">
-                                            {product?.variant?.map(
-                                                (variant: Variant) => (
-                                                    <input
-                                                        key={variant.id}
-                                                        type="radio"
-                                                        name="color"
-                                                        checked={
-                                                            selectedColor ===
-                                                            variant.colors.name
-                                                        }
-                                                        onChange={() =>
-                                                            handleColorChange(
+                                    <div className="tf-variant-colors d-flex">
+                                        {uniqueColors.map(
+                                            (variant: Variant) => (
+                                                <input
+                                                    key={variant.id}
+                                                    type="radio"
+                                                    name="color"
+                                                    checked={
+                                                        selectedColor ===
+                                                        variant.colors.name
+                                                    }
+                                                    onChange={() =>
+                                                        handleColorChange(
+                                                            variant.colors.name,
+                                                        )
+                                                    }
+                                                    style={{
+                                                        appearance: "none",
+                                                        width: "30px",
+                                                        height: "30px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor:
+                                                            getColorCode(
                                                                 variant.colors
                                                                     .name,
-                                                            )
-                                                        }
-                                                        style={{
-                                                            appearance: "none",
-                                                            width: "30px",
-                                                            height: "30px",
-                                                            borderRadius: "50%",
-                                                            backgroundColor:
-                                                                getColorCode(
-                                                                    variant
-                                                                        .colors
-                                                                        .name,
-                                                                ),
-                                                            border:
-                                                                selectedColor ===
-                                                                variant.colors
-                                                                    .name
-                                                                    ? "2px solid #000"
-                                                                    : "1px solid #ccc",
-                                                            margin: "0 10px",
-                                                            cursor: "pointer",
-                                                        }}
-                                                    />
-                                                ),
-                                            )}
-                                        </div>
+                                                            ),
+                                                        border:
+                                                            selectedColor ===
+                                                            variant.colors.name
+                                                                ? "2px solid #000"
+                                                                : "1px solid #ccc",
+                                                        margin: "0 10px",
+                                                        cursor: "pointer",
+                                                    }}
+                                                />
+                                            ),
+                                        )}
                                     </div>
 
                                     {/* Size Variant Selection */}
@@ -299,70 +479,70 @@ const Detail: React.FC = () => {
                                         <h6>Kích thước:</h6>
                                         <br />
                                         <div className="tf-variant-sizes">
-                                            {product?.variant?.map(
-                                                (variant: Variant) => (
-                                                    <span
-                                                        key={variant.id}
-                                                        className={`tf-size-option ${
+                                            {allSizes.map((sizeName, index) => (
+                                                <span
+                                                    key={index}
+                                                    className={`tf-size-option ${selectedSize === sizeName ? "active" : ""}`}
+                                                    onClick={() =>
+                                                        isSizeAvailable(
+                                                            sizeName,
+                                                        ) &&
+                                                        handleSizeChange(
+                                                            sizeName,
+                                                        )
+                                                    }
+                                                    style={{
+                                                        marginRight: "10px",
+                                                        cursor: isSizeAvailable(
+                                                            sizeName,
+                                                        )
+                                                            ? "pointer"
+                                                            : "not-allowed",
+                                                        padding: "8px",
+                                                        fontSize: "16px",
+                                                        borderRadius: "8px",
+                                                        border:
                                                             selectedSize ===
-                                                            variant.sizes.name
-                                                                ? "active"
-                                                                : ""
-                                                        }`}
-                                                        onClick={() =>
-                                                            handleSizeChange(
-                                                                variant.sizes
-                                                                    .name,
+                                                            sizeName
+                                                                ? "3px solid #000"
+                                                                : "2px solid #ccc",
+                                                        backgroundColor:
+                                                            isSizeAvailable(
+                                                                sizeName,
                                                             )
-                                                        }
-                                                        style={{
-                                                            marginRight: "10px",
-                                                            cursor: "pointer",
-                                                            padding: "8px",
-                                                            fontSize: "16px",
-                                                            borderRadius: "8px",
-                                                            border:
-                                                                selectedSize ===
-                                                                variant.sizes
-                                                                    .name
-                                                                    ? "3px solid #000"
-                                                                    : "2px solid #ccc",
-                                                            transition:
-                                                                "background-color 0.3s, color 0.3s, border 0.3s",
-                                                            backgroundColor:
-                                                                selectedSize ===
-                                                                variant.sizes
-                                                                    .name
-                                                                    ? "#000"
-                                                                    : "#fff",
-                                                            color:
-                                                                selectedSize ===
-                                                                variant.sizes
-                                                                    .name
-                                                                    ? "#fff"
-                                                                    : "#000",
-                                                        }}
-                                                    >
-                                                        {variant.sizes.name}
-                                                    </span>
-                                                ),
-                                            )}
+                                                                ? "#fff"
+                                                                : "#f0f0f0",
+                                                        color: isSizeAvailable(
+                                                            sizeName,
+                                                        )
+                                                            ? "#000"
+                                                            : "#999",
+                                                        pointerEvents:
+                                                            isSizeAvailable(
+                                                                sizeName,
+                                                            )
+                                                                ? "auto"
+                                                                : "none",
+                                                    }}
+                                                >
+                                                    {sizeName}
+                                                </span>
+                                            ))}
                                         </div>
                                     </div>
 
-                                    {/* Show remaining quantity for the selected variant */}
-                                    {remainingQuantity !== null && (
-                                        <div className="remaining-quantity mt-3">
-                                            <p>
-                                                Số lượng còn lại:{" "}
-                                                <strong>
-                                                    {remainingQuantity}
-                                                </strong>
-                                            </p>
-                                        </div>
-                                    )}
+                                    <div className="remaining-quantity mt-3">
+                                        <p>
+                                            Số lượng còn lại:{" "}
+                                            <strong>
+                                                {selectedSize &&
+                                                remainingQuantity !== null
+                                                    ? remainingQuantity
+                                                    : "Vui lòng chọn kích thước"}
+                                            </strong>
+                                        </p>
+                                    </div>
 
-                                    {/* Quantity Selection */}
                                     <div className="tf-product-info-quantity mt-4">
                                         <div className="wg-quantity">
                                             <span
@@ -389,7 +569,6 @@ const Detail: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    {/* Add to Cart Button */}
                                     <div
                                         className="tf-product-info-buy-button mt-4"
                                         style={{ textAlign: "center" }}
@@ -404,12 +583,12 @@ const Detail: React.FC = () => {
                                                 alignItems: "center",
                                                 height: "50px",
                                             }}
+                                            onClick={handleAddToCart}
                                         >
                                             Thêm vào giỏ hàng
                                         </button>
                                     </div>
 
-                                    {/* Buy Now Button */}
                                     <div className="tf-product-info-buy-now-button mt-3">
                                         <a
                                             href="#"
@@ -430,11 +609,10 @@ const Detail: React.FC = () => {
                                             Mua ngay
                                         </a>
                                     </div>
-
-                                    {/* Product Description Section */}
                                 </div>
                             </div>
                         </div>
+
                         <hr />
                         <div
                             className="tf-product-description mt-4"
@@ -459,14 +637,13 @@ const Detail: React.FC = () => {
                             </p>
                         </div>
 
-                        {/* Related Products Section */}
                         <hr />
                         <div className="tf-product-description mt-4">
                             <h5
                                 style={{
                                     textAlign: "center",
                                     fontSize: "24px",
-                                    fontWeight: "bold", 
+                                    fontWeight: "bold",
                                     marginBottom: "16px",
                                 }}
                             >
@@ -489,6 +666,7 @@ const Detail: React.FC = () => {
                                         </div>
 
                                         <Swiper
+                                            modules={[Navigation]}
                                             spaceBetween={20}
                                             slidesPerView={3}
                                             navigation={{
@@ -535,7 +713,6 @@ const Detail: React.FC = () => {
                                                                     0 && (
                                                                     <div>
                                                                         <span className="price">
-                                                                            {/* List Price with strikethrough */}
                                                                             {relatedProduct
                                                                                 .variant[0]
                                                                                 .list_price && (
@@ -554,7 +731,6 @@ const Detail: React.FC = () => {
                                                                                     đ
                                                                                 </span>
                                                                             )}
-                                                                            {/* Selling Price */}
                                                                             <span
                                                                                 style={{
                                                                                     color: "#f00",
