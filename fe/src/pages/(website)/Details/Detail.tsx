@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { CaretLeftOutlined, CaretRightOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "swiper/css";
 import { Navigation } from "swiper/modules";
 
+// Interfaces
 interface Image {
     id_product: number;
     id_attribute_color: number;
@@ -40,6 +41,7 @@ interface RelatedProduct {
 }
 
 interface Product {
+    slideImages: any;
     id: number;
     name: string;
     thumbnail: string;
@@ -47,6 +49,14 @@ interface Product {
     description: string;
     images: Image[];
 }
+
+// Hàm để thêm URL đầy đủ cho đường dẫn ảnh
+const getFullImagePath = (imagePath: string) => {
+    if (!imagePath.startsWith("http")) {
+        return `http://127.0.0.1:8000/${imagePath}`;
+    }
+    return imagePath;
+};
 
 const Detail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -270,18 +280,6 @@ const Detail: React.FC = () => {
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="tf-product-media-wrap sticky-top">
-                                    <div
-                                        className="swiper-button-prev"
-                                        style={{ color: "black" }}
-                                    >
-                                        <LeftOutlined />
-                                    </div>
-                                    <div
-                                        className="swiper-button-next"
-                                        style={{ color: "black" }}
-                                    >
-                                        <RightOutlined />
-                                    </div>
                                     <Swiper
                                         modules={[Navigation]}
                                         spaceBetween={20}
@@ -295,30 +293,55 @@ const Detail: React.FC = () => {
                                         {selectedColorImage ? (
                                             <SwiperSlide>
                                                 <img
-                                                    src={selectedColorImage}
-                                                    alt={`Image selected`}
+                                                    src={getFullImagePath(
+                                                        selectedColorImage,
+                                                    )}
+                                                    alt={`Selected Image`}
                                                     style={{
-                                                        width: "100%",
+                                                        width: "800px",
+                                                        height: "500px",
                                                     }}
                                                 />
                                             </SwiperSlide>
-                                        ) : (
-                                            product?.images.map(
+                                        ) : product?.slideImages.length > 0 ? (
+                                            product.slideImages.map(
                                                 (image, index) => (
                                                     <SwiperSlide key={index}>
                                                         <img
-                                                            src={
-                                                                image.link_image
-                                                            }
+                                                            src={getFullImagePath(
+                                                                image.link_image,
+                                                            )}
                                                             alt={`Image ${index + 1}`}
                                                             style={{
-                                                                width: "100%",
+                                                                width: "800px",
+                                                                height: "500px",
                                                             }}
                                                         />
                                                     </SwiperSlide>
                                                 ),
                                             )
+                                        ) : (
+                                            // Nếu không có ảnh trong product.images thì hiển thị ảnh thumbnail
+                                            <SwiperSlide>
+                                                <img
+                                                    src={getFullImagePath(
+                                                        product.thumbnail,
+                                                    )}
+                                                    alt="Product Thumbnail"
+                                                    style={{
+                                                        width: "800px",
+                                                        height: "500px",
+                                                    }}
+                                                />
+                                            </SwiperSlide>
                                         )}
+
+                                        <div className="swiper-button-next">
+                                            <CaretRightOutlined />
+                                        </div>
+                                        <div className="swiper-button-prev">
+                                            <CaretLeftOutlined />
+                                        </div>
                                     </Swiper>
                                 </div>
                             </div>
@@ -428,9 +451,7 @@ const Detail: React.FC = () => {
                                         </h6>
                                         {selectedColorName && (
                                             <div style={{ marginLeft: "10px" }}>
-                                                <h6>
-                                                     {selectedColorName}
-                                                </h6>
+                                                <h6>{selectedColorName}</h6>
                                             </div>
                                         )}
                                     </div>
@@ -474,7 +495,6 @@ const Detail: React.FC = () => {
                                         )}
                                     </div>
 
-                                    {/* Size Variant Selection */}
                                     <div className="tf-size-selection mt-3">
                                         <h6>Kích thước:</h6>
                                         <br />
@@ -638,120 +658,161 @@ const Detail: React.FC = () => {
                         </div>
 
                         <hr />
-                        <div className="tf-product-description mt-4">
-                            <h5
-                                style={{
-                                    textAlign: "center",
-                                    fontSize: "24px",
-                                    fontWeight: "bold",
-                                    marginBottom: "16px",
-                                }}
+                        <div className="flat-tab-store flat-animate-tab overflow-unset">
+                            <ul
+                                className="widget-tab-3 d-flex justify-content-center flex-wrap wow fadeInUp"
+                                data-wow-delay="0s"
+                                role="tablist"
                             >
-                                Sản phẩm liên quan
-                            </h5>
-                            <div className="wrap-carousel">
-                                <div className="swiper tf-sw-product-sell-1">
-                                    <div className="swiper-wrapper">
+                                <li
+                                    className="nav-tab-item"
+                                    role="presentation"
+                                >
+                                    <a
+                                        href="#related-products"
+                                        className="active"
+                                        data-bs-toggle="tab"
+                                    >
+                                        Sản phẩm liên quan
+                                    </a>
+                                </li>
+                            </ul>
+                            <div className="tab-content">
+                                <div
+                                    className="tab-pane active show"
+                                    id="related-products"
+                                    role="tabpanel"
+                                >
+                                    <div className="wrap-carousel">
                                         <div
-                                            className="swiper-button-prev"
-                                            style={{ color: "black" }}
+                                            className="swiper tf-sw-product-sell-1"
+                                            data-preview="4"
+                                            data-tablet="3"
+                                            data-mobile="2"
+                                            data-space-lg="30"
+                                            data-space-md="15"
+                                            data-pagination="2"
+                                            data-pagination-md="3"
+                                            data-pagination-lg="3"
                                         >
-                                            <LeftOutlined />
-                                        </div>
-                                        <div
-                                            className="swiper-button-next"
-                                            style={{ color: "black" }}
-                                        >
-                                            <RightOutlined />
+                                            <div className="swiper-wrapper">
+                                                {/* Nút điều hướng slider */}
+                                                <div
+                                                    className="swiper-button-prev"
+                                                    style={{ color: "black" }}
+                                                >
+                                                    <LeftOutlined />
+                                                </div>
+                                                <div
+                                                    className="swiper-button-next"
+                                                    style={{ color: "black" }}
+                                                >
+                                                    <RightOutlined />
+                                                </div>
+
+                                                {/* Sử dụng Swiper để tạo slider */}
+                                                <Swiper
+                                                    modules={[Navigation]}
+                                                    spaceBetween={20}
+                                                    slidesPerView={3}
+                                                    navigation={{
+                                                        nextEl: ".swiper-button-next",
+                                                        prevEl: ".swiper-button-prev",
+                                                    }}
+                                                    loop={true}
+                                                >
+                                                    {relatedProducts.length >
+                                                    0 ? (
+                                                        relatedProducts.map(
+                                                            (
+                                                                relatedProduct,
+                                                            ) => (
+                                                                <SwiperSlide
+                                                                    key={
+                                                                        relatedProduct.id
+                                                                    }
+                                                                >
+                                                                    <div className="card-product">
+                                                                        <div className="card-product-wrapper">
+                                                                            <Link
+                                                                                to={`/detail/${relatedProduct.id}`}
+                                                                            >
+                                                                                <img
+                                                                                    src={getFullImagePath(
+                                                                                        relatedProduct.thumbnail,
+                                                                                    )}
+                                                                                    alt={
+                                                                                        relatedProduct.name
+                                                                                    }
+                                                                                    style={{
+                                                                                        width: "600px",
+                                                                                        height: "450px",
+                                                                                        objectFit:
+                                                                                            "cover",
+                                                                                    }}
+                                                                                />
+                                                                            </Link>
+                                                                        </div>
+                                                                        <div className="card-product-info text-center">
+                                                                            <Link
+                                                                                to={`/detail/${relatedProduct.id}`}
+                                                                                className="title link"
+                                                                            >
+                                                                                {
+                                                                                    relatedProduct.name
+                                                                                }
+                                                                            </Link>
+                                                                            {relatedProduct
+                                                                                .variant
+                                                                                .length >
+                                                                                0 && (
+                                                                                <div>
+                                                                                    <span className="price">
+                                                                                        <span
+                                                                                            style={{
+                                                                                                textDecoration:
+                                                                                                    "line-through",
+                                                                                                color: "#999",
+                                                                                                marginRight:
+                                                                                                    "10px",
+                                                                                            }}
+                                                                                        >
+                                                                                            {relatedProduct.variant[0].list_price.toLocaleString(
+                                                                                                "vi-VN",
+                                                                                            )}{" "}
+                                                                                            đ
+                                                                                        </span>
+                                                                                        <span
+                                                                                            style={{
+                                                                                                color: "#f00",
+                                                                                                fontWeight:
+                                                                                                    "bold",
+                                                                                            }}
+                                                                                        >
+                                                                                            {relatedProduct.variant[0].selling_price.toLocaleString(
+                                                                                                "vi-VN",
+                                                                                            )}{" "}
+                                                                                            đ
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </SwiperSlide>
+                                                            ),
+                                                        )
+                                                    ) : (
+                                                        <div>
+                                                            Không có sản phẩm
+                                                            liên quan
+                                                        </div>
+                                                    )}
+                                                </Swiper>
+                                            </div>
                                         </div>
 
-                                        <Swiper
-                                            modules={[Navigation]}
-                                            spaceBetween={20}
-                                            slidesPerView={3}
-                                            navigation={{
-                                                nextEl: ".swiper-button-next",
-                                                prevEl: ".swiper-button-prev",
-                                            }}
-                                            loop={true}
-                                            className="swiper-container"
-                                        >
-                                            {relatedProducts.map(
-                                                (relatedProduct) => (
-                                                    <SwiperSlide
-                                                        key={relatedProduct.id}
-                                                    >
-                                                        <div className="card-product style-skincare">
-                                                            <div className="card-product-wrapper">
-                                                                <a
-                                                                    href={`/detail/${relatedProduct.id}`}
-                                                                    className="product-img"
-                                                                >
-                                                                    <img
-                                                                        className="lazyload img-product"
-                                                                        src={
-                                                                            relatedProduct.thumbnail
-                                                                        }
-                                                                        alt={
-                                                                            relatedProduct.name
-                                                                        }
-                                                                    />
-                                                                </a>
-                                                            </div>
-                                                            <div className="card-product-info text-center">
-                                                                <a
-                                                                    href={`/product/${relatedProduct.id}`}
-                                                                    className="title link"
-                                                                >
-                                                                    {
-                                                                        relatedProduct.name
-                                                                    }
-                                                                </a>
-                                                                {relatedProduct
-                                                                    .variant
-                                                                    .length >
-                                                                    0 && (
-                                                                    <div>
-                                                                        <span className="price">
-                                                                            {relatedProduct
-                                                                                .variant[0]
-                                                                                .list_price && (
-                                                                                <span
-                                                                                    style={{
-                                                                                        textDecoration:
-                                                                                            "line-through",
-                                                                                        color: "#999",
-                                                                                        marginRight:
-                                                                                            "10px",
-                                                                                    }}
-                                                                                >
-                                                                                    {relatedProduct.variant[0].list_price.toLocaleString(
-                                                                                        "vi-VN",
-                                                                                    )}{" "}
-                                                                                    đ
-                                                                                </span>
-                                                                            )}
-                                                                            <span
-                                                                                style={{
-                                                                                    color: "#f00",
-                                                                                    fontWeight:
-                                                                                        "bold",
-                                                                                }}
-                                                                            >
-                                                                                {relatedProduct.variant[0].selling_price.toLocaleString(
-                                                                                    "vi-VN",
-                                                                                )}{" "}
-                                                                                đ
-                                                                            </span>
-                                                                        </span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </SwiperSlide>
-                                                ),
-                                            )}
-                                        </Swiper>
+                                        <div className="sw-dots style-2 sw-pagination-sell-1 justify-content-center"></div>
                                     </div>
                                 </div>
                             </div>

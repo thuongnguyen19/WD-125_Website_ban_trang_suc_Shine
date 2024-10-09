@@ -18,13 +18,21 @@ const Register = () => {
                     "Content-Type": "application/json",
                 },
             }),
-        onSuccess: () => {
+        onSuccess: (response) => {
+            const { token, role } = response.data.data; // Lấy token và role từ phản hồi API
+
+            localStorage.setItem("authToken", token);
+            localStorage.setItem("userRole", role.toString());
+
             queryClient.invalidateQueries({
                 queryKey: ["products"],
             });
-            messageAPI.success("Đăng ký thành công!");
+
+            messageAPI.success("Đăng ký  thành công!");
+
+         
             setTimeout(() => {
-                navigate(`/`);
+                navigate(`/`); // Điều hướng đến trang chủ người dùng
             }, 2000);
         },
         onError: (error) => {
