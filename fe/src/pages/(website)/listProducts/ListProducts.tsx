@@ -4,10 +4,12 @@ import Footer from "../../../components/common/Footer";
 import {  useNavigate } from "react-router-dom";
 import {
     AlignCenterOutlined,
+    CloseOutlined,
     DoubleLeftOutlined,
     DoubleRightOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
+import { fetchCategories } from "../../../Interface/Product";
 
 // Khai báo kiểu dữ liệu cho sản phẩm và biến thể
 interface ProductVariant {
@@ -23,15 +25,24 @@ interface Product {
     variants: ProductVariant[];
 }
 
+interface Category {
+    id: number;
+    name: string;
+}
+
 const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [sortBy, setSortBy] = useState("none"); // Đặt giá trị mặc định cho sortBy
     const [sortOrder, setSortOrder] = useState("asc");
     const [page, setPage] = useState<number>(1);
+    const [category, setCategory] = useState<number | null>(null);
+    const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
     const [totalPages, setTotalPages] = useState<number>(1);
     const perPage = 12; // Số sản phẩm trên mỗi trang
     const navigate = useNavigate();
+    
     
     
 
@@ -48,6 +59,7 @@ const ListProducts: React.FC = () => {
                             sort: sortOrder,
                             page,
                             per_page: perPage,
+                            cate: category,
                         },
                     },
                 );
@@ -62,7 +74,24 @@ const ListProducts: React.FC = () => {
         };
 
         loadProducts();
-    }, [sortBy, sortOrder, page]);
+    }, [sortBy, sortOrder, page, category]);
+
+    useEffect(() => {
+    const loadCategories = async () => {
+        setLoadingCategories(true);
+        try {
+            const categoriesData = await fetchCategories();
+            setCategories(categoriesData); // Cập nhật trạng thái danh mục
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        } finally {
+            setLoadingCategories(false);
+        }
+    };
+
+    loadCategories();
+}, []);
+
 
     // Hàm thay đổi trang
     const handlePageChange = (newPage: number) => {
@@ -80,6 +109,11 @@ const ListProducts: React.FC = () => {
         }
     };
 
+//     const handleCategoryChange = (cate: string) => {
+//     setCategory(cate);  // Cập nhật giá trị danh mục và gọi lại API
+//     setPage(1); // Quay lại trang đầu tiên sau khi lọc
+// };
+
     const handleProductClick = (id: number) => {
     navigate(`/detail/${id}`);
   };
@@ -87,6 +121,8 @@ const ListProducts: React.FC = () => {
     if (loading) {
         return <p>Đang tải...</p>;
     }
+    
+    
 
     return (
         <div>
@@ -101,7 +137,7 @@ const ListProducts: React.FC = () => {
                 <div className="container">
                     <div className="tf-shop-control grid-2 align-items-center">
                         <div className="tf-control-filter">
-                            {/* <a
+                            <a
                                 href="#filterShop"
                                 data-bs-toggle="offcanvas"
                                 aria-controls="offcanvasLeft"
@@ -109,7 +145,7 @@ const ListProducts: React.FC = () => {
                             >
                                 <AlignCenterOutlined />
                                 <span className="text">Lọc</span>
-                            </a> */}
+                            </a>
                         </div>
                         <div className="tf-control-sorting d-flex justify-content-end">
                             <div className="tf-dropdown-sort">
@@ -167,12 +203,32 @@ const ListProducts: React.FC = () => {
                                             >
                                                 {product.name}
                                             </h3>
+                                            
                                             <div
                                                     style={{
                                                         display: "flex",
                                                         alignItems: "center",
                                                     }}
                                                 >
+                                                    <div className="price-on-sale">
+                                                        <span
+                                                            style={{
+                                                                fontWeight:
+                                                                    "bold",
+                                                                color: "#f00",
+                                                            }}
+                                                        >
+                                                            {product.variants[0]?.selling_price?.toLocaleString(
+                                                                "vi-VN", {
+                                                                style: "currency",
+                                                                currency: "VND",
+                                                                minimumFractionDigits: 0,  // Loại bỏ .00
+                                                                maximumFractionDigits: 0,  // Loại bỏ .00
+                                                            }
+                                                            )}{" "}
+                                                            đ
+                                                        </span>
+                                                    </div>
                                                     <div
                                                         className="price-list"
                                                         style={{
@@ -187,34 +243,19 @@ const ListProducts: React.FC = () => {
                                                             }}
                                                         >
                                                             {product.variants[0]?.list_price?.toLocaleString(
-                                                                "vi-VN",
+                                                                "vi-VN", {
+                                                                    style: "currency",
+                                                                    currency: "VND",
+                                                                    minimumFractionDigits: 0,  // Loại bỏ .00
+                                                                    maximumFractionDigits: 0,  // Loại bỏ .00
+                                                                }
                                                             )}{" "}
                                                             đ
                                                         </span>
                                                     </div>
-                                                    <div className="price-on-sale">
-                                                        <span
-                                                            style={{
-                                                                fontWeight:
-                                                                    "bold",
-                                                                color: "#f00",
-                                                            }}
-                                                        >
-                                                            {product.variants[0]?.selling_price?.toLocaleString(
-                                                                "vi-VN",
-                                                            )}{" "}
-                                                            đ
-                                                        </span>
-                                                    </div>
+                                                    
                                                 </div>
-                                            {/* <span className="price">
-                                                {product.variants[0]?.selling_price?.toLocaleString()}{" "}
-                                                VND
-                                                <span className="old-price price">
-                                                    {product.variants[0]?.list_price?.toLocaleString()}{" "}
-                                                    VND
-                                                </span>
-                                            </span> */}
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -285,7 +326,54 @@ const ListProducts: React.FC = () => {
                                 </li>
                             </ul>
                         </div>
+
                     </div>
+                     <div className="offcanvas offcanvas-start canvas-filter" id="filterShop">
+                        <div className="canvas-wrapper">
+                            <header className="canvas-header">
+                                <div className="filter-icon">
+                                    <AlignCenterOutlined />
+                                    <span>Lọc</span>
+                                </div>
+                                <span  data-bs-dismiss="offcanvas" aria-label="Close"><CloseOutlined /></span>
+                            </header>
+                            <div className="canvas-body">
+                                <div className="widget-facet wd-categories">
+                                    <div
+                                        className="facet-title"
+                                        data-bs-target="#categories"
+                                        data-bs-toggle="collapse"
+                                        aria-expanded="true"
+                                        aria-controls="categories"
+                                    >
+                                        <span>Danh mục sản phẩm</span>
+                                    </div>
+                                    <div id="categories"  style={{ height: 'auto' }}>
+                                        {loadingCategories ? (
+                                            <p>Đang tải danh mục...</p>
+                                        ) : (
+                                            <ul className="list-categoris current-scrollbar mb_36">
+                                                {categories.map((category) => (
+                                                    <li key={category.id} className="cate-item" >
+                                                        <a onClick={() => setCategory(category.id)}>
+                                                            <span>{category.name}</span>
+                                                        </a>
+                                                            
+                                                        
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                </div>
+
+                                
+                            </div>
+                            
+                        </div>       
+                    </div>
+                    
+                    
                 </div>
             </section>
 
