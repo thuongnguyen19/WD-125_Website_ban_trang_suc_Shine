@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import {
     AlignCenterOutlined,
     DoubleLeftOutlined,
@@ -32,6 +32,8 @@ const ListProducts: React.FC = () => {
     const [totalPages, setTotalPages] = useState<number>(1);
     const perPage = 12; // Số sản phẩm trên mỗi trang
     const navigate = useNavigate();
+    
+    
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
@@ -49,7 +51,8 @@ const ListProducts: React.FC = () => {
                         },
                     },
                 );
-                setProducts(response.data.data);
+                console.log(response.data.data.products);
+                setProducts(response.data.data.products);
                 setTotalPages(response.data.total_pages);
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -140,7 +143,8 @@ const ListProducts: React.FC = () => {
                             className="grid-layout wrapper-shop"
                             data-grid="grid-4"
                         >
-                            {products.map((product) => (
+                            {Array.isArray(products) && products.length > 0 ? (
+                            products.map(product => (
                                 <div key={product.id} className="card-product">
                                     <div className="card-product-wrapper">
                                         
@@ -163,18 +167,61 @@ const ListProducts: React.FC = () => {
                                             >
                                                 {product.name}
                                             </h3>
-                                            <span className="price">
+                                            <div
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                    }}
+                                                >
+                                                    <div
+                                                        className="price-list"
+                                                        style={{
+                                                            marginRight: "10px",
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                textDecoration:
+                                                                    "line-through",
+                                                                color: "#999",
+                                                            }}
+                                                        >
+                                                            {product.variants[0]?.list_price?.toLocaleString(
+                                                                "vi-VN",
+                                                            )}{" "}
+                                                            đ
+                                                        </span>
+                                                    </div>
+                                                    <div className="price-on-sale">
+                                                        <span
+                                                            style={{
+                                                                fontWeight:
+                                                                    "bold",
+                                                                color: "#f00",
+                                                            }}
+                                                        >
+                                                            {product.variants[0]?.selling_price?.toLocaleString(
+                                                                "vi-VN",
+                                                            )}{" "}
+                                                            đ
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            {/* <span className="price">
                                                 {product.variants[0]?.selling_price?.toLocaleString()}{" "}
                                                 VND
                                                 <span className="old-price price">
                                                     {product.variants[0]?.list_price?.toLocaleString()}{" "}
                                                     VND
                                                 </span>
-                                            </span>
+                                            </span> */}
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            ))
+                        ): (
+                            <p>Không có sản phẩm nào để hiển thị.</p>
+                        )}
                         </div>
 
                         {/* Phân trang */}
