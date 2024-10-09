@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Swiper, Swiper as SwiperComponent, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { CreditCardOutlined, CustomerServiceOutlined, InboxOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { fetchProductsNew, ProductsNew } from '../../../Interface/ProductsNew';
@@ -11,6 +11,7 @@ const Home: React.FC = () => {
     const [productsnew, setProductsNew] = useState<ProductsNew[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [sortByPrice, setSortByPrice] = useState<"asc" | "desc">("asc");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadProductsNew = async () => {
@@ -36,6 +37,10 @@ const Home: React.FC = () => {
         setProductsNew(sortedProducts);
         setSortByPrice(sortByPrice === "asc" ? "desc" : "asc");
     };
+
+    const handleProductClick = (id: number) => {
+    navigate(`/detail/${id}`);
+  };
 
     if (loading) {
         return <p>Đang tải...</p>;
@@ -111,10 +116,9 @@ const Home: React.FC = () => {
                                                     >
                                                         <div className="card-product style-skincare">
                                                             <div className="card-product-wrapper">
-                                                                <Link
-                                                                    to={
-                                                                        "product-detail.html"
-                                                                    }
+                                                                <div
+                                                                    onClick={() => handleProductClick(product.id)}
+                                                                    style={{ cursor: "pointer" }}
                                                                     className="product-img"
                                                                 >
                                                                     <img
@@ -130,24 +134,54 @@ const Home: React.FC = () => {
                                                                             height: "500px",
                                                                         }}
                                                                     />
-                                                                </Link>
+                                                                </div>
                                                             </div>
                                                             <div className="card-product-info text-center">
-                                                                <Link
-                                                                    to={
-                                                                        "product-detail.html"
-                                                                    }
-                                                                    className="title link"
-                                                                >
-                                                                    {
-                                                                        product.name
-                                                                    }
-                                                                </Link>
-                                                                <span className="price">
-                                                                    Giá:{" "}
-                                                                    {product.variants[0]?.selling_price.toLocaleString()}{" "}
-                                                                    VND
-                                                                </span>
+                                                                <h3
+                                                                onClick={() => handleProductClick(product.id)}
+                                                                style={{ cursor: "pointer" }}
+                                                                className="title link"
+                                                            >
+                                                                {product.name}
+                                                            </h3>
+                                                            <div>
+                                                            <span
+                                                                            style={{
+                                                                                fontWeight:
+                                                                                    "bold",
+                                                                                color: "#f00",
+                                                                            }}
+                                                                        >
+                                                                            {product.variants[0]?.selling_price?.toLocaleString(
+                                                                                "vi-VN", {
+                                                                                style: "currency",
+                                                                                currency: "VND",
+                                                                                minimumFractionDigits: 0,  // Loại bỏ .00
+                                                                                maximumFractionDigits: 0,  // Loại bỏ .00
+                                                                            }
+                                                                            )}{" "}
+                                                                            đ
+                                                                        </span>
+                                                                        <span
+                                                                            style={{
+                                                                                textDecoration:
+                                                                                    "line-through",
+                                                                                color: "#999",
+                                                                            }}
+                                                                        >
+                                                                            {product.variants[0]?.list_price?.toLocaleString(
+                                                                                "vi-VN", {
+                                                                                    style: "currency",
+                                                                                    currency: "VND",
+                                                                                    minimumFractionDigits: 0,  // Loại bỏ .00
+                                                                                    maximumFractionDigits: 0,  // Loại bỏ .00
+                                                                                }
+                                                                            )}{" "}
+                                                                            đ
+                                                                        </span>
+                                                                        </div>
+                                                            
+                                                            
                                                                 {/* <span className="price">Giá cũ: {product.variants[0]?.list_price.toLocaleString()} VND</span> */}
                                                             </div>
                                                         </div>
@@ -542,44 +576,76 @@ const Home: React.FC = () => {
                                     {productsnew.map((product) => (
                                         <SwiperSlide key={product.id}>
                                             <div className="card-product style-skincare">
-                                                <div className="card-product-wrapper">
-                                                    <Link
-                                                        to={product.name}
-                                                        className="product-img"
-                                                    >
-                                                        <img
-                                                            className="lazyload img-product"
-                                                            src={
-                                                                product.thumbnail
-                                                            }
-                                                            alt={product.name}
-                                                            style={{
-                                                                width: "800px",
-                                                                height: "500px",
-                                                            }}
-                                                        />
-                                                        {/* <img
-                                                                className="lazyload img-hover"
-                                                                src={product.hoverImg}
-                                                                alt={product.name}
-                                                            /> */}
-                                                    </Link>
-                                                </div>
-                                                <div className="card-product-info text-center">
-                                                    <Link
-                                                        to={product.name}
-                                                        className="title link"
-                                                    >
-                                                        {product.name}
-                                                    </Link>
-                                                    {/* <span className="price">{product.list_price.toLocaleString('vi-VN')} đ</span> */}
-                                                    <span className="price">
-                                                        Giá:{" "}
-                                                        {product.variants[0]?.selling_price.toLocaleString()}{" "}
-                                                        VND
-                                                    </span>
-                                                </div>
-                                            </div>
+                                                            <div className="card-product-wrapper">
+                                                                <div
+                                                                    onClick={() => handleProductClick(product.id)}
+                                                                    style={{ cursor: "pointer" }}
+                                                                    className="product-img"
+                                                                >
+                                                                    <img
+                                                                        className="lazyload img-product"
+                                                                        src={
+                                                                            product.thumbnail
+                                                                        }
+                                                                        alt={
+                                                                            product.name
+                                                                        }
+                                                                        style={{
+                                                                            width: "800px",
+                                                                            height: "500px",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="card-product-info text-center">
+                                                                <h3
+                                                                onClick={() => handleProductClick(product.id)}
+                                                                style={{ cursor: "pointer" }}
+                                                                className="title link"
+                                                            >
+                                                                {product.name}
+                                                            </h3>
+                                                            <div>
+                                                            <span
+                                                                            style={{
+                                                                                fontWeight:
+                                                                                    "bold",
+                                                                                color: "#f00",
+                                                                            }}
+                                                                        >
+                                                                            {product.variants[0]?.selling_price?.toLocaleString(
+                                                                                "vi-VN", {
+                                                                                style: "currency",
+                                                                                currency: "VND",
+                                                                                minimumFractionDigits: 0,  // Loại bỏ .00
+                                                                                maximumFractionDigits: 0,  // Loại bỏ .00
+                                                                            }
+                                                                            )}{" "}
+                                                                            đ
+                                                                        </span>
+                                                                        <span
+                                                                            style={{
+                                                                                textDecoration:
+                                                                                    "line-through",
+                                                                                color: "#999",
+                                                                            }}
+                                                                        >
+                                                                            {product.variants[0]?.list_price?.toLocaleString(
+                                                                                "vi-VN", {
+                                                                                    style: "currency",
+                                                                                    currency: "VND",
+                                                                                    minimumFractionDigits: 0,  // Loại bỏ .00
+                                                                                    maximumFractionDigits: 0,  // Loại bỏ .00
+                                                                                }
+                                                                            )}{" "}
+                                                                            đ
+                                                                        </span>
+                                                                        </div>
+                                                            
+                                                            
+                                                                {/* <span className="price">Giá cũ: {product.variants[0]?.list_price.toLocaleString()} VND</span> */}
+                                                            </div>
+                                                        </div>
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
