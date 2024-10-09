@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Form, Input, message, Spin } from "antd";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type FieldType = {
     email: string;
@@ -13,28 +13,17 @@ const Login: React.FC = () => {
     const queryClient = useQueryClient();
     const [loading, setLoading] = useState(false);
     const [messageAPI, contextHolder] = message.useMessage();
+    const navigate = useNavigate();
 
     // Kiểm tra trạng thái đăng nhập khi trang được tải
     useEffect(() => {
         const authToken = localStorage.getItem("authToken");
-        const userRole = localStorage.getItem("userRole");
 
-        // Nếu đã có token trong localStorage (đã đăng nhập)
-        if (authToken && userRole) {
-            messageAPI.warning(
-                "Bạn đang đăng nhập một tài khoản. Vui lòng đăng xuất để đăng nhập tài khoản khác.",
-            );
-
-            // Điều hướng về trang tương ứng dựa trên role
-            setTimeout(() => {
-                if (userRole === "2") {
-                    window.location.href = `http://127.0.0.1:8000/dashboard`; // Điều hướng đến trang dashboard
-                } else if (userRole === "1") {
-                    window.location.href = `http://localhost:5173`; // Điều hướng đến trang home
-                }
-            }, 1500);
+        // Nếu đã có authToken trong localStorage, điều hướng về trang chủ
+        if (authToken) {
+            navigate("/"); // Điều hướng tới trang chủ nếu đã đăng nhập
         }
-    }, [messageAPI]);
+    }, [navigate]);
 
     // Mutation for login API call
     const { mutate } = useMutation({
@@ -44,26 +33,29 @@ const Login: React.FC = () => {
             const { token, role } = response.data.data; // Lấy token và vai trò từ phản hồi
             const numericRole = Number(role); // Ép kiểu role thành số
 
-            // Lưu token và vai trò vào localStorage
-            localStorage.setItem("authToken", token);
-            localStorage.setItem("userRole", numericRole.toString());
+            // Kiểm tra vai trò hợp lệ trước khi lưu vào localStorage
+            if (numericRole === 1 || numericRole === 2) {
+                // Lưu token và vai trò vào localStorage
+                localStorage.setItem("authToken", token);
+                localStorage.setItem("userRole", numericRole.toString());
 
-            queryClient.invalidateQueries({
-                queryKey: ["products"],
-            });
+                queryClient.invalidateQueries({
+                    queryKey: ["products"],
+                });
 
-            messageAPI.success("Đăng nhập thành công!");
+                messageAPI.success("Đăng nhập thành công!");
 
-            // Điều hướng dựa trên vai trò người dùng
-            setTimeout(() => {
-                if (numericRole === 2) {
-                    window.location.href = `http://127.0.0.1:8000/dashboard`; // Điều hướng đến trang dashboard
-                } else if (numericRole === 1) {
-                    window.location.href = `http://localhost:5173`; // Điều hướng đến trang home
-                } else {
-                    messageAPI.error("Vai trò không hợp lệ.");
-                }
-            }, 2000);
+                // Điều hướng dựa trên vai trò người dùng
+                setTimeout(() => {
+                    if (numericRole === 1) {
+                        navigate("/"); // Vai trò 1 => trang người dùng
+                    } else {
+                        // navigate("/dashboard"); // Vai trò khác => trang dashboard
+                    }
+                }, 2000);
+            } else {
+                messageAPI.error("Vai trò không hợp lệ.");
+            }
         },
         onError: () => {
             messageAPI.error("Sai mật khẩu hoặc tài khoản không tồn tại.");
