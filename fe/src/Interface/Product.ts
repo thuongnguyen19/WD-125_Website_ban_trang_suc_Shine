@@ -28,6 +28,17 @@ export const fetchProducts = async (
   return response.data; // Đảm bảo bạn trả về đúng cấu trúc dữ liệu
 };
 
+export interface Category {
+    id: number;
+    name: string;
+}
+
+// Hàm lấy danh sách sản phẩm từ API
+export const fetchCategories = async (): Promise<Category[]> => {
+  const response = await axiosInstance.get<Category[]>("/category");
+  return response.data;
+};
+
 // Hàm lấy sản phẩm lọc theo sắp xếp, loại và phân trang
 export const fetchFilteredProducts = async (
   sort: string,
