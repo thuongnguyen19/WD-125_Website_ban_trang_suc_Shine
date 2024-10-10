@@ -1,4 +1,5 @@
 import axiosInstance from "../configs/axios";
+
 export interface Product {
   id: number;
   name: string;
@@ -10,51 +11,36 @@ export interface Product {
   }>;
 }
 
-// Hàm lấy danh sách sản phẩm từ API
-
-export const fetchProducts = async (
- 
-  page: number,
-  perPage: number
-): Promise<{ data: Product[]; total_pages: number }> => {
-  const response = await axiosInstance.get<{ data: Product[]; total_pages: number }>("/products", {
-    params: {
-      
-      page: page,
-      per_page: perPage,
-    },
-  });
-  
-  return response.data; // Đảm bảo bạn trả về đúng cấu trúc dữ liệu
-};
-
 export interface Category {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }
 
-// Hàm lấy danh sách sản phẩm từ API
+// Hàm lấy danh mục từ API
 export const fetchCategories = async (): Promise<Category[]> => {
   const response = await axiosInstance.get<Category[]>("/category");
   return response.data;
 };
 
-// Hàm lấy sản phẩm lọc theo sắp xếp, loại và phân trang
-export const fetchFilteredProducts = async (
-  sort: string,
-  type: string,
+// Hàm lấy sản phẩm với lọc, sắp xếp và phân trang
+export const fetchProducts = async (
+  sortBy: string,
+  sortOrder: string,
+  id_category: string | number, // thêm id_category để lọc theo danh mục
+  search: string, // thêm tìm kiếm theo tên sản phẩm
   page: number,
   perPage: number
 ): Promise<{ data: Product[]; total_pages: number }> => {
-  const response = await axiosInstance.get<{ data: Product[]; total_pages: number }>("/products/filter", {
+  const response = await axiosInstance.get<{ data: Product[]; total_pages: number }>("/products", {
     params: {
-      sort: sort,
-      type: type,
-      page: page,
-      per_page: perPage
+      sort_by: sortBy,      // Sắp xếp theo tên hoặc giá
+      sort: sortOrder,      // Thứ tự tăng dần hoặc giảm dần
+      id_category: id_category, // Lọc theo danh mục
+      search: search,       // Tìm kiếm sản phẩm theo tên
+      page: page,           // Trang hiện tại
+      per_page: perPage     // Số sản phẩm trên mỗi trang
     },
   });
-  
-  return response.data; // Đảm bảo bạn trả về đúng cấu trúc dữ liệu
-};
 
+  return response.data; // Đảm bảo trả về đúng cấu trúc dữ liệu
+};
