@@ -627,5 +627,72 @@ img {
           height: 100%;
           margin: 0;
         }
+                /* Điều chỉnh slide chính */
+                .product-images-wrapper {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  max-width: 500px;
+                  /* Giới hạn chiều rộng slide chính */
+                }
         
+                .product-images-wrapper .swiper-slide img {
+                  width: 100%;
+                  height: auto;
+                  /* Giữ tỉ lệ ảnh */
+                  object-fit: cover;
+                }
+        
+                /* Điều chỉnh slide thumbnail dọc bên dưới */
+                .product-thumbnails-horizontal {
+                  margin-top: 20px;
+                  width: 100%;
+                  max-width: 500px;
+                  /* Căn chỉnh chiều rộng giống với slide chính */
+                }
+        
+                .product-thumbnails-horizontal .swiper-slide img {
+                  width: 100%;
+                  height: 80px;
+                  /* Chiều cao của ảnh thumbnail */
+                  object-fit: cover;
+                  cursor: pointer;
+                  transition: transform 0.2s ease-in-out;
+                }
+        
+                .product-thumbnails-horizontal .swiper-slide img:hover {
+                  transform: scale(1.1);
+                  /* Zoom nhẹ khi hover */
+                }
+        
+                /* Điều chỉnh button chuyển slide */
+                .swiper-button-next,
+                .swiper-button-prev {
+                  color: #000;
+                  font-size: 0px;
+                }
+                                .size-box {
+                                  display: flex;
+                                  justify-content: center;
+                                  align-items: center;
+                                  border: 1px solid #ccc;
+                                  width: 10px;
+                                  height: 10px;
+                               
+                                  cursor: pointer;
+                                  border-radius: 5px;
+                                  text-align: center;
+                                  background-color: #f9f9f9;
+                                  transition: background-color 0.3s ease, border 0.3s ease;
+                                }
+                
+                                .size-box.selected {
+                                  background-color: #8d6951;
+                                  /* Màu nền khi chọn */
+                                  border: 3px solid #000;
+                                  /* Đường viền khi chọn */
+                                  color: #fff;
+                                  /* Màu chữ khi chọn */
+                                }
+                                
 }

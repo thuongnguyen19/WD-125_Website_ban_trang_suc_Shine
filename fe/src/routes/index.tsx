@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Home from "../pages/(website)/home/page";
 import Layoutweb from "../layouts/ClientLayout";
 import Register from "../pages/(website)/dkdn/Register";
@@ -14,8 +14,23 @@ import ListProducts from "../pages/(website)/listProducts/ListProducts";
 import Profile from "../layouts/profile";
 import OrderHistory from "../pages/(website)/History/OdHistory";
 import ProductList from "../pages/(website)/listProducts/Filter";
+import { useEffect } from "react";
 
 const Router = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const authToken = localStorage.getItem("authToken");
+
+        if (
+            authToken &&
+            (location.pathname === "/login" ||
+                location.pathname === "/register")
+        ) {
+            navigate("/");
+        }
+    }, [navigate, location.pathname]);
     return (
         <>
             <Routes>
