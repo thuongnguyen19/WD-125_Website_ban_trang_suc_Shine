@@ -9159,6 +9159,7 @@ header.header-bg {
   opacity: 1;
   -webkit-transform: scale(1.09);
   transform: scale(1.09);
+  
 }
 .card-product .card-product-wrapper .size-list {
   position: absolute;
@@ -14948,6 +14949,38 @@ blockquote .text {
     font-size: 26px;
     line-height: 31.2px;
   }
+
+    .search {
+      display: flex;
+      flex-direction: column;
+      /* Chỉnh sửa để các phần tử nằm theo chiều dọc */
+      align-items: flex-start;
+      /* Căn trái các phần tử */
+    }
+  
+    .search-container {
+      display: flex;
+      /* Để input và button nằm ngang */
+      margin-bottom: 10px;
+      /* Khoảng cách giữa ô tìm kiếm và thông báo lỗi */
+    }
+  
+    .search-input {
+      
+      border: 1px solid #ccc;
+      /* Đường viền */
+      border-radius: 4px 0 0 4px;
+      /* Bo góc cho ô input */
+
+      height: 50px;
+    }
+  
+    .error-message {
+      color: red;
+      /* Màu chữ thông báo lỗi */
+      margin-top: 5px;
+      /* Khoảng cách trên */
+    }
   .tf-countdown-v2.justify-content-end .countdown__timer {
     justify-content: end;
   }
@@ -15869,6 +15902,7 @@ blockquote .text {
   .tf-dropdown-sort {
     padding: 10px 18px;
     min-width: 190px;
+    height: 50px;
   }
   .tf-row-flex .tf-shop-sidebar {
     width: calc(25% - 15px);

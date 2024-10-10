@@ -137,14 +137,15 @@ const Home: React.FC = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="card-product-info text-center">
-                                                                <h3
+                                                                <h2
                                                                 onClick={() => handleProductClick(product.id)}
                                                                 style={{ cursor: "pointer" }}
                                                                 className="title link"
                                                             >
                                                                 {product.name}
-                                                            </h3>
+                                                            </h2>
                                                             <div>
+                                                                
                                                             <span
                                                                             style={{
                                                                                 fontWeight:
@@ -152,33 +153,22 @@ const Home: React.FC = () => {
                                                                                 color: "#f00",
                                                                             }}
                                                                         >
-                                                                            {product.variants[0]?.selling_price?.toLocaleString(
-                                                                                "vi-VN", {
-                                                                                style: "currency",
-                                                                                currency: "VND",
-                                                                                minimumFractionDigits: 0,  // Loại bỏ .00
-                                                                                maximumFractionDigits: 0,  // Loại bỏ .00
-                                                                            }
-                                                                            )}{" "}
-                                                                            đ
+                                                                            
+                                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.variants[0]?.selling_price)}
                                                                         </span>
+                                                                        
                                                                         <span
                                                                             style={{
                                                                                 textDecoration:
                                                                                     "line-through",
                                                                                 color: "#999",
+                                                                                marginLeft: "10px",
                                                                             }}
                                                                         >
-                                                                            {product.variants[0]?.list_price?.toLocaleString(
-                                                                                "vi-VN", {
-                                                                                    style: "currency",
-                                                                                    currency: "VND",
-                                                                                    minimumFractionDigits: 0,  // Loại bỏ .00
-                                                                                    maximumFractionDigits: 0,  // Loại bỏ .00
-                                                                                }
-                                                                            )}{" "}
-                                                                            đ
+                                                                            
+                                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.variants[0]?.list_price)}
                                                                         </span>
+                                                                        
                                                                         </div>
                                                             
                                                             
@@ -526,239 +516,7 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
-            <section className="flat-spacing-9 bg_grey-6">
-                <div className="container">
-                    <div
-                        className="flat-title wow fadeInUp"
-                        data-wow-delay="0s"
-                    >
-                        <span className="title">Bán chạy nhất</span>
-                    </div>
-                    <div className="wrap-carousel">
-                        <div
-                            className="swiper tf-sw-recent"
-                            data-preview="4"
-                            data-tablet="3"
-                            data-mobile="2"
-                            data-space-lg="30"
-                            data-space-md="15"
-                            data-space="15"
-                            data-pagination="2"
-                            data-pagination-md="3"
-                            data-pagination-lg="3"
-                        >
-                            <div className="swiper-wrapper">
-                                {/* Nút điều hướng slider */}
-                                <div
-                                    className="swiper-button-prev"
-                                    style={{ color: "black" }}
-                                >
-                                    <LeftOutlined />
-                                </div>
-                                <div
-                                    className="swiper-button-next"
-                                    style={{ color: "black" }}
-                                >
-                                    <RightOutlined />
-                                </div>
-
-                                <Swiper
-                                    modules={[Navigation]} // Sử dụng module Navigation cho Swiper
-                                    spaceBetween={20}
-                                    slidesPerView={3} // Hiển thị 3 sản phẩm mỗi lần
-                                    navigation={{
-                                        nextEl: ".swiper-button-next",
-                                        prevEl: ".swiper-button-prev",
-                                    }}
-                                    loop={true} // Cho phép slider chạy vòng lặp
-                                    className="swiper-container"
-                                >
-                                    {productsnew.map((product) => (
-                                        <SwiperSlide key={product.id}>
-                                            <div className="card-product style-skincare">
-                                                            <div className="card-product-wrapper">
-                                                                <div
-                                                                    onClick={() => handleProductClick(product.id)}
-                                                                    style={{ cursor: "pointer" }}
-                                                                    className="product-img"
-                                                                >
-                                                                    <img
-                                                                        className="lazyload img-product"
-                                                                        src={
-                                                                            product.thumbnail
-                                                                        }
-                                                                        alt={
-                                                                            product.name
-                                                                        }
-                                                                        style={{
-                                                                            width: "800px",
-                                                                            height: "500px",
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div className="card-product-info text-center">
-                                                                <h3
-                                                                onClick={() => handleProductClick(product.id)}
-                                                                style={{ cursor: "pointer" }}
-                                                                className="title link"
-                                                            >
-                                                                {product.name}
-                                                            </h3>
-                                                            <div>
-                                                            <span
-                                                                            style={{
-                                                                                fontWeight:
-                                                                                    "bold",
-                                                                                color: "#f00",
-                                                                            }}
-                                                                        >
-                                                                            {product.variants[0]?.selling_price?.toLocaleString(
-                                                                                "vi-VN", {
-                                                                                style: "currency",
-                                                                                currency: "VND",
-                                                                                minimumFractionDigits: 0,  // Loại bỏ .00
-                                                                                maximumFractionDigits: 0,  // Loại bỏ .00
-                                                                            }
-                                                                            )}{" "}
-                                                                            đ
-                                                                        </span>
-                                                                        <span
-                                                                            style={{
-                                                                                textDecoration:
-                                                                                    "line-through",
-                                                                                color: "#999",
-                                                                            }}
-                                                                        >
-                                                                            {product.variants[0]?.list_price?.toLocaleString(
-                                                                                "vi-VN", {
-                                                                                    style: "currency",
-                                                                                    currency: "VND",
-                                                                                    minimumFractionDigits: 0,  // Loại bỏ .00
-                                                                                    maximumFractionDigits: 0,  // Loại bỏ .00
-                                                                                }
-                                                                            )}{" "}
-                                                                            đ
-                                                                        </span>
-                                                                        </div>
-                                                            
-                                                            
-                                                                {/* <span className="price">Giá cũ: {product.variants[0]?.list_price.toLocaleString()} VND</span> */}
-                                                            </div>
-                                                        </div>
-                                        </SwiperSlide>
-                                    ))}
-                                </Swiper>
-                                {/* <div className="swiper-slide" >
-                                <div className="card-product style-skincare">
-                                    <div className="card-product-wrapper">
-                                        <a href="product-detail.html" className="product-img">
-                                            <img className="lazyload img-product" data-src="images/products/skincare-1.jpg" src="images/products/jewerly-1.jpg" alt="image-product"/>
-                                            <img className="lazyload img-hover" data-src="images/products/skincare-2.jpg" src="images/products/jewerly-2.jpg" alt="image-product"/>
-                                        </a>
-                                       
-                                    </div>
-                                    <div className="card-product-info text-center">
-                                        <Link to="/detail" className="title link">
-                                            Anhydrous Solution Pore Serum
-                                        </Link>
-                                        <span className="price">$32.00</span>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="swiper-slide" >
-                                <div className="card-product style-skincare">
-                                    <div className="card-product-wrapper">
-                                        <a href="product-detail.html" className="product-img">
-                                            <img className="lazyload img-product" data-src="images/products/skincare-3.jpg" src="images/products/jewerly-3.jpg" alt="image-product"/>
-                                            <img className="lazyload img-hover" data-src="images/products/skincare-4.jpg" src="images/products/jewerly-4.jpg" alt="image-product"/>
-                                        </a>
-                                        
-                                    </div>
-                                    <div className="card-product-info text-center">
-                                        <a href="product-detail.html" className="title link">Anhydrous Solution Pore Serum</a>
-                                        <span className="price">From $65.00</span>
-                                        <div className="tf-size-list">
-                                            <span className="tf-size-list-item fw-6 radius-3">30ml</span>
-                                            <span className="tf-size-list-item fw-6 radius-3">60ml</span>
-                                        </div>
-                                        <div className="tf-product-btns">
-                                            <a href="#quick_add" data-bs-toggle="modal" className="tf-btn style-3 radius-3 btn-fill animate-hover-btn">Quick add</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="swiper-slide" >
-                                <div className="card-product style-skincare">
-                                    <div className="card-product-wrapper">
-                                        <a href="product-detail.html" className="product-img">
-                                            <img className="lazyload img-product" data-src="images/products/skincare-5.jpg" src="images/products/jewerly-5.jpg" alt="image-product"/>
-                                            <img className="lazyload img-hover" data-src="images/products/skincare-6.jpg" src="images/products/jewerly-6.jpg" alt="image-product"/>
-                                        </a>
-                                       
-                                    </div>
-                                    <div className="card-product-info text-center">
-                                        <a href="product-detail.html" className="title link">Serum for Hair Density</a>
-                                        <span className="price">$65.00</span>
-                                        <div className="tf-size-list">
-                                            <span className="tf-size-list-item fw-6 radius-3">40ml</span>
-                                            <span className="tf-size-list-item fw-6 radius-3">50ml</span>
-                                        </div>
-                                        <div className="tf-product-btns">
-                                            <a href="#quick_add" data-bs-toggle="modal" className="tf-btn style-3 radius-3 btn-fill animate-hover-btn">Quick add</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="swiper-slide" >
-                                <div className="card-product style-skincare">
-                                    <div className="card-product-wrapper">
-                                        <a href="product-detail.html" className="product-img">
-                                            <img className="lazyload img-product" data-src="images/products/skincare-7.jpg" src="images/products/jewerly-7.jpg" alt="image-product"/>
-                                            <img className="lazyload img-hover" data-src="images/products/skincare-8.jpg" src="images/products/jewerly-8.jpg" alt="image-product"/>
-                                        </a>
-                                       
-                                    </div>
-                                    <div className="card-product-info text-center">
-                                        <a href="product-detail.html" className="title link">Mini Confidence in a Cleanser</a>
-                                        <span className="price">$22.00</span>
-                                        <div className="tf-size-list">
-                                            <span className="tf-size-list-item fw-6 radius-3">50ml</span>
-                                            <span className="tf-size-list-item fw-6 radius-3">80ml</span>
-                                        </div>
-                                        <div className="tf-product-btns">
-                                            <a href="#quick_add" data-bs-toggle="modal" className="tf-btn style-3 radius-3 btn-fill animate-hover-btn">Quick add</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="swiper-slide">
-                                <div className="card-product style-skincare">
-                                    <div className="card-product-wrapper">
-                                        <a href="product-detail.html" className="product-img">
-                                            <img className="lazyload img-product" data-src="images/products/skincare-9.jpg" src="images/products/jewerly-9.jpg" alt="image-product"/>
-                                            <img className="lazyload img-hover" data-src="images/products/skincare-10.jpg" src="images/products/jewerly-10.jpg" alt="image-product"/>
-                                        </a>
-                                        
-                                    </div>
-                                    <div className="card-product-info text-center">
-                                         <Link to="/detail" className="title link">
-                                                        Anhydrous Solution Pore Serum
-                                                    </Link>
-                                        <span className="price"><span className="fw-4 text-sale">$62.00</span> <span className="text_primary">$52.00</span></span>
-                                        
-                                    </div>
-                                </div>
-                            </div> */}
-                            </div>
-                        </div>
-                        {/* <div className="nav-sw style-not-line nav-next-slider nav-next-recent box-icon w_46 round"><span className="icon icon-arrow-left"></span></div>
-                    <div className="nav-sw style-not-line nav-prev-slider nav-prev-recent box-icon w_46 round"><span className="icon icon-arrow-right"></span></div> */}
-                        <div className="sw-dots style-2 sw-pagination-recent justify-content-center"></div>
-                    </div>
-                </div>
-            </section>
+           
 
             <section className="flat-spacing-1 flat-iconbox">
                 <div className="container">

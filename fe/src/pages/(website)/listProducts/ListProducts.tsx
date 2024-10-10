@@ -7,65 +7,52 @@ import {
     DoubleLeftOutlined,
     DoubleRightOutlined,
 } from "@ant-design/icons";
-import axios from "axios";
+import { Category, fetchCategories, fetchProducts, Product } from "../../../Interface/Product";
 
-// Khai báo kiểu dữ liệu cho sản phẩm và biến thể
-interface ProductVariant {
-    id_product: number;
-    selling_price: number;
-    list_price: number;
-}
-
-interface Product {
-    id: number;
-    name: string;
-    thumbnail: string;
-    variants: ProductVariant[];
-}
 
 const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const [sortBy, setSortBy] = useState("none"); // Đặt giá trị mặc định cho sortBy
     const [sortOrder, setSortOrder] = useState("asc");
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
-    const [category, setCategory] = useState<number | null>(null); // Thêm trạng thái danh mục
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string | number>('');
+    const [search, setSearch] = useState('');  // Tìm kiếm sản phẩm
     const perPage = 12; // Số sản phẩm trên mỗi trang
     const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useState('');
+    
     const [error, setError] = useState<string | null>(null);
     
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
         const loadProducts = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get(
-                    "http://localhost:8000/api/products/filter",
-                    {
-                        params: {
-                            sort_by: sortBy,
-                            sort: sortOrder,
-                            page,
-                            per_page: perPage,
-                            cate: category,
-                        },
-                    },
-                );
-                console.log(response.data.data.products);
-                setProducts(response.data.data.products);
-                setTotalPages(response.data.total_pages);
-            } catch (error) {
+      try {
+        const { data, total_pages } = await fetchProducts(sortBy, sortOrder, selectedCategory, search, page, perPage);
+        setProducts(data);
+        setTotalPages(total_pages);
                 console.error("Error fetching products:", error);
             } finally {
-                setLoading(false);
             }
         };
 
         loadProducts();
-    }, [sortBy, sortOrder, page, category]);
+    }, [sortBy, sortOrder, selectedCategory, search, page, perPage]);
+
+    // Lấy dữ liệu danh mục khi component được load
+    useEffect(() => {
+        const loadCategories = async () => {
+        try {
+            const categoriesData = await fetchCategories();
+            setCategories(categoriesData);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+        };
+        loadCategories();
+    }, []);
+
 
     // Hàm thay đổi trang
     const handlePageChange = (newPage: number) => {
@@ -83,36 +70,24 @@ const ListProducts: React.FC = () => {
         }
     };
 
-    const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedCategory = Number(event.target.value);
-        setCategory(selectedCategory);
-        setPage(1); // Reset trang về 1 khi thay đổi danh mục
-    };
+    // Hàm xử lý khi chọn danh mục
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+    setPage(1); // Reset lại trang khi thay đổi danh mục
+  };
+
+  // Hàm xử lý tìm kiếm sản phẩm
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setPage(1); // Reset lại trang khi tìm kiếm
+  };
 
     const handleProductClick = (id: number) => {
     navigate(`/detail/${id}`);
   };
 
-  const handleSearch = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8000/api/products/search`, {
-                params: { name: searchTerm },
-            });
-            setProducts(response.data); // Giả định response.data là mảng sản phẩm
-            setError(null);
-        } catch (err) {
-            if (axios.isAxiosError(err)) {
-                setError(err.response?.data?.message || 'Có lỗi xảy ra');
-            } else {
-                setError('');
-            }
-            setProducts([]);
-        }
-    };
 
-    if (loading) {
-        return <p>Đang tải...</p>;
-    }
+   
 
     return (
         <div>
@@ -127,28 +102,35 @@ const ListProducts: React.FC = () => {
                 <div className="container">
                     <div className="tf-shop-control grid-3 align-items-center">
                         <div className="tf-control-filter">
-                            <select onChange={handleCategoryChange}>
-                                <option value="">Chọn danh mục</option>
-                                <option value="1">Nhẫn</option>
-                                <option value="2">Vòng cổ</option>
-                                <option value="3">Lắc tay</option>
-                                <option value="4">Lắc chân</option>
+                            <select value={selectedCategory} onChange={handleCategoryChange}>
+                                <option value="">All Categories</option>
+                                {categories.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                    {category.name}
+                                    </option>
+                                ))}
                             </select>
                           
                         </div>
-                        <div className="tf-control-filter">
-                        
-                            <input
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Tìm kiếm sản phẩm..."
-                            />
-                            <button  onClick={handleSearch}>Tìm kiếm</button>
-
-                            {error && <div>{error}</div>}
+                        <div className="tf-control-layout d-flex justify-content-center">
+                                <div className="search">
+                                <div className="search-container">
+                                    <input
+                                    className="search-input" style={{width: '400px'}}
+                                        type="text"
+                                        placeholder="Search product..."
+                                        value={search}
+                                        onChange={handleSearchChange}
+                                    />
+                                    {/* <button onClick={handleSearch} className="search-button">Tìm kiếm</button> */}
+                                </div>
+                                {error && <div className="error-message">{error}</div>}
+                            </div>
                         </div>
+                        
+
                         <div className="tf-control-sorting d-flex justify-content-end">
+                            
                             <div className="tf-dropdown-sort">
                                 <select
                                     onChange={(e) =>
@@ -211,10 +193,23 @@ const ListProducts: React.FC = () => {
                                                         alignItems: "center",
                                                     }}
                                                 >
+                                                    
+                                                    <div className="price-on-sale">
+                                                        <span
+                                                            style={{
+                                                                fontWeight:
+                                                                    "bold",
+                                                                color: "#f00",
+                                                            }}
+                                                        >
+                                                            
+                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.variants[0]?.selling_price)}
+                                                        </span>
+                                                    </div>
                                                     <div
                                                         className="price-list"
                                                         style={{
-                                                            marginRight: "10px",
+                                                            marginLeft: "10px",
                                                         }}
                                                     >
                                                         <span
@@ -224,35 +219,12 @@ const ListProducts: React.FC = () => {
                                                                 color: "#999",
                                                             }}
                                                         >
-                                                            {product.variants[0]?.list_price?.toLocaleString(
-                                                                "vi-VN",
-                                                            )}{" "}
-                                                            đ
-                                                        </span>
-                                                    </div>
-                                                    <div className="price-on-sale">
-                                                        <span
-                                                            style={{
-                                                                fontWeight:
-                                                                    "bold",
-                                                                color: "#f00",
-                                                            }}
-                                                        >
-                                                            {product.variants[0]?.selling_price?.toLocaleString(
-                                                                "vi-VN",
-                                                            )}{" "}
-                                                            đ
+                                                            
+                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.variants[0]?.list_price)}
                                                         </span>
                                                     </div>
                                                 </div>
-                                            {/* <span className="price">
-                                                {product.variants[0]?.selling_price?.toLocaleString()}{" "}
-                                                VND
-                                                <span className="old-price price">
-                                                    {product.variants[0]?.list_price?.toLocaleString()}{" "}
-                                                    VND
-                                                </span>
-                                            </span> */}
+                                           
                                         </div>
                                     </div>
                                 </div>
