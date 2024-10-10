@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { CaretLeftOutlined, CaretRightOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "swiper/css";
 import { Navigation } from "swiper/modules";
 
@@ -84,7 +84,12 @@ const Detail: React.FC = () => {
     );
     const [minSellingPrice, setMinSellingPrice] = useState<number | null>(null);
     const [minListPrice, setMinListPrice] = useState<number | null>(null);
+    const [activeIndex, setActiveIndex] = useState<number>(0); // Theo dõi chỉ số slide hiện tại
 
+    const mainSwiperRef = useRef<any>(null); // Ref để quản lý slider chính
+    const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
+
+    // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
@@ -97,6 +102,7 @@ const Detail: React.FC = () => {
                     setProduct(productData);
                     fetchRelatedProducts(productData.id);
 
+                    // Lấy giá nhỏ nhất từ các biến thể sản phẩm
                     const minVariant = productData.variant.reduce(
                         (prev, curr) =>
                             parseFloat(prev.selling_price) <
@@ -130,8 +136,7 @@ const Detail: React.FC = () => {
                 const response = await axios.get(
                     `http://localhost:8000/api/relatedProducts/${categoryId}`,
                 );
-                const relatedProductsData = response.data.data;
-                setRelatedProducts(relatedProductsData);
+                setRelatedProducts(response.data.data);
             } catch (err) {
                 console.error("Failed to fetch related products", err);
             }
@@ -171,8 +176,17 @@ const Detail: React.FC = () => {
             (variant) => variant.colors.name === colorName,
         );
 
-        if (selectedVariant) {
+        if (selectedVariant && selectedVariant.image_color) {
+            const selectedImageIndex = getCombinedImages().indexOf(
+                selectedVariant.image_color,
+            );
             setSelectedColorImage(selectedVariant.image_color);
+            setActiveIndex(selectedImageIndex); // Cập nhật đúng vị trí của ảnh màu trong slider lớn
+            if (mainSwiperRef.current && mainSwiperRef.current.swiper) {
+                mainSwiperRef.current.swiper.slideTo(selectedImageIndex); // Chuyển đến slide tương ứng
+            }
+        } else {
+            setSelectedColorImage(null);
         }
 
         const sizesForSelectedColor = product?.variant
@@ -217,15 +231,56 @@ const Detail: React.FC = () => {
         }
     };
 
-    const handleAddToCart = () => {
-        if (!selectedColor || !selectedSize) {
-            message.error(
-                "Vui lòng chọn màu sắc và kích thước trước khi thêm vào giỏ hàng.",
-            );
-        } else {
-            message.success("Sản phẩm đã được thêm vào giỏ hàng.");
-        }
-    };
+  const handleAddToCart = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+          message.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+          navigate("/login");
+          return;
+      }
+
+      if (!selectedColor || !selectedSize) {
+          message.error("Vui lòng chọn màu sắc và kích thước.");
+          return;
+      }
+
+      const selectedVariant = product?.variant.find(
+          (variant) =>
+              variant.colors.name === selectedColor &&
+              variant.sizes.name === selectedSize,
+      );
+
+      if (!selectedVariant) {
+          message.error(
+              "Không tìm thấy sản phẩm với màu và kích thước đã chọn.",
+          );
+          return;
+      }
+
+      try {
+          const cartData = {
+              id_variant: selectedVariant.id,
+              quantity: quantity,
+          };
+          const response = await axios.post(
+              "http://localhost:8000/api/addCart",
+              cartData,
+              {
+                  headers: {
+                      Authorization: `Bearer ${token}`,
+                  },
+              },
+          );
+          if (response.data.status) {
+              message.success("Thêm vào giỏ hàng thành công.");
+          } else {
+              message.error("Thêm vào giỏ hàng thất bại.");
+          }
+      } catch (error) {
+          message.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
+      }
+  };
+
 
     const uniqueColors =
         product?.variant.reduce((unique, item) => {
@@ -243,6 +298,30 @@ const Detail: React.FC = () => {
 
     const isSizeAvailable = (sizeName: string) => {
         return availableSizes.includes(sizeName);
+    };
+
+    const handleThumbnailClick = (index: number) => {
+        if (mainSwiperRef.current && mainSwiperRef.current.swiper) {
+            mainSwiperRef.current.swiper.slideTo(index);
+            setActiveIndex(index); // Cập nhật trạng thái ảnh đang được xem
+        }
+    };
+
+    const getCombinedImages = () => {
+        if (selectedColorImage) {
+            return [
+                selectedColorImage,
+                ...product!.slideImages.map((image: Image) => image.link_image),
+            ];
+        }
+        return product!.slideImages.map((image: Image) => image.link_image);
+    };
+
+    const handleSlideChange = (swiper: any) => {
+        setActiveIndex(swiper.activeIndex); // Cập nhật chỉ số slide hiện tại
+        if (thumbSwiperRef.current && thumbSwiperRef.current.swiper) {
+            thumbSwiperRef.current.swiper.slideTo(swiper.activeIndex); // Đồng bộ chỉ số của slider nhỏ
+        }
     };
 
     if (loading) {
@@ -280,71 +359,98 @@ const Detail: React.FC = () => {
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="tf-product-media-wrap sticky-top">
-                                    <Swiper
-                                        modules={[Navigation]}
-                                        spaceBetween={20}
-                                        slidesPerView={1}
-                                        navigation={{
-                                            nextEl: ".swiper-button-next",
-                                            prevEl: ".swiper-button-prev",
-                                        }}
-                                        loop={true}
-                                    >
-                                        {selectedColorImage ? (
-                                            <SwiperSlide>
-                                                <img
-                                                    src={getFullImagePath(
-                                                        selectedColorImage,
-                                                    )}
-                                                    alt={`Selected Image`}
-                                                    style={{
-                                                        width: "800px",
-                                                        height: "500px",
-                                                    }}
-                                                />
-                                            </SwiperSlide>
-                                        ) : product?.slideImages.length > 0 ? (
-                                            product.slideImages.map(
+                                    <div className="product-images-wrapper">
+                                        {/* Main Image Swiper */}
+                                        <Swiper
+                                            modules={[Navigation]}
+                                            spaceBetween={20}
+                                            slidesPerView={1}
+                                            navigation={{
+                                                nextEl: ".swiper-button-next",
+                                                prevEl: ".swiper-button-prev",
+                                            }}
+                                            loop={true}
+                                            ref={mainSwiperRef}
+                                            onSlideChange={handleSlideChange}
+                                            style={{
+                                                width: "100%",
+                                                height: "500px",
+                                            }}
+                                        >
+                                            {getCombinedImages().map(
                                                 (image, index) => (
                                                     <SwiperSlide key={index}>
                                                         <img
                                                             src={getFullImagePath(
-                                                                image.link_image,
+                                                                image,
                                                             )}
                                                             alt={`Image ${index + 1}`}
                                                             style={{
-                                                                width: "800px",
+                                                                width: "100%",
                                                                 height: "500px",
+                                                                objectFit:
+                                                                    "cover",
                                                             }}
                                                         />
                                                     </SwiperSlide>
                                                 ),
-                                            )
-                                        ) : (
-                                            // Nếu không có ảnh trong product.images thì hiển thị ảnh thumbnail
-                                            <SwiperSlide>
-                                                <img
-                                                    src={getFullImagePath(
-                                                        product.thumbnail,
-                                                    )}
-                                                    alt="Product Thumbnail"
-                                                    style={{
-                                                        width: "800px",
-                                                        height: "500px",
-                                                    }}
-                                                />
-                                            </SwiperSlide>
-                                        )}
+                                            )}
+                                        </Swiper>
 
-                                        <div className="swiper-button-next">
-                                            <CaretRightOutlined />
-                                        </div>
-                                        <div className="swiper-button-prev">
-                                            <CaretLeftOutlined />
-                                        </div>
-                                    </Swiper>
+                                        {/* Horizontal Thumbnail Swiper */}
+                                        <Swiper
+                                            spaceBetween={10}
+                                            slidesPerView={5}
+                                            style={{ marginTop: "20px" }}
+                                            navigation={{
+                                                nextEl: ".swiper-button-next",
+                                                prevEl: ".swiper-button-prev",
+                                            }}
+                                            loop={false}
+                                            ref={thumbSwiperRef}
+                                        >
+                                            {getCombinedImages().map(
+                                                (image, index) => (
+                                                    <SwiperSlide key={index}>
+                                                        <img
+                                                            src={getFullImagePath(
+                                                                image,
+                                                            )}
+                                                            alt={`Thumbnail ${index + 1}`}
+                                                            onClick={() =>
+                                                                handleThumbnailClick(
+                                                                    index,
+                                                                )
+                                                            }
+                                                            className={
+                                                                index ===
+                                                                activeIndex
+                                                                    ? "active-thumbnail"
+                                                                    : ""
+                                                            }
+                                                            style={{
+                                                                width: "100%",
+                                                                height: "100px",
+                                                                objectFit:
+                                                                    "cover",
+                                                                cursor: "pointer",
+                                                                border:
+                                                                    index ===
+                                                                    activeIndex
+                                                                        ? "3px solid #ff6600"
+                                                                        : "1px solid #ccc",
+                                                                transition:
+                                                                    "border 0.3s ease-in-out",
+                                                            }}
+                                                        />
+                                                    </SwiperSlide>
+                                                ),
+                                            )}
+                                        </Swiper>
+                                    </div>
                                 </div>
                             </div>
+
                             <div className="col-md-6">
                                 <div className="tf-product-info-wrap position-relative">
                                     <div className="tf-product-info-title">
@@ -373,7 +479,7 @@ const Detail: React.FC = () => {
                                                                 color: "#999",
                                                             }}
                                                         >
-                                                            {listPrice.toLocaleString(
+                                                            {listPrice?.toLocaleString(
                                                                 "vi-VN",
                                                             )}{" "}
                                                             đ
@@ -387,7 +493,7 @@ const Detail: React.FC = () => {
                                                                 color: "#f00",
                                                             }}
                                                         >
-                                                            {totalPrice.toLocaleString(
+                                                            {totalPrice?.toLocaleString(
                                                                 "vi-VN",
                                                             )}{" "}
                                                             đ
@@ -498,45 +604,55 @@ const Detail: React.FC = () => {
                                     <div className="tf-size-selection mt-3">
                                         <h6>Kích thước:</h6>
                                         <br />
-                                        <div className="tf-variant-sizes">
+                                        <div className="tf-variant-sizes d-flex flex-wrap">
                                             {allSizes.map((sizeName, index) => (
-                                                <span
+                                                <div
                                                     key={index}
-                                                    className={`tf-size-option ${selectedSize === sizeName ? "active" : ""}`}
+                                                    className={`size-box ${selectedSize === sizeName ? "selected" : ""}`}
                                                     onClick={() =>
-                                                        isSizeAvailable(
-                                                            sizeName,
-                                                        ) &&
                                                         handleSizeChange(
                                                             sizeName,
                                                         )
                                                     }
                                                     style={{
-                                                        marginRight: "10px",
+                                                        display: "flex",
+                                                        justifyContent:
+                                                            "center",
+                                                        alignItems: "center",
+                                                        width: "40px",
+                                                        height: "40px",
+                                                        margin: "5px",
                                                         cursor: isSizeAvailable(
                                                             sizeName,
                                                         )
                                                             ? "pointer"
                                                             : "not-allowed",
-                                                        padding: "8px",
-                                                        fontSize: "16px",
-                                                        borderRadius: "8px",
                                                         border:
                                                             selectedSize ===
                                                             sizeName
                                                                 ? "3px solid #000"
-                                                                : "2px solid #ccc",
+                                                                : "1px solid #ccc",
+                                                        borderRadius: "5px",
+                                                        textAlign: "center",
                                                         backgroundColor:
+                                                            selectedSize ===
+                                                            sizeName
+                                                                ? "#ff6600"
+                                                                : "#f9f9f9",
+                                                        fontWeight: "bold",
+                                                        color:
+                                                            selectedSize ===
+                                                            sizeName
+                                                                ? "#fff"
+                                                                : "#000",
+                                                        opacity:
                                                             isSizeAvailable(
                                                                 sizeName,
                                                             )
-                                                                ? "#fff"
-                                                                : "#f0f0f0",
-                                                        color: isSizeAvailable(
-                                                            sizeName,
-                                                        )
-                                                            ? "#000"
-                                                            : "#999",
+                                                                ? 1
+                                                                : 0.5,
+                                                        transition:
+                                                            "background-color 0.3s ease, border 0.3s ease, opacity 0.3s ease",
                                                         pointerEvents:
                                                             isSizeAvailable(
                                                                 sizeName,
@@ -546,7 +662,7 @@ const Detail: React.FC = () => {
                                                     }}
                                                 >
                                                     {sizeName}
-                                                </span>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
