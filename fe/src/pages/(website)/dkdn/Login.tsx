@@ -1,8 +1,8 @@
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Form, Input, message, Spin } from "antd";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 
 type FieldType = {
     email: string;
@@ -15,44 +15,33 @@ const Login: React.FC = () => {
     const [messageAPI, contextHolder] = message.useMessage();
     const navigate = useNavigate();
 
-    // Kiểm tra trạng thái đăng nhập khi trang được tải
-    useEffect(() => {
-        const authToken = localStorage.getItem("authToken");
+    // useEffect(() => {
+    //     const authToken = localStorage.getItem("authToken");
+    //     if (authToken) {
+    //         navigate("/cart"); // Nếu đã đăng nhập, điều hướng tới trang giỏ hàng
+    //     }
+    // }, [navigate]);
 
-        // Nếu đã có authToken trong localStorage, điều hướng về trang chủ
-        if (authToken) {
-            navigate("/"); // Điều hướng tới trang chủ nếu đã đăng nhập
-        }
-    }, [navigate]);
-
-    // Mutation for login API call
     const { mutate } = useMutation({
         mutationFn: (user: FieldType) =>
-            axios.post(`http://localhost:8000/api/login`, user), // Gọi API login từ Laravel
+            axios.post(`http://localhost:8000/api/login`, user),
         onSuccess: (response) => {
-            const { token, role } = response.data.data; // Lấy token và vai trò từ phản hồi
-            const numericRole = Number(role); // Ép kiểu role thành số
+            const { token, role } = response.data.data;
+            const numericRole = Number(role);
 
-            // Kiểm tra vai trò hợp lệ trước khi lưu vào localStorage
             if (numericRole === 1 || numericRole === 2) {
-                // Lưu token và vai trò vào localStorage
-                localStorage.setItem("authToken", token);
+                localStorage.setItem("authToken", token); // Lưu token
                 localStorage.setItem("userRole", numericRole.toString());
 
                 queryClient.invalidateQueries({
-                    queryKey: ["products"],
+                    queryKey: ["cartItems"], // Làm mới giỏ hàng
                 });
 
                 messageAPI.success("Đăng nhập thành công!");
 
-                // Điều hướng dựa trên vai trò người dùng
                 setTimeout(() => {
-                    if (numericRole === 1) {
-                        navigate("/"); // Vai trò 1 => trang người dùng
-                    } else {
-                        // navigate("/dashboard"); // Vai trò khác => trang dashboard
-                    }
-                }, 2000);
+                    navigate("/cart"); // Điều hướng tới giỏ hàng sau khi đăng nhập
+                }, 1000);
             } else {
                 messageAPI.error("Vai trò không hợp lệ.");
             }
@@ -67,7 +56,7 @@ const Login: React.FC = () => {
 
     const onFinish = (values: FieldType) => {
         setLoading(true);
-        mutate(values); // Gọi hàm mutate để xử lý đăng nhập
+        mutate(values);
     };
 
     const onFinishFailed = () => {
