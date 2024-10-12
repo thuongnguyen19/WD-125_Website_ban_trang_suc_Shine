@@ -231,64 +231,63 @@ const Detail: React.FC = () => {
         }
     };
 
-  const handleAddToCart = async () => {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-          message.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
-          navigate("/login");
-          return;
-      }
+    const handleAddToCart = async () => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            message.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            navigate("/login");
+            return;
+        }
 
-      if (!selectedColor || !selectedSize) {
-          message.error("Vui lòng chọn màu sắc và kích thước.");
-          return;
-      }
+        if (!selectedColor || !selectedSize) {
+            message.error("Vui lòng chọn màu sắc và kích thước.");
+            return;
+        }
 
-      const selectedVariant = product?.variant.find(
-          (variant) =>
-              variant.colors.name === selectedColor &&
-              variant.sizes.name === selectedSize,
-      );
+        const selectedVariant = product?.variant.find(
+            (variant) =>
+                variant.colors.name === selectedColor &&
+                variant.sizes.name === selectedSize,
+        );
 
-      if (!selectedVariant) {
-          message.error(
-              "Không tìm thấy sản phẩm với màu và kích thước đã chọn.",
-          );
-          return;
-      }
+        if (!selectedVariant) {
+            message.error(
+                "Không tìm thấy sản phẩm với màu và kích thước đã chọn.",
+            );
+            return;
+        }
 
-      try {
-          const cartData = {
-              id_variant: selectedVariant.id,
-              quantity: quantity,
-          };
-          const response = await axios.post(
-              "http://localhost:8000/api/addCart",
-              cartData,
-              {
-                  headers: {
-                      Authorization: `Bearer ${token}`,
-                  },
-              },
-          );
-          if (response.data.status) {
-              const cartItems = JSON.parse(
-                  localStorage.getItem("cartItems") || "[]",
-              );
-              cartItems.push(cartData); 
-              localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        try {
+            const cartData = {
+                id_variant: selectedVariant.id,
+                quantity: quantity,
+            };
+            const response = await axios.post(
+                "http://localhost:8000/api/addCart",
+                cartData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+            if (response.data.status) {
+                const cartItems = JSON.parse(
+                    localStorage.getItem("cartItems") || "[]",
+                );
+                cartItems.push(cartData);
+                localStorage.setItem("cartItems", JSON.stringify(cartItems));
 
-              window.dispatchEvent(new Event("storage"));
+                window.dispatchEvent(new Event("storage"));
 
-              message.success("Thêm vào giỏ hàng thành công.");
-          } else {
-              message.error("Thêm vào giỏ hàng thất bại.");
-          }
-      } catch (error) {
-          message.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
-      }
-  };
-
+                message.success("Thêm vào giỏ hàng thành công.");
+            } else {
+                message.error("Thêm vào giỏ hàng thất bại.");
+            }
+        } catch (error) {
+            message.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
+        }
+    };
 
     const uniqueColors =
         product?.variant.reduce((unique, item) => {

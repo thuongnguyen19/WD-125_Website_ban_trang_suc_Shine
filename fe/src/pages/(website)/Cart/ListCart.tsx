@@ -133,7 +133,7 @@ const ListCart: React.FC = () => {
                         return;
                     }
                     const user = localStorage.getItem("user");
-                    
+
                     await axios.delete(
                         "http://localhost:8000/api/deleteMutipleCart",
                         {
@@ -143,7 +143,6 @@ const ListCart: React.FC = () => {
                             data: { cart_ids: selectedItems, user: user },
                         },
                     );
-
 
                     const remainingItems = cartItems.filter(
                         (item) => !selectedItems.includes(item.id),

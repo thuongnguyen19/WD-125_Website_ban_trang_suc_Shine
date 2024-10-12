@@ -247,9 +247,9 @@ const Pay: React.FC = () => {
                                                                         }
                                                                         style={{
                                                                             width: "100px",
-                                                                            height: "100px", 
+                                                                            height: "100px",
                                                                             objectFit:
-                                                                                "cover", 
+                                                                                "cover",
                                                                             borderRadius:
                                                                                 "5px",
                                                                         }}
