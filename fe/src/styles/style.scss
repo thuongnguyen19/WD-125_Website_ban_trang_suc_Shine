@@ -694,5 +694,21 @@ img {
                                   color: #fff;
                                   /* Màu chữ khi chọn */
                                 }
+                                                                .cart-layout {
+                                                                  display: flex;
+                                                                  justify-content: space-between;
+                                                                }
                                 
+                                                                .cart-left,
+                                                                .cart-right {
+                                                                  width: 48%;
+                                                                  /* Chia 2 cột ngang bằng nhau */
+                                                                }
+                                
+                                                                .cart-summary {
+                                                                  padding: 20px;
+                                                                  border: 1px solid #ddd;
+                                                                  background-color: #f9f9f9;
+                                                                }
+                                                                
 }

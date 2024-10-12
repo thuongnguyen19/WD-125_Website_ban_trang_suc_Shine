@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Form, Input, message, Card, Spin } from "antd";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
@@ -9,6 +9,23 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const [messageAPI, contextHolder] = message.useMessage();
     const navigate = useNavigate();
+
+    // Kiểm tra xem thông tin đã được lưu vào localStorage hay chưa
+    useEffect(() => {
+        const name = localStorage.getItem("name");
+        const email = localStorage.getItem("email");
+        const password = localStorage.getItem("password");
+
+        if (name && email && password) {
+            console.log("Đã lưu thông tin vào localStorage:", {
+                name,
+                email,
+                password,
+            });
+        } else {
+            console.log("Chưa có thông tin nào được lưu vào localStorage.");
+        }
+    }, []);
 
     // Xử lý đăng ký
     const { mutate } = useMutation({
@@ -28,9 +45,8 @@ const Register = () => {
                 queryKey: ["products"],
             });
 
-            messageAPI.success("Đăng ký  thành công!");
+            messageAPI.success("Đăng ký thành công!");
 
-         
             setTimeout(() => {
                 navigate(`/`); // Điều hướng đến trang chủ người dùng
             }, 2000);
@@ -52,8 +68,14 @@ const Register = () => {
 
     const onFinish = (values) => {
         setLoading(true);
+        // Lưu các giá trị từ form vào localStorage
+        localStorage.setItem("name", values.name);
+        localStorage.setItem("email", values.email);
+        localStorage.setItem("password", values.password);
+
+        // Gọi API đăng ký và lưu token, role khi đăng ký thành công
         mutate({
-            name: values.name, // Thêm trường name
+            name: values.name,
             email: values.email,
             password: values.password,
             password_confirmation: values.confirmPassword, // Laravel yêu cầu password confirmation
