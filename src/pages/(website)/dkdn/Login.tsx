@@ -40,7 +40,7 @@ const Login: React.FC = () => {
                 messageAPI.success("Đăng nhập thành công!");
 
                 setTimeout(() => {
-                    navigate("/cart"); // Điều hướng tới giỏ hàng sau khi đăng nhập
+                    navigate("/"); // Điều hướng tới giỏ hàng sau khi đăng nhập
                 }, 1000);
             } else {
                 messageAPI.error("Vai trò không hợp lệ.");
