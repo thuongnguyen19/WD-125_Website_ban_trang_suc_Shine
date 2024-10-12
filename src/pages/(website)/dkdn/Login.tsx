@@ -29,7 +29,7 @@ const Login: React.FC = () => {
             const { token, role } = response.data.data;
             const numericRole = Number(role);
 
-            if (numericRole === 1 || numericRole === 2) {
+            if (numericRole == 1 ) {
                 localStorage.setItem("authToken", token); // Lưu token
                 localStorage.setItem("userRole", numericRole.toString());
 
