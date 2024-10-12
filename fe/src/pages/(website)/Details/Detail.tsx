@@ -272,6 +272,14 @@ const Detail: React.FC = () => {
               },
           );
           if (response.data.status) {
+              const cartItems = JSON.parse(
+                  localStorage.getItem("cartItems") || "[]",
+              );
+              cartItems.push(cartData); 
+              localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+              window.dispatchEvent(new Event("storage"));
+
               message.success("Thêm vào giỏ hàng thành công.");
           } else {
               message.error("Thêm vào giỏ hàng thất bại.");
