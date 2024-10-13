@@ -118,7 +118,7 @@ const Od_Detail = () => {
 
 
     if (loading) {
-        return <p>Đang tải...</p>;
+        return <p>Đang tải trang...</p>;
     }
 
     if (error) {
