@@ -41,7 +41,7 @@ const Router = () => {
                     <Route path="od_histori" element={<OrderHistory />} />{" "}
                 
                     <Route
-                        path="od_histori/detail"
+                        path="od_histori/od_detail/:id"
                         element={<Od_Detail />}
                     />
                 </Route>

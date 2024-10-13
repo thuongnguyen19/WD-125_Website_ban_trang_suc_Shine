@@ -11,16 +11,6 @@ export interface Product {
   }>;
 }
 
-export interface Category {
-  id: number;
-  name: string;
-}
-
-// Hàm lấy danh mục từ API
-export const fetchCategories = async (): Promise<Category[]> => {
-  const response = await axiosInstance.get<Category[]>("/category");
-  return response.data;
-};
 
 // Hàm lấy sản phẩm với lọc, sắp xếp và phân trang
 export const fetchProducts = async (
