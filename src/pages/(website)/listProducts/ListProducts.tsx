@@ -7,7 +7,8 @@ import {
     DoubleLeftOutlined,
     DoubleRightOutlined,
 } from "@ant-design/icons";
-import { Category, fetchCategories, fetchProducts, Product } from "../../../Interface/Product";
+import {fetchProducts, Product } from "../../../Interface/Product";
+import { Category, fetchCategorys } from "../../../Interface/Category";
 
 
 const ListProducts: React.FC = () => {
@@ -44,7 +45,7 @@ const ListProducts: React.FC = () => {
     useEffect(() => {
         const loadCategories = async () => {
         try {
-            const categoriesData = await fetchCategories();
+            const categoriesData = await fetchCategorys();
             setCategories(categoriesData);
         } catch (error) {
             console.error('Error fetching categories:', error);
