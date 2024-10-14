@@ -13,6 +13,7 @@ import { Category, fetchCategorys } from "../../../Interface/Category";
 
 const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
     const [sortBy, setSortBy] = useState("none"); // Đặt giá trị mặc định cho sortBy
     const [sortOrder, setSortOrder] = useState("asc");
     const [page, setPage] = useState<number>(1);
@@ -32,9 +33,11 @@ const ListProducts: React.FC = () => {
       try {
         const { data, total_pages } = await fetchProducts(sortBy, sortOrder, selectedCategory, search, page, perPage);
         setProducts(data);
+        setLoading(false);
         setTotalPages(total_pages);
                 console.error("Error fetching products:", error);
             } finally {
+                setLoading(false);
             }
         };
 
@@ -87,7 +90,9 @@ const ListProducts: React.FC = () => {
     navigate(`/detail/${id}`);
   };
 
-
+  if (loading) {
+        return <p>Đang tải...</p>;
+    }
    
 
     return (
