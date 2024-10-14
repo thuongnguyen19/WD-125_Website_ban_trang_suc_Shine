@@ -1282,7 +1282,7 @@ label {
 }
 
 .flat-spacing-11 {
-  padding-top: 80px;
+  padding-top: 20px;
   padding-bottom: 70px;
 }
 
@@ -4660,7 +4660,6 @@ header.header-bg {
   border: 1px solid var(--line);
 }
 .wd-form-order .order-head {
-  display: flex;
   align-items: center;
   border-bottom: 1px dashed var(--line);
   padding-bottom: 20px;
