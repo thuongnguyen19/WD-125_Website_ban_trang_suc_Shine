@@ -9150,7 +9150,8 @@ header.header-bg {
   opacity: 0;
 }
 .card-product .card-product-wrapper:hover .product-img .img-product {
-  opacity: 0;
+  transform: scale(1.2);
+    /* Phóng to ảnh 120% */
 }
 .card-product .card-product-wrapper:hover .product-img .img-hover {
   display: block;

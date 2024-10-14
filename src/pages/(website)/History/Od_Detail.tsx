@@ -27,10 +27,13 @@ const Od_Detail = () => {
 
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(1);
     const [error, setError] = useState<string | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [cancelOrderId, setCancelOrderId] = useState<number | null>(null); // Lưu id của đơn hàng cần hủy
     const [cancelReason, setCancelReason] = useState<string>(""); // Lý do hủy đơn hàng
+    const perPage = 5;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,10 +47,11 @@ const Od_Detail = () => {
         // Gọi API lấy danh sách đơn hàng
         const loadOrderDetails = async () => {
             try {
-                const orderDetailsData = await fetchOrders();
-                const a = orderDetailsData.filter((order) => order.id == Number(id))
+                const { data, total_pages } = await fetchOrders(page, perPage);
+                const a = data.filter((order) => order.id == Number(id))
                 setOrders(a);
                 setLoading(false);
+                setTotalPages(total_pages);
             } catch (err) {
                 setError("Lỗi khi tải danh sách đơn hàng");
                 setLoading(false);
@@ -55,7 +59,7 @@ const Od_Detail = () => {
         };
 
         loadOrderDetails();
-    }, [navigate, id]);
+    }, [navigate, id, page, perPage]);
 
     // Hàm hiển thị modal và lưu id đơn hàng cần hủy
     const showCancelModal = (orderId: number) => {
@@ -108,6 +112,18 @@ const Od_Detail = () => {
     const handleReasonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCancelReason(e.target.value);
     };
+
+    // Hàm xử lý khi người dùng nhấn nút "Xác nhận đã nhận hàng"
+const handleConfirmReceived = (orderId: number) => {
+    // Cập nhật trạng thái đơn hàng thành "Hoàn thành" (status = 6)
+    setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+            order.id === orderId ? { ...order, status: "6" } : order
+        )
+    );
+
+    message.success("Xác nhận đã nhận hàng thành công.");
+};
 
     // Hàm tính tổng giá trị đơn hàng
     const calculateTotalPrice = (order: Order) => {
@@ -336,6 +352,26 @@ const Od_Detail = () => {
                                                     onClick={() => showCancelModal(order.id)}
                                                 >
                                                     Hủy đơn hàng
+                                                </a>
+                                            </div>
+                                        )}
+                                        {/* Nút xác nhận chỉ hiện khi trạng thái là "Giao hàng thành công" */}
+                                        {Number(order.status) === 4 && (
+                                            <div style={{ textAlign: "right", marginTop: "10px" }}>
+                                                <a
+                                                    className="view-btn"
+                                                    style={{
+                                                        backgroundColor: "black",
+                                                        color: "white",
+                                                        padding: "10px",
+                                                        cursor: "pointer",
+                                                        width: "120px",
+                                                        display: "inline-block",
+                                                        textAlign: "center",
+                                                    }}
+                                                    onClick={() => handleConfirmReceived(order.id)}
+                                                >
+                                                    Xác nhận đã nhận hàng
                                                 </a>
                                             </div>
                                         )}

@@ -37,13 +37,20 @@ export interface Variant {
 }
 
 
-export const fetchOrders = async (): Promise<Order[]> => {
+export const fetchOrders = async (
+    page: number,
+  perPage: number
+): Promise<{data: Order[]; total_pages: number}> => {
     const token = localStorage.getItem("authToken");
     if (!token) {
         throw new Error("No token found");
     }
 
-    const response = await axiosInstance.get<Order[]>("/purchasedOrders", {
+    const response = await axiosInstance.get<{data: Order[]; total_pages: number}>("/purchasedOrders", {
+         params: {
+            page: page,           // Trang hiện tại
+            per_page: perPage     // Số sản phẩm trên mỗi trang
+            },
         headers: {
             Authorization: `Bearer ${token}`,
         },
