@@ -146,7 +146,22 @@ const Detail: React.FC = () => {
     }, [id]);
 
     const handleQuantityChange = (change: number) => {
-        setQuantity((prevQuantity) => Math.max(1, prevQuantity + change));
+        setQuantity((prevQuantity) => {
+            // Nếu người dùng nhấn tăng số lượng và số lượng hiện tại nhỏ hơn số lượng còn lại
+            if (
+                change > 0 &&
+                remainingQuantity !== null &&
+                prevQuantity < remainingQuantity
+            ) {
+                return prevQuantity + change;
+            }
+            // Nếu người dùng nhấn giảm số lượng, đảm bảo số lượng không nhỏ hơn 1
+            if (change < 0 && prevQuantity > 1) {
+                return prevQuantity + change;
+            }
+            // Nếu vượt quá số lượng còn lại hoặc nhỏ hơn 1, giữ nguyên số lượng
+            return prevQuantity;
+        });
     };
 
     const getColorCode = (colorName: string) => {
@@ -192,6 +207,7 @@ const Detail: React.FC = () => {
         const sizesForSelectedColor = product?.variant
             .filter((variant) => variant.colors.name === colorName)
             .map((variant) => variant.sizes.name)
+            .filter((sizeName) => sizeName !== undefined)
             .sort((a, b) => parseFloat(a) - parseFloat(b));
 
         setAvailableSizes(sizesForSelectedColor || []);
@@ -223,11 +239,63 @@ const Detail: React.FC = () => {
         }
     };
 
-    const handleBuyNow = () => {
+    const handleBuyNow = async () => {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            message.error("Vui lòng đăng nhập để mua sản phẩm.");
+            navigate("/login");
+            return;
+        }
+
         if (!selectedColor || !selectedSize) {
-            message.error("Vui lòng chọn màu sắc và kích thước trước khi mua.");
-        } else {
-            navigate("/pay");
+            message.error("Vui lòng chọn màu sắc và kích thước.");
+            return;
+        }
+
+        const selectedVariant = product?.variant.find(
+            (variant) =>
+                variant.colors.name === selectedColor &&
+                variant.sizes.name === selectedSize,
+        );
+
+        if (!selectedVariant) {
+            message.error(
+                "Không tìm thấy sản phẩm với màu và kích thước đã chọn.",
+            );
+            return;
+        }
+
+        try {
+            const orderData = {
+                variantId: selectedVariant.id,
+                quantity: quantity,
+            };
+
+            const response = await axios.get(
+                "http://localhost:8000/api/listInformationOrder",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    params: orderData,
+                },
+            );
+
+            if (response.data.status) {
+                message.success("Lấy thông tin sản phẩm thành công.");
+
+                navigate("/pay", {
+                    state: {
+                        variantId: selectedVariant.id,
+                        quantity: quantity,
+                    },
+                });
+            } else {
+                message.error(response.data.message);
+            }
+        } catch (error) {
+            message.error("Có lỗi xảy ra khi lấy thông tin sản phẩm.");
         }
     };
 
@@ -300,7 +368,11 @@ const Detail: React.FC = () => {
         }, [] as Variant[]) || [];
 
     const allSizes = Array.from(
-        new Set(product?.variant.map((variant) => variant.sizes.name)),
+        new Set(
+            product?.variant
+                ?.map((variant) => variant.sizes?.name)
+                .filter((sizeName) => sizeName !== undefined),
+        ),
     ).sort((a, b) => parseFloat(a) - parseFloat(b));
 
     const isSizeAvailable = (sizeName: string) => {
@@ -733,8 +805,7 @@ const Detail: React.FC = () => {
                                     </div>
 
                                     <div className="tf-product-info-buy-now-button mt-3">
-                                        <a
-                                            href="#"
+                                        <button
                                             className="btns-full btn-buy-now"
                                             onClick={handleBuyNow}
                                             style={{
@@ -750,7 +821,7 @@ const Detail: React.FC = () => {
                                             }}
                                         >
                                             Mua ngay
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -1,40 +1,53 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
     AlignCenterOutlined,
     DoubleLeftOutlined,
     DoubleRightOutlined,
 } from "@ant-design/icons";
-import {fetchProducts, Product } from "../../../Interface/Product";
+
+import { fetchProducts, Product } from "../../../Interface/Product";
 import { Category, fetchCategorys } from "../../../Interface/Category";
+
 
 
 const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
     const [sortBy, setSortBy] = useState("none"); // Đặt giá trị mặc định cho sortBy
     const [sortOrder, setSortOrder] = useState("asc");
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<string | number>('');
-    const [search, setSearch] = useState('');  // Tìm kiếm sản phẩm
+    const [selectedCategory, setSelectedCategory] = useState<string | number>(
+        "",
+    );
+    const [search, setSearch] = useState(""); // Tìm kiếm sản phẩm
     const perPage = 12; // Số sản phẩm trên mỗi trang
     const navigate = useNavigate();
-    
+
     const [error, setError] = useState<string | null>(null);
-    
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
         const loadProducts = async () => {
-      try {
-        const { data, total_pages } = await fetchProducts(sortBy, sortOrder, selectedCategory, search, page, perPage);
-        setProducts(data);
-        setTotalPages(total_pages);
+            try {
+                const { data, total_pages } = await fetchProducts(
+                    sortBy,
+                    sortOrder,
+                    selectedCategory,
+                    search,
+                    page,
+                    perPage,
+                );
+                setProducts(data);
+                setLoading(false);
+                setTotalPages(total_pages);
                 console.error("Error fetching products:", error);
             } finally {
+                setLoading(false);
             }
         };
 
@@ -44,16 +57,17 @@ const ListProducts: React.FC = () => {
     // Lấy dữ liệu danh mục khi component được load
     useEffect(() => {
         const loadCategories = async () => {
-        try {
-            const categoriesData = await fetchCategorys();
-            setCategories(categoriesData);
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-        }
+
+            try {
+                const categoriesData = await fetchCategorys();
+                setCategories(categoriesData);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+
         };
         loadCategories();
     }, []);
-
 
     // Hàm thay đổi trang
     const handlePageChange = (newPage: number) => {
@@ -72,23 +86,24 @@ const ListProducts: React.FC = () => {
     };
 
     // Hàm xử lý khi chọn danh mục
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-    setPage(1); // Reset lại trang khi thay đổi danh mục
-  };
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedCategory(e.target.value);
+        setPage(1); // Reset lại trang khi thay đổi danh mục
+    };
 
-  // Hàm xử lý tìm kiếm sản phẩm
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    setPage(1); // Reset lại trang khi tìm kiếm
-  };
+    // Hàm xử lý tìm kiếm sản phẩm
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+        setPage(1); // Reset lại trang khi tìm kiếm
+    };
 
     const handleProductClick = (id: number) => {
-    navigate(`/detail/${id}`);
-  };
+        navigate(`/detail/${id}`);
+    };
 
-
-   
+    if (loading) {
+        return <p>Đang tải...</p>;
+    }
 
     return (
         <div>
@@ -103,21 +118,27 @@ const ListProducts: React.FC = () => {
                 <div className="container">
                     <div className="tf-shop-control grid-3 align-items-center">
                         <div className="tf-control-filter">
-                            <select value={selectedCategory} onChange={handleCategoryChange}>
+                            <select
+                                value={selectedCategory}
+                                onChange={handleCategoryChange}
+                            >
                                 <option value="">All Categories</option>
                                 {categories.map((category) => (
-                                    <option key={category.id} value={category.id}>
-                                    {category.name}
+                                    <option
+                                        key={category.id}
+                                        value={category.id}
+                                    >
+                                        {category.name}
                                     </option>
                                 ))}
                             </select>
-                          
                         </div>
                         <div className="tf-control-layout d-flex justify-content-center">
-                                <div className="search">
+                            <div className="search">
                                 <div className="search-container">
                                     <input
-                                    className="search-input" style={{width: '400px'}}
+                                        className="search-input"
+                                        style={{ width: "400px" }}
                                         type="text"
                                         placeholder="Search product..."
                                         value={search}
@@ -125,22 +146,20 @@ const ListProducts: React.FC = () => {
                                     />
                                     {/* <button onClick={handleSearch} className="search-button">Tìm kiếm</button> */}
                                 </div>
-                                {error && <div className="error-message">{error}</div>}
+                                {error && (
+                                    <div className="error-message">{error}</div>
+                                )}
                             </div>
                         </div>
-                        
 
                         <div className="tf-control-sorting d-flex justify-content-end">
-                            
                             <div className="tf-dropdown-sort">
                                 <select
                                     onChange={(e) =>
                                         handleSortChange(e.target.value)
                                     }
                                 >
-                                    <option >
-                                        Lựa chọn
-                                    </option>
+                                    <option>Lựa chọn</option>
                                     <option value="Giá, từ thấp đến cao">
                                         Giá, từ thấp đến cao
                                     </option>
@@ -163,38 +182,48 @@ const ListProducts: React.FC = () => {
                             className="grid-layout wrapper-shop"
                             data-grid="grid-4"
                         >
-                            
                             {Array.isArray(products) && products.length > 0 ? (
-                            products.map(product => (
-                                <div key={product.id} className="card-product">
-                                    <div className="card-product-wrapper">
-                                        
-                                        <div    
-                                            className="product-img"
-                                            onClick={() => handleProductClick(product.id)}
-                                            style={{ cursor: "pointer" }}
-                                        >
-                                            <img
-                                                className="lazyload img-product"
-                                                src={product.thumbnail}
-                                                alt={product.name}
-                                            />
-                                        </div>
-                                        <div className="card-product-info">
-                                            <h3
-                                                onClick={() => handleProductClick(product.id)}
-                                                style={{ cursor: "pointer" }}
-                                                className="title link"
-                                            >
-                                                {product.name}
-                                            </h3>
+                                products.map((product) => (
+                                    <div
+                                        key={product.id}
+                                        className="card-product"
+                                    >
+                                        <div className="card-product-wrapper">
                                             <div
+                                                className="product-img"
+                                                onClick={() =>
+                                                    handleProductClick(
+                                                        product.id,
+                                                    )
+                                                }
+                                                style={{ cursor: "pointer" }}
+                                            >
+                                                <img
+                                                    className="lazyload img-product"
+                                                    src={product.thumbnail}
+                                                    alt={product.name}
+                                                />
+                                            </div>
+                                            <div className="card-product-info">
+                                                <h3
+                                                    onClick={() =>
+                                                        handleProductClick(
+                                                            product.id,
+                                                        )
+                                                    }
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
+                                                    className="title link"
+                                                >
+                                                    {product.name}
+                                                </h3>
+                                                <div
                                                     style={{
                                                         display: "flex",
                                                         alignItems: "center",
                                                     }}
                                                 >
-                                                    
                                                     <div className="price-on-sale">
                                                         <span
                                                             style={{
@@ -203,8 +232,18 @@ const ListProducts: React.FC = () => {
                                                                 color: "#f00",
                                                             }}
                                                         >
-                                                            
-                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.variants[0]?.selling_price)}
+                                                            {new Intl.NumberFormat(
+                                                                "vi-VN",
+                                                                {
+                                                                    style: "currency",
+                                                                    currency:
+                                                                        "VND",
+                                                                },
+                                                            ).format(
+                                                                product
+                                                                    .variants[0]
+                                                                    ?.selling_price,
+                                                            )}
                                                         </span>
                                                     </div>
                                                     <div
@@ -220,19 +259,28 @@ const ListProducts: React.FC = () => {
                                                                 color: "#999",
                                                             }}
                                                         >
-                                                            
-                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.variants[0]?.list_price)}
+                                                            {new Intl.NumberFormat(
+                                                                "vi-VN",
+                                                                {
+                                                                    style: "currency",
+                                                                    currency:
+                                                                        "VND",
+                                                                },
+                                                            ).format(
+                                                                product
+                                                                    .variants[0]
+                                                                    ?.list_price,
+                                                            )}
                                                         </span>
                                                     </div>
                                                 </div>
-                                           
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))
-                        ): (
-                            <p>Không có sản phẩm nào để hiển thị.</p>
-                        )}
+                                ))
+                            ) : (
+                                <p>Không có sản phẩm nào để hiển thị.</p>
+                            )}
                         </div>
 
                         {/* Phân trang */}
@@ -296,9 +344,7 @@ const ListProducts: React.FC = () => {
                                 </li>
                             </ul>
                         </div>
-
                     </div>
-                    
                 </div>
             </section>
 

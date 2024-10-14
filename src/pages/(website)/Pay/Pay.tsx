@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { message } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import axios from "axios";
 
+// Interface cho CartItem
 interface CartItem {
     id: number;
     quantity: number;
     variant: {
         id: number;
+        import_price: string;
+        list_price: string;
         selling_price: string;
-        image_color: string;
-        colors: {
-            id: number;
-            name: string;
-        };
-        sizes: {
-            id: number;
-            name: string;
-        };
+        quantity: number;
         product: {
             id: number;
             name: string;
-            thumbnail: string;
-            description: string;
+        };
+        image_color: string;
+        color: {
+            id: number;
+            name: string;
+        };
+        size: {
+            id: number;
+            name: string;
         };
     } | null;
 }
@@ -33,9 +35,9 @@ const Pay: React.FC = () => {
     const [paymentProducts, setPaymentProducts] = useState<CartItem[]>([]);
     const [totalAmount, setTotalAmount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
+    const [paymentRole, setPaymentRole] = useState<number | null>(null); // Không đặt mặc định
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -55,11 +57,15 @@ const Pay: React.FC = () => {
         if (savedEmail) setEmail(savedEmail);
 
         const cartIds = location.state?.cartIds || [];
-        if (cartIds.length === 0) {
+        const variantId = location.state?.variantId || null;
+        const quantity = location.state?.quantity || null;
+
+        if (cartIds.length === 0 && !variantId) {
             message.error("Không có sản phẩm nào được chọn.");
             navigate("/cart");
             return;
         }
+
         const fetchInformationOrder = async () => {
             try {
                 const response = await axios.get(
@@ -68,13 +74,16 @@ const Pay: React.FC = () => {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
-                        params: { cartIds },
+                        params: variantId
+                            ? { variantId, quantity } // Gửi variantId và quantity nếu có
+                            : { cartIds }, // Nếu không có variantId, dùng cartIds
                     },
                 );
+                console.log(response);
 
                 if (response.data.status) {
-                    const { paymentProducts, totalAmount } = response.data.data;
-                    setPaymentProducts(paymentProducts);
+                    const { productpayment, totalAmount } = response.data.data;
+                    setPaymentProducts(productpayment);
                     setTotalAmount(totalAmount);
                 } else {
                     message.error(response.data.message);
@@ -88,6 +97,74 @@ const Pay: React.FC = () => {
 
         fetchInformationOrder();
     }, [location.state, navigate]);
+
+    const handlePaymentChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        setPaymentRole(Number(event.target.value)); // Cập nhật paymentRole khi người dùng chọn phương thức thanh toán
+    };
+
+    const handleOrder = async () => {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            message.error("Bạn chưa đăng nhập.");
+            navigate("/login");
+            return;
+        }
+
+        if (paymentRole === null) {
+            message.error("Vui lòng chọn phương thức thanh toán.");
+            return;
+        }
+
+        const orderData = {
+            cartIds: location.state?.cartIds || [],
+            variantId: location.state?.variantId || null, // Thêm variantId vào dữ liệu gửi đi
+            quantity: location.state?.quantity || null, // Thêm quantity vào dữ liệu gửi đi
+            recipient_name: name,
+            email: email,
+            phone_number: (
+                document.getElementById("phonenumber") as HTMLInputElement
+            )?.value,
+            recipient_address: (
+                document.getElementById("address") as HTMLInputElement
+            )?.value,
+            note: (document.getElementById("note") as HTMLTextAreaElement)
+                ?.value,
+            total_payment: totalAmount,
+            payment_role: paymentRole, // Sử dụng giá trị paymentRole đã chọn
+        };
+
+        try {
+            const response = await axios.post(
+                "http://localhost:8000/api/payment",
+                orderData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+
+            if (response.data.status) {
+                message.success("Đặt hàng thành công!");
+
+                if (paymentRole === 1) {
+                    // Thanh toán khi nhận hàng
+                    navigate("/success"); // Điều hướng đến trang thành công
+                } else if (paymentRole === 2 && response.data.data) {
+                    // Thanh toán trực tuyến
+                    window.location.href = response.data.data; // Chuyển hướng đến URL thanh toán trực tuyến
+                }
+            } else {
+                message.error(response.data.message);
+            }
+        } catch (error) {
+            message.error("Đã xảy ra lỗi trong quá trình đặt hàng.");
+            console.error(error);
+        }
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -216,14 +293,13 @@ const Pay: React.FC = () => {
                                                     </th>
                                                 </tr>
                                             </thead>
-
                                             <tbody>
                                                 {Array.isArray(
                                                     paymentProducts,
                                                 ) &&
                                                 paymentProducts.length > 0 ? (
                                                     paymentProducts.map(
-                                                        (item: any) => (
+                                                        (item: CartItem) => (
                                                             <tr key={item.id}>
                                                                 <td
                                                                     style={{
@@ -237,13 +313,15 @@ const Pay: React.FC = () => {
                                                                         src={
                                                                             item
                                                                                 .variant
-                                                                                ?.image_color
+                                                                                ?.image_color ||
+                                                                            ""
                                                                         }
                                                                         alt={
                                                                             item
                                                                                 .variant
                                                                                 ?.product
-                                                                                .name
+                                                                                ?.name ||
+                                                                            "Sản phẩm"
                                                                         }
                                                                         style={{
                                                                             width: "100px",
@@ -268,12 +346,11 @@ const Pay: React.FC = () => {
                                                                             margin: "0",
                                                                         }}
                                                                     >
-                                                                        {
-                                                                            item
-                                                                                .variant
-                                                                                ?.product
-                                                                                .name
-                                                                        }
+                                                                        {item
+                                                                            .variant
+                                                                            ?.product
+                                                                            ?.name ||
+                                                                            "Tên sản phẩm không xác định"}
                                                                     </p>
                                                                     <p
                                                                         style={{
@@ -298,12 +375,11 @@ const Pay: React.FC = () => {
                                                                             "middle",
                                                                     }}
                                                                 >
-                                                                    {
-                                                                        item
-                                                                            .variant
-                                                                            ?.colors
-                                                                            .name
-                                                                    }
+                                                                    {item
+                                                                        .variant
+                                                                        ?.color
+                                                                        ?.name ||
+                                                                        "Không xác định"}
                                                                 </td>
                                                                 <td
                                                                     style={{
@@ -313,12 +389,11 @@ const Pay: React.FC = () => {
                                                                             "middle",
                                                                     }}
                                                                 >
-                                                                    {
-                                                                        item
-                                                                            .variant
-                                                                            ?.sizes
-                                                                            .name
-                                                                    }
+                                                                    {item
+                                                                        .variant
+                                                                        ?.size
+                                                                        ?.name ||
+                                                                        "Không xác định"}
                                                                 </td>
                                                                 <td
                                                                     style={{
@@ -389,7 +464,8 @@ const Pay: React.FC = () => {
                                                 name="payment"
                                                 id="bank"
                                                 className="tf-check"
-                                                defaultChecked
+                                                value="2" // Thanh toán online
+                                                onChange={handlePaymentChange}
                                             />
                                             <label htmlFor="bank">
                                                 Chuyển khoản ngân hàng trực tiếp
@@ -401,17 +477,20 @@ const Pay: React.FC = () => {
                                                 name="payment"
                                                 id="delivery"
                                                 className="tf-check"
+                                                value="1"
+                                                onChange={handlePaymentChange}
                                             />
                                             <label htmlFor="delivery">
                                                 Thanh toán khi nhận hàng
                                             </label>
                                         </div>
                                     </div>
-                                    <Link to={"/success"}>
-                                        <button className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center">
-                                            Đặt hàng
-                                        </button>
-                                    </Link>
+                                    <button
+                                        className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center"
+                                        onClick={handleOrder}
+                                    >
+                                        Đặt hàng
+                                    </button>
                                 </div>
                             </div>
                         </div>

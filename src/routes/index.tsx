@@ -1,5 +1,4 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import Home from "../pages/(website)/home/page";
 import Layoutweb from "../layouts/ClientLayout";
 import Register from "../pages/(website)/dkdn/Register";
 import Login from "../pages/(website)/dkdn/Login";
