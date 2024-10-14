@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Form, Input, message, Spin } from "antd";
@@ -15,33 +15,27 @@ const Login: React.FC = () => {
     const [messageAPI, contextHolder] = message.useMessage();
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const authToken = localStorage.getItem("authToken");
-    //     if (authToken) {
-    //         navigate("/cart"); // Nếu đã đăng nhập, điều hướng tới trang giỏ hàng
-    //     }
-    // }, [navigate]);
-
     const { mutate } = useMutation({
         mutationFn: (user: FieldType) =>
             axios.post(`http://localhost:8000/api/login`, user),
         onSuccess: (response) => {
-            const { token, role } = response.data.data;
+            const { token, role, user } = response.data.data;
             const numericRole = Number(role);
 
-            if (numericRole == 1 ) {
-                localStorage.setItem("authToken", token); // Lưu token
+            if (numericRole === 1) {
+                localStorage.setItem("authToken", token);
                 localStorage.setItem("userRole", numericRole.toString());
 
+                localStorage.setItem("user", JSON.stringify(user));
+
                 queryClient.invalidateQueries({
-                    queryKey: ["cartItems"], // Làm mới giỏ hàng
+                    queryKey: ["cartItems"],
                 });
 
                 messageAPI.success("Đăng nhập thành công!");
 
-                setTimeout(() => {
-                    navigate("/cart"); // Điều hướng tới giỏ hàng sau khi đăng nhập
-                }, 1000);
+                // Điều hướng tới trang giỏ hàng sau khi đăng nhập thành công
+                navigate("/");
             } else {
                 messageAPI.error("Vai trò không hợp lệ.");
             }

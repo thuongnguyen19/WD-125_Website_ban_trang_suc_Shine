@@ -132,7 +132,10 @@ const ListCart: React.FC = () => {
                         message.error("Bạn chưa đăng nhập.");
                         return;
                     }
-                    const user = localStorage.getItem("user");
+
+                    const user = JSON.parse(
+                        localStorage.getItem("user") || "{}",
+                    );
 
                     await axios.delete(
                         "http://localhost:8000/api/deleteMutipleCart",
@@ -140,7 +143,7 @@ const ListCart: React.FC = () => {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
-                            data: { cart_ids: selectedItems, user: user },
+                            data: { cart_ids: selectedItems, id_user: user.id },
                         },
                     );
 
@@ -165,7 +168,8 @@ const ListCart: React.FC = () => {
         const updatedCartItems = cartItems.map((item) => {
             if (item.id === itemId) {
                 const updatedQuantity = item.quantity + 1;
-                return { ...item, quantity: updatedQuantity };
+                item.quantity = updatedQuantity;
+                return item;
             }
             return item;
         });
@@ -178,7 +182,8 @@ const ListCart: React.FC = () => {
         const updatedCartItems = cartItems.map((item) => {
             if (item.id === itemId && item.quantity > 1) {
                 const updatedQuantity = item.quantity - 1;
-                return { ...item, quantity: updatedQuantity };
+                item.quantity = updatedQuantity;
+                return item;
             }
             return item;
         });

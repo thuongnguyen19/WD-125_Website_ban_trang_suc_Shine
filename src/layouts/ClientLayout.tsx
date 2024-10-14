@@ -17,21 +17,26 @@ import { Category, fetchCategorys } from "../Interface/Category";
 const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
     const [messageAPI, contextHolder] = message.useMessage();
-    const [user, setUser] = useState<{ name: string } | null>(null); // Storing user information
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Check if user is logged in
+    const [user, setUser] = useState<{ name: string } | null>(null); // Lưu thông tin người dùng
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra xem người dùng đã đăng nhập hay chưa
+    const [cartCount, setCartCount] = useState<number>(0); // Đếm số lượng sản phẩm trong giỏ hàng
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-
-    // Check if the user is authenticated
+    // Kiểm tra nếu người dùng đã đăng nhập
     useEffect(() => {
         const token = localStorage.getItem("authToken");
+        const storedUser = localStorage.getItem("user");
 
-        if (token) {
+        if (token && storedUser) {
             setIsAuthenticated(true);
 
-            // Call API to get user info based on token
+            // Lấy thông tin người dùng từ localStorage
+            const parsedUser = JSON.parse(storedUser);
+            setUser(parsedUser);
+
+            // Gọi API để cập nhật thông tin người dùng nếu cần
             axios
                 .get("http://localhost:8000/api/user", {
                     headers: {
@@ -39,36 +44,57 @@ const Layoutweb: React.FC = () => {
                     },
                 })
                 .then((response) => {
-                    setUser(response.data.user); // Set user info
+                    setUser(response.data.user); // Cập nhật thông tin người dùng từ API
                 })
                 .catch((error) => {
-                    console.error("Failed to fetch user data:", error);
+                    console.error("Không thể lấy dữ liệu người dùng:", error);
                 });
         }
     }, []);
 
-    //API Danh muc
+    // Lấy danh mục sản phẩm
     useEffect(() => {
-        const loadCategorys = async () => {
+        const loadCategories = async () => {
             try {
                 const data = await fetchCategorys();
                 setCategories(data);
             } catch (error) {
+                console.error("Error fetching categories:", error);
             }
             setLoading(false);
         };
 
-        loadCategorys();
+        loadCategories();
     }, []);
 
+    // Lấy số lượng sản phẩm trong giỏ hàng từ localStorage
+    useEffect(() => {
+        const cartData = localStorage.getItem("cartItems");
+        if (cartData) {
+            try {
+                const parsedCartData = JSON.parse(cartData);
+                if (Array.isArray(parsedCartData)) {
+                    setCartCount(parsedCartData.length);
+                } else {
+                    console.error("cartItems không phải là một mảng");
+                    setCartCount(0);
+                }
+            } catch (error) {
+                console.error("Lỗi khi phân tích giỏ hàng:", error);
+                setCartCount(0);
+            }
+        } else {
+            setCartCount(0);
+        }
+    }, []);
 
     if (loading) {
         return <p>Đang tải...</p>;
     }
 
-    // Navigate to the profile page
+    // Chuyển hướng đến trang hồ sơ người dùng
     const goToProfile = () => {
-        navigate("/profile");   
+        navigate("/profile");
     };
 
     return (
@@ -134,22 +160,32 @@ const Layoutweb: React.FC = () => {
                                                 </Link>
                                             </li>
                                             <li className="menu-item">
-                                                <a href="#" className="item-link">Danh mục<CaretDownOutlined /></a>
-                                                <div className="sub-menu submenu-default" >
+                                                <a
+                                                    href="#"
+                                                    className="item-link"
+                                                >
+                                                    Danh mục
+                                                    <CaretDownOutlined />
+                                                </a>
+                                                <div className="sub-menu submenu-default">
                                                     <ul className="menu-list">
-                                                        <li>
-                                                            <Link to="/detail" className="item-link">
-                                                                Trang chủ
-                                                            </Link>
-                                                            {categories.map((category) => (
-                                                                <li key={category.id}>
-                                                                    <Link to={category.name}>{category.name}</Link>
+                                                        {categories.map(
+                                                            (category) => (
+                                                                <li
+                                                                    key={
+                                                                        category.id
+                                                                    }
+                                                                >
+                                                                    <Link
+                                                                        to={`/category/${category.id}`}
+                                                                    >
+                                                                        {
+                                                                            category.name
+                                                                        }
+                                                                    </Link>
                                                                 </li>
-                                                            ))}
-                                                        </li>
-                                                        <li>
-                                                        </li>
-
+                                                            ),
+                                                        )}
                                                     </ul>
                                                 </div>
                                             </li>
@@ -169,8 +205,6 @@ const Layoutweb: React.FC = () => {
                                         <li className="nav-search">
                                             <a
                                                 href="#canvasSearch"
-                                                data-bs-toggle="offcanvas"
-                                                aria-controls="offcanvasLeft"
                                                 className="nav-icon-item"
                                             >
                                                 <SearchOutlined
@@ -180,25 +214,19 @@ const Layoutweb: React.FC = () => {
                                         </li>
                                         <li className="nav-account">
                                             {isAuthenticated ? (
-                                                <div>
-                                                    <span
-                                                        onClick={goToProfile}
-                                                        style={{
-                                                            cursor: "pointer",
-                                                        }}
-                                                    >
-                                                        Xin chào, {user?.name}
-                                                    </span>
-
-
-                                                </div>
+                                                <span
+                                                    onClick={goToProfile}
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
+                                                    Xin chào, {user?.name}
+                                                </span>
                                             ) : (
                                                 <Link
                                                     to="/login"
                                                     className="nav-icon-item"
                                                 >
-                                                    {" "}
-                                                    {/* Direct to login page if not authenticated */}
                                                     <UserOutlined
                                                         style={{
                                                             fontSize: "24px",
@@ -210,14 +238,13 @@ const Layoutweb: React.FC = () => {
                                         <li className="nav-cart">
                                             <Link
                                                 to="/cart"
-                                                data-bs-toggle="modal"
                                                 className="nav-icon-item"
                                             >
                                                 <ShoppingCartOutlined
                                                     style={{ fontSize: "24px" }}
                                                 />
                                                 <span className="count-box">
-                                                    0
+                                                    {cartCount}
                                                 </span>
                                             </Link>
                                         </li>
@@ -228,10 +255,9 @@ const Layoutweb: React.FC = () => {
                     </header>
                 </div>
 
+                {/* Nội dung trang */}
                 <Header2 />
-
                 <Home />
-
                 <Footer />
             </div>
         </>
