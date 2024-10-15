@@ -83,14 +83,13 @@ const Od_Detail = () => {
 
         try {
             const token = localStorage.getItem("authToken"); // Lấy token từ localStorage
-
-        if (!token) {
-            message.error("Bạn chưa đăng nhập.");
-            return;
-        }
+            if (!token) {
+                message.error("Bạn chưa đăng nhập.");
+                return;
+            }
             // Gọi API GET để hủy đơn hàng với `cancel_id`
             const response = await axiosInstance.get(`/purchasedOrders`, {
-                 headers: {
+                headers: {
                 Authorization: `Bearer ${token}`, // Gửi token trong headers
             },
                 params: {
@@ -113,17 +112,40 @@ const Od_Detail = () => {
         setCancelReason(e.target.value);
     };
 
-    // Hàm xử lý khi người dùng nhấn nút "Xác nhận đã nhận hàng"
-const handleConfirmReceived = (orderId: number) => {
-    // Cập nhật trạng thái đơn hàng thành "Hoàn thành" (status = 6)
-    setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-            order.id === orderId ? { ...order, status: "6" } : order
-        )
-    );
 
-    message.success("Xác nhận đã nhận hàng thành công.");
-};
+    // Hàm xử lý khi người dùng nhấn nút xác nhận
+    const handleConfirmReceived = async (orderId: number) => {
+        try {
+            const token = localStorage.getItem("authToken"); // Lấy token từ localStorage
+            if (!token) {
+                message.error("Bạn chưa đăng nhập.");
+                return;
+            }
+            const response = await axiosInstance.get('/purchasedOrders', {
+                params: {
+                    complete_id: orderId,
+                },
+                headers: {
+                Authorization: `Bearer ${token}`, // Gửi token trong headers
+            },
+            });
+
+            if (response.status === 200) {
+                message.success(response.data.message);
+
+                // Cập nhật trạng thái đơn hàng trong state
+                setOrders((prevOrders) =>
+                    prevOrders.map((order) =>
+                        order.id === orderId ? { ...order, status: "6" } : order
+                    )
+                );
+            } else {
+                message.error("Có lỗi xảy ra khi xác nhận đơn hàng.");
+            }
+        } catch (error) {
+            message.error("Không thể kết nối với server.");
+        }
+    };
 
     // Hàm tính tổng giá trị đơn hàng
     const calculateTotalPrice = (order: Order) => {
@@ -169,7 +191,7 @@ const handleConfirmReceived = (orderId: number) => {
                                     Thời gian đặt hàng
                                 </div>
                                 <div className="text-2 mt_4 fw-6">
-                                    {order.order_date}
+                                    {order.created_at}
                                 </div>
                             </div>
                             <div className="item">
@@ -371,7 +393,7 @@ const handleConfirmReceived = (orderId: number) => {
                                                     }}
                                                     onClick={() => handleConfirmReceived(order.id)}
                                                 >
-                                                    Xác nhận đã nhận hàng
+                                                    Đã nhận được hàng
                                                 </a>
                                             </div>
                                         )}

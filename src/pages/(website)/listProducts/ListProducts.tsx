@@ -109,7 +109,7 @@ const ListProducts: React.FC = () => {
                     <div className="tf-shop-control grid-3 align-items-center">
                         <div className="tf-control-filter">
                             <select value={selectedCategory} onChange={handleCategoryChange}>
-                                <option value="">All Categories</option>
+                                <option value="">Tất cả danh mục</option>
                                 {categories.map((category) => (
                                     <option key={category.id} value={category.id}>
                                     {category.name}
@@ -124,7 +124,7 @@ const ListProducts: React.FC = () => {
                                     <input
                                     className="search-input" style={{width: '400px'}}
                                         type="text"
-                                        placeholder="Search product..."
+                                        placeholder="Tìm kiếm sản phẩm..."
                                         value={search}
                                         onChange={handleSearchChange}
                                     />
