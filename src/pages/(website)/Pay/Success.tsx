@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { message } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import axios from "axios";
@@ -12,21 +12,53 @@ const Success: React.FC = () => {
     const location = useLocation();
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const vnp_TxnRef = params.get("vnp_TxnRef");
-        const vnp_ResponseCode = params.get("vnp_ResponseCode");
-        const paymentRole = location.state?.paymentRole || null;
+        // Lấy token từ localStorage
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            message.error("Bạn chưa đăng nhập.");
+            return;
+        }
 
+        // Lấy các tham số từ URL
+        const params = new URLSearchParams(window.location.search);
+        const vnp_TxnRef = params.get("vnp_TxnRef"); // Mã giao dịch
+        const vnp_ResponseCode = params.get("vnp_ResponseCode"); // Mã phản hồi thanh toán
+
+        // Hàm cập nhật trạng thái thanh toán
+        const updatePaymentStatus = async (txnRef: string) => {
+            try {
+                const response = await axios.put(
+                    "http://localhost:8000/api/updatePaymentStatus",
+                    {
+                        vnp_TxnRef: txnRef,
+                        status_payment: 2, // Đặt trạng thái thanh toán thành 2
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Thêm token vào header
+                        },
+                    },
+                );
+                console.log("Cập nhật trạng thái thanh toán:", response.data);
+            } catch (error) {
+                console.error("Cập nhật trạng thái thất bại:", error);
+            }
+        };
+
+        // Hàm xử lý kết quả thanh toán từ VNPay
         const fetchPaymentResult = async () => {
-            // Nếu phương thức thanh toán là online (role = 2), lấy kết quả từ API
-            if (paymentRole === 2) {
+            if (vnp_TxnRef && vnp_ResponseCode === "00") {
+                // Kiểm tra mã giao dịch và mã phản hồi
                 try {
                     const response = await axios.get(
                         "http://localhost:8000/api/paymentResult",
                         {
                             params: {
-                                vnp_TxnRef,
-                                vnp_ResponseCode,
+                                vnp_TxnRef, // Mã giao dịch
+                                vnp_ResponseCode, // Mã phản hồi thanh toán
+                            },
+                            headers: {
+                                Authorization: `Bearer ${token}`, // Thêm token vào header
                             },
                         },
                     );
@@ -34,15 +66,17 @@ const Success: React.FC = () => {
                     if (response.data.status) {
                         setStatus(true);
                         setMessageText(
-                            response.data.message || "đặt hàng thành công!",
+                            response.data.message || "Đặt hàng thành công!",
                         );
+                        await updatePaymentStatus(vnp_TxnRef); // Cập nhật trạng thái thanh toán
                     } else {
                         setStatus(false);
                         setMessageText(
-                            response.data.message || "đặt  thất bại.",
+                            response.data.message || "Đặt hàng thất bại.",
                         );
                     }
                 } catch (error) {
+                    console.error("Lỗi xử lý thanh toán:", error);
                     message.error("Có lỗi xảy ra khi xử lý thanh toán.");
                     setStatus(false);
                     setMessageText("Thanh toán thất bại.");
@@ -50,7 +84,6 @@ const Success: React.FC = () => {
                     setLoading(false);
                 }
             } else {
-                // Nếu phương thức thanh toán là COD (role = 1), hiển thị mặc định "Thanh toán thành công"
                 setStatus(true);
                 setMessageText("Thanh toán khi nhận hàng thành công!");
                 setLoading(false);
@@ -71,7 +104,7 @@ const Success: React.FC = () => {
                 <div className="tf-page-title">
                     <div className="container-full">
                         <div className="heading text-center">
-                            Trạng thái thanh toán{" "}
+                            Trạng thái thanh toán
                         </div>
                     </div>
                 </div>
@@ -87,13 +120,13 @@ const Success: React.FC = () => {
                                                     ? "https://imgur.com/ZKPE11b.jpg"
                                                     : "https://imgur.com/failed.jpg"
                                             }
-                                            alt=""
+                                            alt="Trạng thái thanh toán"
                                             width={60}
                                         />
                                         <h5 className="fw-5">
                                             {status
-                                                ? "đặt thành công"
-                                                : "đặt thất bại"}{" "}
+                                                ? "Đặt thành công"
+                                                : "Đặt thất bại"}
                                         </h5>
                                     </div>
                                     <p className="mb_20">{messageText}</p>
