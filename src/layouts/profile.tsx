@@ -92,29 +92,7 @@ const Profile = () => {
         <div>
             <Header />
             {contextHolder}
-            <div className="col-xl-3 col-md-4 col-3">
-                <ul className="nav-icon d-flex justify-content-end align-items-center gap-20">
-                    <li className="nav-search">
-                        <a
-                            href="#canvasSearch"
-                            data-bs-toggle="offcanvas"
-                            aria-controls="offcanvasLeft"
-                            className="nav-icon-item"
-                        >
-                            <i className="icon icon-search"></i>
-                        </a>
-                    </li>
-                    <li className="nav-account">
-                        <a
-                            href="#login"
-                            data-bs-toggle="modal"
-                            className="nav-icon-item"
-                        >
-                            <i className="icon icon-account"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            
             <div className="tf-page-title">
                 <div className="container-full">
                     <div className="heading text-center">{pageTitle}</div>

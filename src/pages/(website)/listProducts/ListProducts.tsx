@@ -7,8 +7,11 @@ import {
     DoubleLeftOutlined,
     DoubleRightOutlined,
 } from "@ant-design/icons";
+
 import { fetchProducts, Product } from "../../../Interface/Product";
 import { Category, fetchCategorys } from "../../../Interface/Category";
+
+
 
 const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -54,12 +57,14 @@ const ListProducts: React.FC = () => {
     // Lấy dữ liệu danh mục khi component được load
     useEffect(() => {
         const loadCategories = async () => {
+
             try {
                 const categoriesData = await fetchCategorys();
                 setCategories(categoriesData);
             } catch (error) {
                 console.error("Error fetching categories:", error);
             }
+
         };
         loadCategories();
     }, []);

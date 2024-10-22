@@ -1,7 +1,61 @@
-import React from "react";
-import { Link } from "react-router-dom"; // Import Link cho điều hướng
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import Link cho điều hướng
+import { fetchOrders, Order } from "../../../Interface/Order";
+import {  message } from "antd";
 
 const OrderHistory = () => {
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const orderStatusMap: { [key: number]: string } = {
+    1: "Đang chờ xác nhận",
+    2: "Đã xác nhận",
+    3: "Đang giao hàng",
+    4: "Giao hàng thành công",
+    5: "Giao hàng thất bại",
+    6: "Hoàn thành",
+    7: "Đã hủy",
+    };
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            message.error("Bạn chưa đăng nhập.");
+            navigate("/login");
+            return;
+        }
+
+        // Gọi API lấy danh sách đơn hàng
+        const loadOrders = async () => {
+            try {
+                const ordersData = await fetchOrders();
+                setOrders(ordersData);
+                setLoading(false);
+            } catch (err) {
+                setError("Lỗi khi tải danh sách đơn hàng");
+                setLoading(false);
+            }
+        };
+
+        loadOrders();
+    }, [navigate]);
+
+    
+    
+
+    const handleProductClick = (id: number) => {
+    navigate(`/profile/od_histori/od_detail/${id}`);
+  };
+
+    if (loading) {
+        return <p>Đang tải...</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
     return (
         <div className="order-history-container">
             <table className="order-history-table">
@@ -15,49 +69,31 @@ const OrderHistory = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="tf-order-item">
-                        <td>#123</td>
-                        <td> 1/9/2024</td>
-                        <td>Đang giao</td>
-                        <td>200.000</td>
-                        <td>
-                            <Link
-                                to={`/profile/od_histori/detail`} // Điều hướng đến trang chi tiết đơn hàng
-                                className="view-btn"
-                            >
-                                Xem chi tiết đơn hàng
-                            </Link>
-                        </td>
-                    </tr>
-                    <tr className="tf-order-item">
-                        <td>#124</td>
-                        <td> 2/9/2024</td>
-                        <td>Chờ xác nhận</td>
-                        <td>250.000</td>
-                        <td>
-                            <Link
-                                to={`/profile/od_histori/detail`} // Điều hướng đến trang chi tiết đơn hàng
-                                className="view-btn"
-                            >
-                                Xem chi tiết đơn hàng
-                            </Link>
-                        </td>
-                    </tr>
-                    <tr className="tf-order-item">
-                        <td>#125</td>
-                        <td> 3/9/2024</td>
-                        <td>Đã giao</td>
-                        <td>300.000</td>
-                        <td>
-                            <Link
-                                to={`/profile/od_histori/detail`} // Điều hướng đến trang chi tiết đơn hàng
-                                className="view-btn"
-                            >
-                                Xem chi tiết đơn hàng
-                            </Link>
-                        </td>
-                    </tr>
-                </tbody>
+    {orders.map((order) => (
+        <tr key={order.id} className="tf-order-item">
+            <td>#{order.id}</td>
+            <td>{new Date(order.order_date).toLocaleDateString()}</td>
+            <td>{orderStatusMap[Number(order.status)]}</td>
+            <td>
+                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_payment)}
+                {/* {order.total_payment
+                    ? order.total_payment.toLocaleString() + " VND"
+                    : "Chưa xác định"} */}
+            </td>
+            <td>
+                <a
+                    onClick={() => handleProductClick(order.id)}
+                    className="view-btn"
+                    style={{backgroundColor: 'black', width: '110px'}}
+                >
+                    Xem chi tiết
+                </a>
+                
+                
+            </td>
+        </tr>
+    ))}
+</tbody>
             </table>
         </div>
     );
