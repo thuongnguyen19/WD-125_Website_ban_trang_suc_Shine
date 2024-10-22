@@ -145,9 +145,10 @@ const Detail: React.FC = () => {
         fetchProductDetails();
     }, [id]);
 
+    // Hàm tăng/giảm số lượng sản phẩm
     const handleQuantityChange = (change: number) => {
         setQuantity((prevQuantity) => {
-            // Nếu người dùng nhấn tăng số lượng và số lượng hiện tại nhỏ hơn số lượng còn lại
+            // Kiểm tra số lượng còn lại
             if (
                 change > 0 &&
                 remainingQuantity !== null &&
@@ -155,11 +156,9 @@ const Detail: React.FC = () => {
             ) {
                 return prevQuantity + change;
             }
-            // Nếu người dùng nhấn giảm số lượng, đảm bảo số lượng không nhỏ hơn 1
             if (change < 0 && prevQuantity > 1) {
                 return prevQuantity + change;
             }
-            // Nếu vượt quá số lượng còn lại hoặc nhỏ hơn 1, giữ nguyên số lượng
             return prevQuantity;
         });
     };
@@ -253,6 +252,12 @@ const Detail: React.FC = () => {
             return;
         }
 
+        // Kiểm tra nếu hết hàng
+        if (remainingQuantity === 0) {
+            message.error("Sản phẩm đã hết hàng. Vui lòng chọn sản phẩm khác.");
+            return;
+        }
+
         const selectedVariant = product?.variant.find(
             (variant) =>
                 variant.colors.name === selectedColor &&
@@ -309,6 +314,12 @@ const Detail: React.FC = () => {
 
         if (!selectedColor || !selectedSize) {
             message.error("Vui lòng chọn màu sắc và kích thước.");
+            return;
+        }
+
+        // Kiểm tra nếu hết hàng
+        if (remainingQuantity === 0) {
+            message.error("Sản phẩm đã hết hàng. Vui lòng chọn sản phẩm khác.");
             return;
         }
 
@@ -753,7 +764,7 @@ const Detail: React.FC = () => {
                                                 {selectedSize &&
                                                 remainingQuantity !== null
                                                     ? remainingQuantity
-                                                    : "Vui lòng chọn kích thước"}
+                                                    : "Vui lòng chọn kích thước và màu "}
                                             </strong>
                                         </p>
                                     </div>
