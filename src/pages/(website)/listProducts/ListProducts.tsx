@@ -177,7 +177,7 @@ const ListProducts: React.FC = () => {
                                         <div    
                                             className="product-img"
                                             onClick={() => handleProductClick(product.id)}
-                                            style={{ cursor: "pointer" }}
+                                            style={{ cursor: "pointer", height: "305px" }}
                                         >
                                             <img
                                                 className="lazyload img-product"
