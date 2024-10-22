@@ -7,9 +7,11 @@ export interface Order {
     email: string;
     phone_number: string;
     recipient_address: string;
-    order_date: string;
+    created_at: string;
     status: string;
     updated_at: string;
+    payment_role: number;
+    status_payment: number;
     total_payment: number;
     order_detail: Array<{
         id: number;
@@ -39,7 +41,7 @@ export interface Variant {
 
 export const fetchOrders = async (
     page: number,
-  perPage: number
+    perPage: number
 ): Promise<{data: Order[]; total_pages: number}> => {
     const token = localStorage.getItem("authToken");
     if (!token) {

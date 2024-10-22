@@ -81,7 +81,7 @@ const OrderHistory = () => {
                         orders.map(order => (
                             <tr key={order.id} className="tf-order-item">
                                 <td>#{order.id}</td>
-                                <td>{new Date(order.order_date).toLocaleDateString()}</td>
+                                <td>{new Date(order.created_at).toLocaleDateString()}</td>
                                 <td>{orderStatusMap[Number(order.status)]}</td>
                                 <td>
                                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_payment)}
@@ -108,66 +108,66 @@ const OrderHistory = () => {
                 </tbody>
             </table>
             {/* Phân trang */}
-                        <div className="phantrang">
-                            <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
-                                <li className={page === 1 ? "disabled" : ""}>
-                                    <a
-                                        href="#"
-                                        className="pagination-link"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            if (page > 1)
-                                                handlePageChange(page - 1);
-                                        }}
-                                    >
-                                        <span>
-                                            <DoubleLeftOutlined />
-                                        </span>
-                                    </a>
-                                </li>
-                                {Array.from(
-                                    { length: totalPages },
-                                    (_, i) => i + 1,
-                                ).map((pageNumber) => (
-                                    <li
-                                        key={pageNumber}
-                                        className={
-                                            page === pageNumber ? "active" : ""
-                                        }
-                                    >
-                                        <a
-                                            href="#"
-                                            className="pagination-link animate-hover-btn"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                handlePageChange(pageNumber);
-                                            }}
-                                        >
-                                            {pageNumber}
-                                        </a>
-                                    </li>
-                                ))}
-                                <li
-                                    className={
-                                        page === totalPages ? "disabled" : ""
-                                    }
+                <div className="phantrang">
+                    <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
+                        <li className={page === 1 ? "disabled" : ""}>
+                            <a
+                                href="#"
+                                className="pagination-link"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (page > 1)
+                                        handlePageChange(page - 1);
+                                }}
+                            >
+                                <span>
+                                    <DoubleLeftOutlined />
+                                </span>
+                            </a>
+                        </li>
+                        {Array.from(
+                            { length: totalPages },
+                            (_, i) => i + 1,
+                        ).map((pageNumber) => (
+                            <li
+                                key={pageNumber}
+                                className={
+                                    page === pageNumber ? "active" : ""
+                                }
+                            >
+                                <a
+                                    href="#"
+                                    className="pagination-link animate-hover-btn"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handlePageChange(pageNumber);
+                                    }}
                                 >
-                                    <a
-                                        href="#"
-                                        className="pagination-link"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            if (page < totalPages)
-                                                handlePageChange(page + 1);
-                                        }}
-                                    >
-                                        <span>
-                                            <DoubleRightOutlined />
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                                    {pageNumber}
+                                </a>
+                            </li>
+                        ))}
+                        <li
+                            className={
+                                page === totalPages ? "disabled" : ""
+                            }
+                        >
+                            <a
+                                href="#"
+                                className="pagination-link"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (page < totalPages)
+                                        handlePageChange(page + 1);
+                                }}
+                            >
+                                <span>
+                                    <DoubleRightOutlined />
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
         </div>
         
     );
