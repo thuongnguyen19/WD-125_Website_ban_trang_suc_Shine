@@ -55,7 +55,7 @@ const OrderHistory = () => {
 
     const handleProductClick = (id: number) => {
     navigate(`/profile/od_histori/od_detail/${id}`);
-  };
+    };
 
     if (loading) {
         return <p>Đang tải...</p>;

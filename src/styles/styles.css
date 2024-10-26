@@ -964,6 +964,22 @@ a:focus, a:hover {
   outline: 0;
 }
 
+.button {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.view-btn {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  width: 120px;
+  display: inline-block;
+  text-align: center;
+}
+
+
 label {
   font-weight: 600;
 }
@@ -1237,6 +1253,10 @@ label {
 
 .mb_200 {
   margin-bottom: 200px;
+}
+.flat-spacing {
+  padding-top: 20px;
+  padding-bottom: 70px;
 }
 
 .flat-spacing-1 {
@@ -2820,6 +2840,36 @@ header.header-bg {
 .widget-tabs .widget-content-tab {
   position: relative;
   overflow: hidden;
+}
+.widget-tabs .widget-content-tab .widget-content-inne {
+  
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  -webkit-transform: translateY(30px);
+  -ms-transform: translateY(30px);
+  transform: translateY(30px);
+  transition-timing-function: ease-in;
+  transition-duration: 0.2s;
+}
+.widget-tabs .widget-content-tab .widget-content-inne.active {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 2;
+  -webkit-transform: none;
+  -ms-transform: none;
+  transform: none;
+  transition-timing-function: ease-out;
+  transition-duration: 0.3s;
+  transition-delay: 0.3s;
 }
 .widget-tabs .widget-content-tab .widget-content-inner {
   padding: 35px;
@@ -11515,6 +11565,52 @@ blockquote .text {
   opacity: 1;
 }
 
+
+.comment-list {
+    margin-top: 20px;
+}
+
+.comment-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.comment-header {
+    align-items: center;
+    justify-content: space-between;
+}
+
+.comment-header strong {
+    font-size: 1.1em;
+    color: #333;
+}
+
+.stars {
+    display: flex;
+    align-items: center;
+}
+
+.star {
+    font-size: 1.2em;
+    color: #ccc;
+    margin-right: 3px;
+}
+
+.star.filled {
+    color: #fbc02d; /* Màu vàng cho sao */
+}
+
+.comment-content {
+    color: #555;
+    font-size: 0.95em;
+    margin: 5px 0;
+}
+
+.comment-date {
+    font-size: 0.85em;
+    color: #999;
+}
+
 .tf-pagination-wrap {
   padding-top: 45px;
 }
@@ -14018,9 +14114,9 @@ blockquote .text {
   display: none;
 }
 
-.widget-order-tab {
+/* .widget-order-tab {
   margin-top: 30px;
-}
+} */
 .widget-order-tab.widget-tabs {
   border: none;
 }

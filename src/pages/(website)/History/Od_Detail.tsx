@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchOrders, Order } from "../../../Interface/Order";
+import { fetchOrders, Order, Review, submitReview } from "../../../Interface/Order";
 import { useNavigate, useParams } from "react-router-dom";
-import { Input, message, Modal } from "antd";
+import { Button, Input, message, Modal, Rate } from "antd";
 import axiosInstance from "../../../configs/axios";
 
 const Od_Detail = () => {
@@ -29,12 +29,19 @@ const Od_Detail = () => {
         2: "Đã thanh toán",
     };
 
+    
+
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [error, setError] = useState<string | null>(null);
+    const [reviews, setReviews] = useState<Review[] | null>(null);
+    const [reviewsState, setReviewsState] = useState<{ [key: number]: { rating: number; content: string } }>({});
+    // const [hasReviewed, setHasReviewed] = useState<{ [key: number]: boolean }>({});
+    const [selectedProduct, setSelectedProduct] = useState<{ id_order: number; id_product: number; id_variant: number } | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
     const [cancelOrderId, setCancelOrderId] = useState<number | null>(null);
     const [cancelReason, setCancelReason] = useState<string>("");
     const perPage = 1000;
@@ -73,6 +80,71 @@ const Od_Detail = () => {
         loadOrderDetails();
     }, [navigate, id, page, perPage]);
 
+    const handleReviewCheck = (id_order: number, id_product: number, id_variant: number) => {
+    if (hasReviewed[id_product]) {
+        message.warning("Bạn chỉ có thể đánh giá sản phẩm một lần.");
+    } else {
+        setSelectedProduct({ id_order, id_product, id_variant }); // include id_variant
+        setIsReviewModalVisible(true);
+    }
+};
+
+// Khởi tạo `hasReviewed` với dữ liệu từ `localStorage` nếu có
+const [hasReviewed, setHasReviewed] = useState<{ [key: number]: boolean }>(() => {
+    const saved = localStorage.getItem("hasReviewed");
+    return saved ? JSON.parse(saved) : {};
+});
+
+// Sau khi gửi đánh giá thành công
+const handleOk = () => {
+    // Hiển thị Modal xác nhận
+    Modal.confirm({
+        title: "Chỉ được đánh giá một lần và không thể chỉnh sửa",
+        content: "Bạn có chắc muốn gửi không?",
+        okText: "Có",
+        cancelText: "Không",
+        onOk: async () => {
+            // Nếu người dùng bấm "Có", tiếp tục gửi đánh giá
+            if (selectedProduct && reviewsState[selectedProduct.id_product]) {
+                const { id_order, id_product, id_variant } = selectedProduct;
+                const { content, rating } = reviewsState[id_product];
+
+                if (!content || rating === 0) {
+                    message.error("Vui lòng cung cấp đầy đủ thông tin đánh giá.");
+                    return;
+                }
+
+                try {
+                    await submitReview(id_order, id_variant, id_product, content, rating);
+                    setReviews(prev => prev ? [...prev, { id_product, content, rating, id_variant }] : [{ id_product, content, rating, id_variant }]);
+                    
+                    // Cập nhật trạng thái đánh giá
+                    setHasReviewed(prev => {
+                        const updated = { ...prev, [id_product]: true };
+                        localStorage.setItem("hasReviewed", JSON.stringify(updated));
+                        return updated;
+                    });
+
+                    message.success("Đánh giá của bạn đã được gửi thành công!");
+                    setIsReviewModalVisible(false);
+                } catch (error) {
+                    message.error("Lỗi khi gửi đánh giá.");
+                }
+            }
+        },
+        onCancel: () => {
+            // Nếu người dùng bấm "Không", không thực hiện gì
+            message.info("Hủy gửi đánh giá.");
+        },
+    });
+};
+
+
+const handleCancel = () => {
+    setIsReviewModalVisible(false);
+};
+
+
     const showCancelModal = (orderId: number) => {
         setCancelOrderId(orderId);
         setIsModalVisible(true);
@@ -110,8 +182,8 @@ const Od_Detail = () => {
             );
             setIsModalVisible(false);
             setCancelReason("");
+            window.location.reload();
         } catch (error) {
-            // Nếu có lỗi, hiển thị thông báo confirm với nút "Tôi đã hiểu"
         Modal.confirm({
             title: "Không thể hủy đơn hàng",
             content: "Đơn hàng đã được xác nhận và không thể hủy.",
@@ -167,6 +239,10 @@ const Od_Detail = () => {
         }, 0);
     };
 
+    const handleProductClick = (id: number) => {
+    navigate(`/profile/comment/${id}`);
+    };
+
     if (loading) {
         return <p>Đang tải trang...</p>;
     }
@@ -199,29 +275,9 @@ const Od_Detail = () => {
                                     {Number(
                                         order.status,
                                     ) === 1 && (
-                                        <div
-                                            style={{
-                                                textAlign:
-                                                    "right",
-                                                marginTop:
-                                                    "10px",
-                                            }}
-                                        >
+                                        <div className="button">
                                             <a
                                                 className="view-btn"
-                                                style={{
-                                                    backgroundColor:
-                                                        "black",
-                                                    color: "white",
-                                                    padding:
-                                                        "10px",
-                                                    cursor: "pointer",
-                                                    width: "120px",
-                                                    display:
-                                                        "inline-block",
-                                                    textAlign:
-                                                        "center",
-                                                }}
                                                 onClick={() =>
                                                     showCancelModal(
                                                         order.id,
@@ -236,29 +292,9 @@ const Od_Detail = () => {
                                     {Number(
                                         order.status,
                                     ) === 4 && (
-                                        <div
-                                            style={{
-                                                textAlign:
-                                                    "right",
-                                                marginTop:
-                                                    "10px",
-                                            }}
-                                        >
+                                        <div className="button">
                                             <a
                                                 className="view-btn"
-                                                style={{
-                                                    backgroundColor:
-                                                        "black",
-                                                    color: "white",
-                                                    padding:
-                                                        "10px",
-                                                    cursor: "pointer",
-                                                    width: "120px",
-                                                    display:
-                                                        "inline-block",
-                                                    textAlign:
-                                                        "center",
-                                                }}
                                                 onClick={() =>
                                                     handleConfirmReceived(
                                                         order.id,
@@ -270,6 +306,8 @@ const Od_Detail = () => {
                                             </a>
                                         </div>
                                     )}
+
+
                                 </div>
                             </div>
                             <div className="tf-grid-layout md-col-2 gap-15">
@@ -362,6 +400,8 @@ const Od_Detail = () => {
                                                                 style={{
                                                                     marginRight:
                                                                         "15px",
+                                                                        width: "100px",
+                                                                        height: "100px",
                                                                 }}
                                                             >
                                                                 <img
@@ -372,15 +412,14 @@ const Od_Detail = () => {
                                                                         item.product_name
                                                                     }
                                                                     style={{
-                                                                        width: "100px",
-                                                                        height: "100px",
+                                                                        
                                                                         objectFit:
                                                                             "cover",
                                                                     }}
                                                                 />
                                                             </figure>
-                                                            <div className="content">
-                                                                <div className="text-2 fw-6">
+                                                            <div className="content" >
+                                                                <div className="text-3 fw-6">
                                                                     {
                                                                         item.product_name
                                                                     }
@@ -408,6 +447,7 @@ const Od_Detail = () => {
                                                                             .name
                                                                     }
                                                                 </div>
+                                                                
                                                             </div>
                                                         </div>
 
@@ -457,6 +497,43 @@ const Od_Detail = () => {
                                                                         item.selling_price,
                                                                     )}
                                                                 </span>
+                                                                {Number(
+                                                                    order.status,
+                                                                ) === 6 && (
+                                                                    <div className="button">
+                                                                        <Button 
+                                                                            style={{ backgroundColor: 'black' }} 
+                                                                            type="primary" 
+                                                                            onClick={() => hasReviewed[item.id_product] 
+                                                                                ? handleProductClick(item.id_product) // Chuyển đến trang chi tiết đánh giá nếu đã đánh giá
+                                                                                : handleReviewCheck(order.id, item.id_product, item.id_variant)
+                                                                            }
+                                                                        >
+                                                                            {hasReviewed[item.id_product] ? "Xem chi tiết đánh giá" : "Đánh giá"}
+                                                                        </Button>
+                                                                        <Modal
+                                                                            title="Đánh giá sản phẩm"
+                                                                            open={isReviewModalVisible && selectedProduct?.id_product === item.id_product}
+                                                                            onOk={handleOk}
+                                                                            onCancel={handleCancel}
+                                                                            okText="Gửi đánh giá"
+                                                                            cancelText="Hủy bỏ"
+                                                                        >
+                                                                            <Rate onChange={value => setReviewsState(prev => ({
+                                                                                ...prev,
+                                                                                [item.id_product]: { ...prev[item.id_product], rating: value }
+                                                                            }))} value={reviewsState[item.id_product]?.rating} />
+                                                                            <Input.TextArea
+                                                                                rows={4}
+                                                                                value={reviewsState[item.id_product]?.content || ''}
+                                                                                onChange={e => setReviewsState(prev => ({
+                                                                                    ...prev,
+                                                                                    [item.id_product]: { ...prev[item.id_product], content: e.target.value }
+                                                                                }))}
+                                                                            />
+                                                                        </Modal>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
