@@ -14,7 +14,11 @@ import Profile from "../layouts/profile";
 import OrderHistory from "../pages/(website)/History/OdHistory";
 import ProductList from "../pages/(website)/listProducts/Filter";
 import { useEffect } from "react";
+
 import Coupons from "../pages/(website)/Pay/Coupons";
+
+import ListComments from "../pages/(website)/Comments/ListComments";
+
 
 const Router = () => {
     const navigate = useNavigate();
@@ -41,6 +45,7 @@ const Router = () => {
                         path="od_histori/od_detail/:id"
                         element={<Od_Detail />}
                     />
+                    <Route path="comment/:id" element={<ListComments />} />
                 </Route>
 
                 <Route path="/" element={<Layoutweb />}></Route>
@@ -49,6 +54,7 @@ const Router = () => {
                 <Route path="detail/:id" element={<Detail />} />
                 <Route path="od_detail" element={<Od_Detail />} />
                 <Route path="od_histori" element={<OdHistory />} />
+                <Route path="comment" element={<ListComments />} />
                 <Route path="pay" element={<Pay />} />
                 <Route path="success" element={<Success />} />
                 <Route path="products" element={<ListProducts />} />
