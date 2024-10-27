@@ -7,14 +7,17 @@ export interface Order {
     email: string;
     phone_number: string;
     recipient_address: string;
-    order_date: string;
+    created_at: string;
     status: string;
     updated_at: string;
+    payment_role: number;
+    status_payment: number;
     total_payment: number;
     order_detail: Array<{
         id: number;
         id_oder: number;
         id_product: number;  
+        id_variant: number;
         selling_price: number;
         list_price: number;
         product_name: string;
@@ -24,6 +27,7 @@ export interface Order {
 
   }>;
 }
+
 
 export interface Variant {
     color: {
@@ -36,14 +40,39 @@ export interface Variant {
     };
 }
 
+export interface Review {    
+    id_product: number;
+    id_variant: number;
+    content: string;
+    rating: number;
+    
+}
 
-export const fetchOrders = async (): Promise<Order[]> => {
+export interface Comment {
+    product_name: string;
+    image_variant: string;
+    color: string;
+    size: string;
+    content: string;
+    rating: number;
+    created_at: string
+}
+
+
+export const fetchOrders = async (
+    page: number,
+    perPage: number
+): Promise<{data: Order[]; total_pages: number}> => {
     const token = localStorage.getItem("authToken");
     if (!token) {
         throw new Error("No token found");
     }
 
-    const response = await axiosInstance.get<Order[]>("/purchasedOrders", {
+    const response = await axiosInstance.get<{data: Order[]; total_pages: number}>("/purchasedOrders", {
+         params: {
+            page: page,           // Trang hiện tại
+            per_page: perPage     // Số sản phẩm trên mỗi trang
+            },
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -52,19 +81,48 @@ export const fetchOrders = async (): Promise<Order[]> => {
     return response.data;
 };
 
-// export const cancelOrder = async (): Promise<void> => {
-//     const token = localStorage.getItem("authToken");
-//     if (!token) {
-//         throw new Error("No token found");
-//     }
+// Hàm gọi API để lấy danh sách đánh giá (reviews)
+export const submitReview = async (
+    id_order: number,  
+    id_variant: number,      
+    id_product: number,
+    content: string,
+    rating: number    
+): Promise<{data: Review}> => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        throw new Error("No token found");
+    }
 
-//     await axiosInstance.get(`/purchasedOrders`, {
-//                 params: {
-//                     cancel_id: cancelOrderId, // Truyền cancel_id lên API
-//                     note: cancelReason, // Không bắt buộc gửi note, chỉ kiểm tra
-//                 },
-//         headers: {
-//             Authorization: `Bearer ${token}`,
-//         },
-//     });
-// };
+    const response = await axiosInstance.post<{data: Review}>("/addCommentProduct", {
+        id_order: id_order,        
+        id_product: id_product,
+        id_variant: id_variant,
+        content: content,
+        rating: rating
+}, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    });
+
+    return response.data;
+};
+
+export const fetchComment = async (
+       
+): Promise<{data: Comment[]}> => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        throw new Error("No token found");
+    }
+
+    const response = await axiosInstance.get<{data: Comment[]}>("/listCommentUser", {
+       
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    });
+
+    return response.data;
+};

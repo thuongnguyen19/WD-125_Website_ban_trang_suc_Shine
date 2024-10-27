@@ -48,6 +48,15 @@ interface Product {
     variant: Variant[];
     description: string;
     images: Image[];
+    averageRating: number | null;
+    comments: Comment[];
+}
+
+interface Comment {
+    user_name: number;
+    content: string;
+    created_at: string;
+    rating: number
 }
 
 // Hàm để thêm URL đầy đủ cho đường dẫn ảnh
@@ -82,12 +91,16 @@ const Detail: React.FC = () => {
     const [remainingQuantity, setRemainingQuantity] = useState<number | null>(
         null,
     );
+    const [averageRating, setAverageRating] = useState<number | null>(null);
+    const [comments, setComments] = useState<Comment[]>([]);
     const [minSellingPrice, setMinSellingPrice] = useState<number | null>(null);
     const [minListPrice, setMinListPrice] = useState<number | null>(null);
     const [activeIndex, setActiveIndex] = useState<number>(0); // Theo dõi chỉ số slide hiện tại
 
     const mainSwiperRef = useRef<any>(null); // Ref để quản lý slider chính
     const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
+
+    
 
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
@@ -100,6 +113,8 @@ const Detail: React.FC = () => {
 
                 if (productData) {
                     setProduct(productData);
+                    setAverageRating(productData.averageRating);
+                    setComments(productData.comments); // Gán danh sách đánh giá
                     fetchRelatedProducts(productData.id);
 
                     // Lấy giá nhỏ nhất từ các biến thể sản phẩm
@@ -640,6 +655,21 @@ const Detail: React.FC = () => {
                                         </div>
                                     )}
 
+                                    <div className="average-rating">
+                                        <div className="stars" >
+                                            {Array.from({ length: 5 }, (_, i) => (
+                                                <span 
+                                                    key={i}
+                                                    className={`star ${averageRating && i < Math.round(averageRating) ? "filled" : ""}`}
+                                                >
+                                                    ★
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <p>({averageRating !== null ? averageRating.toFixed(1) : "Chưa có đánh giá"} / 5 sao)</p>
+                                    </div>
+
+
                                     <br />
                                     <div className="tf-color-selection d-flex align-items-center">
                                         <h6 style={{ marginRight: "10px" }}>
@@ -860,6 +890,50 @@ const Detail: React.FC = () => {
                             <p style={{ fontSize: "18px" }}>
                                 {product?.description}
                             </p>
+                        </div>
+
+                        <hr />
+                        <div
+                            className="tf-product-description mt-4"
+                            style={{
+                                fontSize: "18px",
+                                padding: "20px",
+                                lineHeight: "1.6",
+                                backgroundColor: "#f9f9f9",
+                                borderRadius: "8px",
+                            }}
+                        >
+                            <h5
+                                style={{
+                                    fontSize: "24px",
+                                    marginBottom: "16px",
+                                }}
+                            >
+                                Đánh giá sản phẩm
+                            </h5>
+                            <div className="comment-list">
+                        
+                        {comments.length === 0 ? (
+                            <p>Chưa có đánh giá nào.</p>
+                        ) : (
+                            comments.map((comment, index) => (
+                                <div key={index} className="comment-item">
+                                <div className="comment-header">
+                                    <strong>{comment.user_name}</strong> 
+                                    <div className="stars">
+                                        {Array.from({ length: 5 }, (_, i) => (
+                                            <span key={i} className={`star ${i < comment.rating ? "filled" : ""}`}>
+                                                ★
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <p className="comment-content">{comment.content}</p> {/* Nội dung đánh giá */}
+                                <p className="comment-date">{new Date(comment.created_at).toLocaleString()}</p> {/* Ngày đánh giá */}
+                            </div>
+                            ))
+                        )}
+                    </div>
                         </div>
 
                         <hr />
