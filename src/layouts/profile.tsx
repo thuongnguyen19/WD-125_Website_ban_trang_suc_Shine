@@ -11,35 +11,35 @@ const Profile = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [messageAPI, contextHolder] = message.useMessage();
-    const [user, setUser] = useState<{ name: string } | null>(null); // State để lưu trữ tên người dùng
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Trạng thái xác thực
+    const [user, setUser] = useState<{ name: string } | null>(null); // User state to store user's name
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Auth state
 
-    // Lấy dữ liệu người dùng khi component được mount
+    // Fetch user data when component mounts
     useEffect(() => {
         const token = localStorage.getItem("authToken");
 
         if (token) {
             setIsAuthenticated(true);
 
-            // Gọi API để lấy dữ liệu người dùng sử dụng token
+            // Fetch user data from API using the token
             axios
                 .get("http://localhost:8000/api/user", {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Gửi token để xác thực
+                        Authorization: `Bearer ${token}`, // Sending the token to authorize the request
                     },
                 })
                 .then((response) => {
                     if (response.data.user && response.data.user.name) {
-                        setUser(response.data.user); // Lưu trữ thông tin người dùng, cụ thể là tên
+                        setUser(response.data.user); // Store user data, particularly the name
                     }
                 })
                 .catch((error) => {
-                    console.error("Lỗi khi lấy dữ liệu người dùng:", error);
+                    console.error("Error fetching user data:", error);
                 });
         }
     }, []);
 
-    // Xử lý đăng xuất
+    // Handle logout functionality
     const handleLogout = () => {
         Modal.confirm({
             title: "Xác nhận",
@@ -50,7 +50,7 @@ const Profile = () => {
                 try {
                     const token = localStorage.getItem("authToken");
 
-                    // Gọi API để thực hiện đăng xuất
+                    // Call API to log out
                     await axios.post(
                         "http://localhost:8000/api/logout",
                         {},
@@ -61,16 +61,11 @@ const Profile = () => {
                         },
                     );
 
-                    // Xóa toàn bộ dữ liệu trong localStorage
-                    localStorage.clear();
-
-                    // Clear cache của react-query
+                    // Remove token from localStorage and clear cache
+                    localStorage.removeItem("authToken");
                     queryClient.clear();
-
-                    // Hiển thị thông báo đăng xuất thành công
                     messageAPI.success("Đã đăng xuất thành công!");
 
-                    // Điều hướng tới trang đăng nhập sau 1 giây
                     setTimeout(() => {
                         navigate("/login");
                     }, 1000);
@@ -83,16 +78,40 @@ const Profile = () => {
         });
     };
 
-    // Xác định tiêu đề của trang dựa vào đường dẫn
+    // Set the page title based on current location
     const pageTitle = location.pathname.includes("od_histori")
         ? "Lịch sử đơn hàng của bạn"
-        : `Bảng điều khiển của ${user?.name || "người dùng"}`;
+        : location.pathname.includes("coupons") // Check if the path is for coupons
+          ? "Tất cả mã giảm giá"
+          : `Bảng điều khiển của ${user?.name || "người dùng"}`;
 
     return (
         <div>
             <Header />
             {contextHolder}
-            
+            <div className="col-xl-3 col-md-4 col-3">
+                <ul className="nav-icon d-flex justify-content-end align-items-center gap-20">
+                    <li className="nav-search">
+                        <a
+                            href="#canvasSearch"
+                            data-bs-toggle="offcanvas"
+                            aria-controls="offcanvasLeft"
+                            className="nav-icon-item"
+                        >
+                            <i className="icon icon-search"></i>
+                        </a>
+                    </li>
+                    <li className="nav-account">
+                        <a
+                            href="#login"
+                            data-bs-toggle="modal"
+                            className="nav-icon-item"
+                        >
+                            <i className="icon icon-account"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
             <div className="tf-page-title">
                 <div className="container-full">
                     <div className="heading text-center">{pageTitle}</div>
@@ -106,11 +125,7 @@ const Profile = () => {
                                 <li>
                                     <Link
                                         to="/profile"
-                                        className={`my-account-nav-item ${
-                                            location.pathname === "/profile"
-                                                ? "active"
-                                                : ""
-                                        }`}
+                                        className={`my-account-nav-item ${location.pathname === "/profile" ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
                                         {user?.name
@@ -121,16 +136,19 @@ const Profile = () => {
                                 <li>
                                     <Link
                                         to="od_histori"
-                                        className={`my-account-nav-item ${
-                                            location.pathname.includes(
-                                                "od_histori",
-                                            )
-                                                ? "active"
-                                                : ""
-                                        }`}
+                                        className={`my-account-nav-item ${location.pathname.includes("od_histori") ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
                                         Đơn hàng
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        to="coupons" // Add link to coupons page
+                                        className={`my-account-nav-item ${location.pathname.includes("coupons") ? "active" : ""}`}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        Mã giảm giá của tôi
                                     </Link>
                                 </li>
                                 <li>

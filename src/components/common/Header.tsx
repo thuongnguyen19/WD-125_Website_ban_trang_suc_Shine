@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     SearchOutlined,
     UserOutlined,
@@ -22,9 +22,10 @@ const Header: React.FC = () => {
         // Bạn có thể gọi API tìm kiếm sản phẩm tại đây
     };
     useEffect(() => {
+        // Hàm tải danh mục sản phẩm
         const loadCategories = async () => {
             try {
-                const data = await fetchCategorys();
+                const data = await fetchCategorys(); // Gọi API để tải danh mục
                 setCategories(data);
             } catch (error) {
                 console.error("Lỗi khi tải danh mục sản phẩm:", error);
@@ -32,10 +33,19 @@ const Header: React.FC = () => {
             setLoading(false);
         };
 
+        // Hàm tính tổng số lượng sản phẩm trong giỏ hàng
         const fetchCartCount = () => {
             const cartData = localStorage.getItem("cartItems");
             if (cartData) {
-                setCartCount(JSON.parse(cartData).length);
+                const cartItems = JSON.parse(cartData);
+
+                const totalQuantity = cartItems.reduce(
+                    (total: number, item: { quantity: number }) =>
+                        total + item.quantity,
+                    0,
+                );
+
+                setCartCount(totalQuantity);
             }
         };
 
