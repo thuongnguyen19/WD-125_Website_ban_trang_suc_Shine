@@ -95,6 +95,7 @@ const Login: React.FC = () => {
                                 </Form.Item>
 
                                 <Form.Item
+                                style={{ marginBottom: 0 }}
                                     label="Mật khẩu"
                                     name="password"
                                     rules={[
@@ -106,7 +107,11 @@ const Login: React.FC = () => {
                                 >
                                     <Input.Password className="custom-input" />
                                 </Form.Item>
-
+                                <div style={{ textAlign: "right", marginBottom: 15 }}>
+                                    <Link to="/forgotpassword" style={{ color: "blue" }}>
+                                        Quên mật khẩu?
+                                    </Link>
+                                </div>
                                 <Form.Item>
                                     <Button
                                         type="primary"
@@ -123,6 +128,7 @@ const Login: React.FC = () => {
                                     </Button>
                                 </Form.Item>
                             </Form>
+                        
                             <div style={{ textAlign: "center", marginTop: 10 }}>
                                 <span>Bạn chưa có tài khoản? </span>
                                 <Link to="/register" style={{ color: "blue" }}>

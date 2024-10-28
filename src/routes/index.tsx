@@ -15,6 +15,8 @@ import OrderHistory from "../pages/(website)/History/OdHistory";
 import ProductList from "../pages/(website)/listProducts/Filter";
 import { useEffect } from "react";
 import ListComments from "../pages/(website)/Comments/ListComments";
+import ResetPassword from "../pages/(website)/dkdn/ResetPassword";
+import ForgotPassword from "../pages/(website)/dkdn/ForgotPassword";
 
 const Router = () => {
     const navigate = useNavigate();
@@ -60,6 +62,8 @@ const Router = () => {
                 <Route path="pricefilter" element={<ProductList/>} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
+                <Route path="forgotpassword" element={<ForgotPassword />} />
+                <Route path="resetpassword/:token" element={<ResetPassword />} />
                 <Route path="logout" element={<LogOut />} />
             </Routes>
         </>
