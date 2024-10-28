@@ -55,6 +55,9 @@ const Success: React.FC = () => {
                         setMessageText(
                             response.data.message || "Đặt hàng thành công!",
                         );
+
+                    
+                      
                     } else {
                         setStatus(false);
                         setMessageText(

@@ -5,7 +5,7 @@ import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import axios from "axios";
 
-// Interface cho CartItem
+// Interface cho CartItem và Voucher
 interface CartItem {
     id: number;
     quantity: number;
@@ -44,6 +44,7 @@ const Pay: React.FC = () => {
     const [totalAmount, setTotalAmount] = useState<number>(0);
     const [originalTotalAmount, setOriginalTotalAmount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
@@ -52,16 +53,15 @@ const Pay: React.FC = () => {
     const [discountCode, setDiscountCode] = useState<string>("");
     const [voucherId, setVoucherId] = useState<number | null>(null);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-    const [selectedCoupon, setSelectedCoupon] = useState<string | null>(null);
     const [discount, setDiscount] = useState<number>(0);
     const [isDiscountApplied, setIsDiscountApplied] = useState<boolean>(false);
     const [discountLoading, setDiscountLoading] = useState<boolean>(false);
     const [availableVouchers, setAvailableVouchers] = useState<Voucher[]>([]);
+    const [discountError, setDiscountError] = useState<string>("");
 
     const location = useLocation();
     const navigate = useNavigate();
 
-    // Tải dữ liệu người dùng và thông tin giỏ hàng
     useEffect(() => {
         const token = localStorage.getItem("authToken");
 
@@ -163,15 +163,18 @@ const Pay: React.FC = () => {
     };
 
     const handleOrder = async () => {
+        setIsOrderLoading(true); // Hiển thị spinner loading
         const token = localStorage.getItem("authToken");
 
         if (!token) {
             message.error("Bạn chưa đăng nhập.");
             navigate("/login");
+            setIsOrderLoading(false); // Tắt spinner loading
             return;
         }
 
         if (!validateForm()) {
+            setIsOrderLoading(false); // Tắt spinner loading nếu không hợp lệ
             return;
         }
 
@@ -187,7 +190,7 @@ const Pay: React.FC = () => {
                 ?.value,
             total_payment: totalAmount,
             payment_role: paymentRole,
-            discount_code: discountCode || selectedCoupon,
+            discount_code: discountCode,
             voucherId: voucherId || null,
         };
 
@@ -215,16 +218,20 @@ const Pay: React.FC = () => {
             }
         } catch (error) {
             message.error("Đã xảy ra lỗi trong quá trình đặt hàng.");
+        } finally {
+            setIsOrderLoading(false); // Tắt spinner loading sau khi hoàn tất
         }
     };
 
-    const handleDiscountApply = async () => {
+    const applyDiscount = async (code: string) => {
         setDiscountLoading(true);
+        setDiscountError(""); // Reset thông báo lỗi trước khi kiểm tra mã
         const token = localStorage.getItem("authToken");
 
-        if (!discountCode.trim()) {
-            message.error("Vui lòng nhập mã giảm giá.");
+        if (!code.trim()) {
+            setDiscountError("Mã không tồn tại, vui lòng nhập mã khác.");
             setDiscountLoading(false);
+            setTotalAmount(originalTotalAmount); // Khôi phục lại tổng tiền ban đầu
             return;
         }
 
@@ -233,31 +240,18 @@ const Pay: React.FC = () => {
         if (!userString) {
             message.error("Không tìm thấy thông tin người dùng.");
             setDiscountLoading(false);
+            setTotalAmount(originalTotalAmount); // Khôi phục lại tổng tiền ban đầu
             return;
         }
 
         const user = JSON.parse(userString);
         const userId = user.id;
 
-        if (!userId) {
-            message.error(
-                "Không tìm thấy ID người dùng. Vui lòng đăng nhập lại.",
-            );
-            setDiscountLoading(false);
-            return;
-        }
-
-        if (isDiscountApplied) {
-            message.error("Mã giảm giá đã được áp dụng.");
-            setDiscountLoading(false);
-            return;
-        }
-
         try {
             const response = await axios.post(
                 "http://localhost:8000/api/vouchers/apply",
                 {
-                    voucher_code: discountCode,
+                    voucher_code: code,
                     order_amount: originalTotalAmount,
                     user_id: userId,
                 },
@@ -276,16 +270,47 @@ const Pay: React.FC = () => {
                 setDiscount(discount);
                 setTotalAmount(final_amount);
                 setIsDiscountApplied(true);
+                setDiscountCode(code); // Cập nhật mã giảm giá hiện tại
                 message.success("Mã giảm giá đã được áp dụng thành công.");
             } else {
-                message.error(response.data.message);
+                setDiscountError("Mã không tồn tại hoặc không đủ điều kiện.");
+                setTotalAmount(originalTotalAmount); // Khôi phục lại tổng tiền ban đầu
+                setIsDiscountApplied(false);
+                setVoucherId(null);
+                setDiscount(0);
             }
         } catch (error) {
-            message.error("Mã giảm giá không hợp lệ hoặc không đủ điều kiện.");
+            setDiscountError(
+                "Mã giảm giá không được áp dụng do mã sai hoặc mã đã hết hạn sử dụng .Vui lòng chọn mã giảm giá khác  ",
+            );
+            setTotalAmount(originalTotalAmount); // Khôi phục lại tổng tiền ban đầu
+            setIsDiscountApplied(false);
+            setVoucherId(null);
+            setDiscount(0);
         } finally {
             setDiscountLoading(false);
         }
     };
+
+    const selectCoupon = (coupon: string) => {
+        setDiscountCode(coupon);
+        closeDiscountModal();
+        applyDiscount(coupon); // Tự động áp dụng mã giảm giá vừa chọn
+    };
+
+const handleDiscountCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDiscountCode = e.target.value;
+    setDiscountCode(newDiscountCode);
+    setDiscountError(""); // Xóa lỗi khi người dùng thay đổi mã
+
+    if (!newDiscountCode.trim() || newDiscountCode !== discountCode) {
+        setTotalAmount(originalTotalAmount);
+        setIsDiscountApplied(false);
+        setVoucherId(null);
+        setDiscount(0);
+    }
+};
+
 
     const fetchAvailableVouchers = async () => {
         const token = localStorage.getItem("authToken");
@@ -318,31 +343,11 @@ const Pay: React.FC = () => {
 
     const openDiscountModal = () => {
         setIsModalVisible(true);
-        fetchAvailableVouchers(); // Gọi API để lấy danh sách voucher
+        fetchAvailableVouchers();
     };
 
     const closeDiscountModal = () => {
         setIsModalVisible(false);
-    };
-
-    const selectCoupon = (coupon: string) => {
-        setDiscountCode(coupon);
-        message.success(`Bạn đã chọn mã giảm giá: ${coupon}`);
-        closeDiscountModal();
-    };
-
-    const handleDiscountCodeChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-        const newDiscountCode = e.target.value;
-        setDiscountCode(newDiscountCode);
-
-        if (!newDiscountCode.trim()) {
-            setTotalAmount(originalTotalAmount);
-            setIsDiscountApplied(false);
-            setVoucherId(null);
-            setDiscount(0);
-        }
     };
 
     if (loading) {
@@ -352,7 +357,28 @@ const Pay: React.FC = () => {
     return (
         <>
             <Header />
-            <div>
+            <div style={{ position: "relative" }}>
+                {/* Overlay Spinner */}
+                {isOrderLoading && (
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "rgba(255, 255, 255, 0.7)",
+                            zIndex: 1000,
+                        }}
+                    >
+                        <Spin size="large" />
+                    </div>
+                )}
+
+                {/* Nội dung trang */}
                 <div className="tf-page-title">
                     <div className="container-full">
                         <div className="heading text-center">Thanh Toán</div>
@@ -634,13 +660,24 @@ const Pay: React.FC = () => {
                                                     handleDiscountCodeChange
                                                 }
                                             />
+                                            {discountError && (
+                                                <p
+                                                    style={{
+                                                        color: "red",
+                                                        marginTop: "5px",
+                                                    }}
+                                                >
+                                                    {discountError}
+                                                </p>
+                                            )}
                                             <Button
-                                                onClick={handleDiscountApply}
+                                                onClick={() =>
+                                                    applyDiscount(discountCode)
+                                                }
                                                 disabled={discountLoading}
                                                 style={{
                                                     marginRight: "10px",
                                                     marginTop: "10px",
-                                                    marginBottom: "20px",
                                                     padding: "8px",
                                                     backgroundColor: "#999999",
                                                     borderRadius: "5px",
@@ -655,9 +692,7 @@ const Pay: React.FC = () => {
                                             <Button
                                                 onClick={openDiscountModal}
                                                 style={{
-                                                    marginRight: "10px",
                                                     marginTop: "10px",
-                                                    marginBottom: "20px",
                                                     padding: "8px",
                                                     backgroundColor: "#996699",
                                                     borderRadius: "5px",
@@ -754,6 +789,7 @@ const Pay: React.FC = () => {
                                     <button
                                         className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center"
                                         onClick={handleOrder}
+                                        disabled={isOrderLoading}
                                     >
                                         Đặt hàng
                                     </button>
