@@ -9,12 +9,12 @@ const ResetPassword = () => {
     const navigate = useNavigate();
     const { token } = useParams<{ token: string }>();
 
-    const handleSubmit = async (values: { password: string; confirm_password: string }) => {
+    const handleSubmit = async (values: { password: string; confirmPassword: string }) => {
         try {
             setLoading(true);
             await axios.post(`http://localhost:8000/api/resetpassword/${token}`, {
                 password: values.password,
-                confirm_password: values.confirm_password
+                password_confirmation: values.confirmPassword
             });
             messageAPI.success('Mật khẩu của bạn đã được đặt lại thành công.');
             navigate('/login');

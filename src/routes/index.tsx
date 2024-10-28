@@ -64,7 +64,7 @@ const Router = () => {
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="forgotpassword" element={<ForgotPassword />} />
-                <Route path="resetpassword/:token" element={<ResetPassword />} />
+                <Route path="reset-password/:token" element={<ResetPassword />} />
                 <Route path="logout" element={<LogOut />} />
             </Routes>
         </>
