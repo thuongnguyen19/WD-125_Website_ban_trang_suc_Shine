@@ -14,7 +14,11 @@ import Profile from "../layouts/profile";
 import OrderHistory from "../pages/(website)/History/OdHistory";
 import ProductList from "../pages/(website)/listProducts/Filter";
 import { useEffect } from "react";
+
+import Coupons from "../pages/(website)/Pay/Coupons";
+
 import ListComments from "../pages/(website)/Comments/ListComments";
+
 
 const Router = () => {
     const navigate = useNavigate();
@@ -34,12 +38,9 @@ const Router = () => {
     return (
         <>
             <Routes>
-       
                 <Route path="/profile" element={<Profile />}>
-                
-                  
+                    <Route path="coupons" element={<Coupons />} />{" "}
                     <Route path="od_histori" element={<OrderHistory />} />{" "}
-                
                     <Route
                         path="od_histori/od_detail/:id"
                         element={<Od_Detail />}
@@ -57,7 +58,7 @@ const Router = () => {
                 <Route path="pay" element={<Pay />} />
                 <Route path="success" element={<Success />} />
                 <Route path="products" element={<ListProducts />} />
-                <Route path="pricefilter" element={<ProductList/>} />
+                <Route path="pricefilter" element={<ProductList />} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="logout" element={<LogOut />} />

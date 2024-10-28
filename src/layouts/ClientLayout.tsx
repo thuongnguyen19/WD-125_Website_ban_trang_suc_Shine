@@ -1,9 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import Header2 from "../components/common/Header2";
 import Footer from "../components/common/Footer";
 import { message } from "antd";
-import { useEffect, useState } from "react";
 import {
     CaretDownOutlined,
     SearchOutlined,
@@ -18,25 +18,22 @@ const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
     const [messageAPI, contextHolder] = message.useMessage();
     const [user, setUser] = useState<{ name: string } | null>(null); // Lưu thông tin người dùng
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra xem người dùng đã đăng nhập hay chưa
-    const [cartCount, setCartCount] = useState<number>(0); // Đếm số lượng sản phẩm trong giỏ hàng
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra người dùng đăng nhập
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    // Kiểm tra nếu người dùng đã đăng nhập
+    // Thêm biến trạng thái để lưu số lượng sản phẩm trong giỏ hàng
+    const [cartCount, setCartCount] = useState<number>(0);
+
+    // Kiểm tra xem người dùng đã đăng nhập hay chưa
     useEffect(() => {
         const token = localStorage.getItem("authToken");
-        const storedUser = localStorage.getItem("user");
 
-        if (token && storedUser) {
+        if (token) {
             setIsAuthenticated(true);
 
-            // Lấy thông tin người dùng từ localStorage
-            const parsedUser = JSON.parse(storedUser);
-            setUser(parsedUser);
-
-            // Gọi API để cập nhật thông tin người dùng nếu cần
+            // Gọi API lấy thông tin người dùng dựa trên token
             axios
                 .get("http://localhost:8000/api/user", {
                     headers: {
@@ -44,7 +41,7 @@ const Layoutweb: React.FC = () => {
                     },
                 })
                 .then((response) => {
-                    setUser(response.data.user); // Cập nhật thông tin người dùng từ API
+                    setUser(response.data.user); // Đặt thông tin người dùng
                 })
                 .catch((error) => {
                     console.error("Không thể lấy dữ liệu người dùng:", error);
@@ -52,47 +49,50 @@ const Layoutweb: React.FC = () => {
         }
     }, []);
 
-    // Lấy danh mục sản phẩm
+    // API Danh mục và giỏ hàng
     useEffect(() => {
-        const loadCategories = async () => {
+        const loadCategorys = async () => {
             try {
                 const data = await fetchCategorys();
                 setCategories(data);
             } catch (error) {
-                console.error("Error fetching categories:", error);
+                console.error("Lỗi khi tải danh mục:", error);
             }
             setLoading(false);
         };
 
-        loadCategories();
-    }, []);
+        // Tính tổng số lượng sản phẩm trong giỏ hàng từ localStorage
+        const fetchCartCount = () => {
+            const cartData = localStorage.getItem("cartItems");
+            if (cartData) {
+                const cartItems = JSON.parse(cartData);
 
-    // Lấy số lượng sản phẩm trong giỏ hàng từ localStorage
-    useEffect(() => {
-        const cartData = localStorage.getItem("cartItems");
-        if (cartData) {
-            try {
-                const parsedCartData = JSON.parse(cartData);
-                if (Array.isArray(parsedCartData)) {
-                    setCartCount(parsedCartData.length);
-                } else {
-                    console.error("cartItems không phải là một mảng");
-                    setCartCount(0);
-                }
-            } catch (error) {
-                console.error("Lỗi khi phân tích giỏ hàng:", error);
-                setCartCount(0);
+                const totalQuantity = cartItems.reduce(
+                    (total: number, item: { quantity: number }) =>
+                        total + item.quantity,
+                    0,
+                );
+
+                setCartCount(totalQuantity);
             }
-        } else {
-            setCartCount(0);
-        }
+        };
+
+        loadCategorys();
+        fetchCartCount();
+
+        // Lắng nghe sự thay đổi của localStorage
+        window.addEventListener("storage", fetchCartCount);
+
+        return () => {
+            window.removeEventListener("storage", fetchCartCount);
+        };
     }, []);
 
     if (loading) {
         return <p>Đang tải...</p>;
     }
 
-    // Chuyển hướng đến trang hồ sơ người dùng
+    // Điều hướng đến trang cá nhân
     const goToProfile = () => {
         navigate("/profile");
     };
@@ -205,6 +205,8 @@ const Layoutweb: React.FC = () => {
                                         <li className="nav-search">
                                             <a
                                                 href="#canvasSearch"
+                                                data-bs-toggle="offcanvas"
+                                                aria-controls="offcanvasLeft"
                                                 className="nav-icon-item"
                                             >
                                                 <SearchOutlined
@@ -214,14 +216,16 @@ const Layoutweb: React.FC = () => {
                                         </li>
                                         <li className="nav-account">
                                             {isAuthenticated ? (
-                                                <span
-                                                    onClick={goToProfile}
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                >
-                                                    Xin chào, {user?.name}
-                                                </span>
+                                                <div>
+                                                    <span
+                                                        onClick={goToProfile}
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                    >
+                                                        Xin chào, {user?.name}
+                                                    </span>
+                                                </div>
                                             ) : (
                                                 <Link
                                                     to="/login"
@@ -255,9 +259,10 @@ const Layoutweb: React.FC = () => {
                     </header>
                 </div>
 
-                {/* Nội dung trang */}
                 <Header2 />
+
                 <Home />
+
                 <Footer />
             </div>
         </>
