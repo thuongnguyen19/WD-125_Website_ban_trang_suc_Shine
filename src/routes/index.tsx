@@ -18,6 +18,8 @@ import { useEffect } from "react";
 import Coupons from "../pages/(website)/Pay/Coupons";
 
 import ListComments from "../pages/(website)/Comments/ListComments";
+import ResetPassword from "../pages/(website)/dkdn/ResetPassword";
+import ForgotPassword from "../pages/(website)/dkdn/ForgotPassword";
 
 
 const Router = () => {
@@ -61,6 +63,8 @@ const Router = () => {
                 <Route path="pricefilter" element={<ProductList />} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
+                <Route path="forgotpassword" element={<ForgotPassword />} />
+                <Route path="reset-password/:token" element={<ResetPassword />} />
                 <Route path="logout" element={<LogOut />} />
             </Routes>
         </>
