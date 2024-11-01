@@ -98,7 +98,6 @@ const Profile = () => {
                             aria-controls="offcanvasLeft"
                             className="nav-icon-item"
                         >
-                            <i className="icon icon-search"></i>
                         </a>
                     </li>
                     <li className="nav-account">
@@ -107,7 +106,6 @@ const Profile = () => {
                             data-bs-toggle="modal"
                             className="nav-icon-item"
                         >
-                            <i className="icon icon-account"></i>
                         </a>
                     </li>
                 </ul>
