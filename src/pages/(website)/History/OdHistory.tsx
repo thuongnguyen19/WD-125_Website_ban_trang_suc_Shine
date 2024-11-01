@@ -39,7 +39,7 @@ const OrderHistory = () => {
                 setLoading(false);
                 setTotalPages(total_pages);
             } catch (err) {
-                setError("Lỗi khi tải danh sách đơn hàng");
+                setError("Không có đơn hàng nào");
                 setLoading(false);
             }
         };

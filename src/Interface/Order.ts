@@ -23,6 +23,7 @@ export interface Order {
         product_name: string;
         product_image: string;
         quantity: number;
+        is_comment: number;
         product_variant: Variant;
 
   }>;
@@ -49,6 +50,7 @@ export interface Review {
 }
 
 export interface Comment {
+    id: string;
     product_name: string;
     image_variant: string;
     color: string;
