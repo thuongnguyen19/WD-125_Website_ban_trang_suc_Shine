@@ -80,20 +80,16 @@ const Od_Detail = () => {
         loadOrderDetails();
     }, [navigate, id, page, perPage]);
 
-    const handleReviewCheck = (id_order: number, id_product: number, id_variant: number) => {
-    if (hasReviewed[id_product]) {
+    const handleReviewCheck = (id_order: number, id_product: number, id_variant: number, is_comment: number) => {
+    if (is_comment === 2) { // Nếu is_comment là 2 nghĩa là đã đánh giá
         message.warning("Bạn chỉ có thể đánh giá sản phẩm một lần.");
     } else {
-        setSelectedProduct({ id_order, id_product, id_variant }); // include id_variant
+        setSelectedProduct({ id_order, id_product, id_variant });
         setIsReviewModalVisible(true);
     }
 };
 
-// Khởi tạo `hasReviewed` với dữ liệu từ `localStorage` nếu có
-const [hasReviewed, setHasReviewed] = useState<{ [key: number]: boolean }>(() => {
-    const saved = localStorage.getItem("hasReviewed");
-    return saved ? JSON.parse(saved) : {};
-});
+
 
 // Sau khi gửi đánh giá thành công
 const handleOk = () => {
@@ -117,14 +113,6 @@ const handleOk = () => {
                 try {
                     await submitReview(id_order, id_variant, id_product, content, rating);
                     setReviews(prev => prev ? [...prev, { id_product, content, rating, id_variant }] : [{ id_product, content, rating, id_variant }]);
-                    
-                    // Cập nhật trạng thái đánh giá
-                    setHasReviewed(prev => {
-                        const updated = { ...prev, [id_product]: true };
-                        localStorage.setItem("hasReviewed", JSON.stringify(updated));
-                        return updated;
-                    });
-
                     message.success("Đánh giá của bạn đã được gửi thành công!");
                     setIsReviewModalVisible(false);
                 } catch (error) {
@@ -240,7 +228,7 @@ const handleCancel = () => {
     };
 
     const handleProductClick = (id: number) => {
-    navigate(`/profile/comment/${id}`);
+    navigate(`/profile/comment`);
     };
 
     if (loading) {
@@ -504,12 +492,12 @@ const handleCancel = () => {
                                                                         <Button 
                                                                             style={{ backgroundColor: 'black' }} 
                                                                             type="primary" 
-                                                                            onClick={() => hasReviewed[item.id_product] 
+                                                                            onClick={() => item.is_comment === 2 
                                                                                 ? handleProductClick(item.id_product) // Chuyển đến trang chi tiết đánh giá nếu đã đánh giá
-                                                                                : handleReviewCheck(order.id, item.id_product, item.id_variant)
+                                                                                : handleReviewCheck(order.id, item.id_product, item.id_variant, item.is_comment)
                                                                             }
                                                                         >
-                                                                            {hasReviewed[item.id_product] ? "Xem chi tiết đánh giá" : "Đánh giá"}
+                                                                            {item.is_comment === 2 ? "Xem chi tiết đánh giá" : "Đánh giá"}
                                                                         </Button>
                                                                         <Modal
                                                                             title="Đánh giá sản phẩm"
