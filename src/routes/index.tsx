@@ -47,7 +47,7 @@ const Router = () => {
                         path="od_histori/od_detail/:id"
                         element={<Od_Detail />}
                     />
-                    <Route path="comment/:id" element={<ListComments />} />
+                    <Route path="comment" element={<ListComments />} />
                 </Route>
 
                 <Route path="/" element={<Layoutweb />}></Route>
