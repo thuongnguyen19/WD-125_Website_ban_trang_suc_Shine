@@ -3,7 +3,7 @@ import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { message } from "antd";
+import { message, Rate } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Navigation } from "swiper/modules";
@@ -98,6 +98,7 @@ const Detail: React.FC = () => {
     const [isFavorite, setIsFavorite] = useState(false);
     const mainSwiperRef = useRef<any>(null); // Ref để quản lý slider chính
     const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
+    const ratingValue = averageRating || 0;
 
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
@@ -671,6 +672,12 @@ const Detail: React.FC = () => {
                                     <div className="tf-product-info-title">
                                         <h5>{product?.name}</h5>
                                     </div>
+                                    <div className="average-rating" style={{display: 'flex', marginBottom: '20px'}}>
+                                        <div className="stars" style={{ transform: "scale(0.9)"}}>
+                                            <Rate allowHalf defaultValue={ratingValue} disabled />
+                                        </div>
+                                        <div style={{marginLeft: '5px'}}>{averageRating !== null ? averageRating.toFixed(1) : "Chưa có đánh giá"}</div>
+                                    </div>
                                     {selectedColor && selectedSize ? (
                                         <div className="tf-product-info-price">
                                             {listPrice !== null &&
@@ -729,11 +736,24 @@ const Detail: React.FC = () => {
                                                     alignItems: "center",
                                                 }}
                                             >
+                                                <div className="price-on-sale" style={{
+                                                        marginRight: "10px",
+                                                    }}>
+                                                    <span
+                                                        style={{
+                                                            fontWeight: "bold",
+                                                            color: "#f00",
+                                                        }}
+                                                    >
+                                                        {minSellingPrice?.toLocaleString(
+                                                            "vi-VN",
+                                                        )}{" "}
+                                                        đ
+                                                    </span>
+                                                </div>
                                                 <div
                                                     className="price-list"
-                                                    style={{
-                                                        marginRight: "10px",
-                                                    }}
+                                                    
                                                 >
                                                     <span
                                                         style={{
@@ -748,45 +768,12 @@ const Detail: React.FC = () => {
                                                         đ
                                                     </span>
                                                 </div>
-                                                <div className="price-on-sale">
-                                                    <span
-                                                        style={{
-                                                            fontWeight: "bold",
-                                                            color: "#f00",
-                                                        }}
-                                                    >
-                                                        {minSellingPrice?.toLocaleString(
-                                                            "vi-VN",
-                                                        )}{" "}
-                                                        đ
-                                                    </span>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     )}
 
-                                    <div className="average-rating">
-                                        <div className="stars">
-                                            {Array.from(
-                                                { length: 5 },
-                                                (_, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className={`star ${averageRating && i < Math.round(averageRating) ? "filled" : ""}`}
-                                                    >
-                                                        ★
-                                                    </span>
-                                                ),
-                                            )}
-                                        </div>
-                                        <p>
-                                            (
-                                            {averageRating !== null
-                                                ? averageRating.toFixed(1)
-                                                : "Chưa có đánh giá"}{" "}
-                                            / 5 sao)
-                                        </p>
-                                    </div>
+                                    
 
                                     <br />
                                     <div className="tf-color-selection d-flex align-items-center">

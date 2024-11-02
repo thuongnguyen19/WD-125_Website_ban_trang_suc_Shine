@@ -20,6 +20,7 @@ import Coupons from "../pages/(website)/Pay/Coupons";
 import ListComments from "../pages/(website)/Comments/ListComments";
 import ResetPassword from "../pages/(website)/dkdn/ResetPassword";
 import ForgotPassword from "../pages/(website)/dkdn/ForgotPassword";
+import Favorite from "../pages/(website)/Details/Favorite";
 
 
 const Router = () => {
@@ -52,7 +53,7 @@ const Router = () => {
 
                 <Route path="/" element={<Layoutweb />}></Route>
                 <Route path="cart" element={<ListCart />} />
-
+                <Route path="favorite" element={< Favorite />} />
                 <Route path="detail/:id" element={<Detail />} />
                 <Route path="od_detail" element={<Od_Detail />} />
                 <Route path="od_histori" element={<OdHistory />} />
