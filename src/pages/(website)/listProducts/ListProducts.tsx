@@ -26,7 +26,7 @@ const ListProducts: React.FC = () => {
     
     const [error, setError] = useState<string | null>(null);
     
-
+   
     // Gọi API để lấy sản phẩm
     useEffect(() => {
         const loadProducts = async () => {
@@ -40,7 +40,9 @@ const ListProducts: React.FC = () => {
                 setLoading(false);
             }
         };
-
+// const params = new URLSearchParams(window.location.search);
+// const id_category = params.get("id_category");
+// setSelectedCategory(id_category);
         loadProducts();
     }, [sortBy, sortOrder, selectedCategory, search, page, perPage]);
 

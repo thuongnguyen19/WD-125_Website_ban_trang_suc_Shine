@@ -5,8 +5,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import "swiper/css";
+import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Navigation } from "swiper/modules";
 
 // Interfaces
@@ -56,7 +55,7 @@ interface Comment {
     user_name: number;
     content: string;
     created_at: string;
-    rating: number
+    rating: number;
 }
 
 // Hàm để thêm URL đầy đủ cho đường dẫn ảnh
@@ -96,11 +95,9 @@ const Detail: React.FC = () => {
     const [minSellingPrice, setMinSellingPrice] = useState<number | null>(null);
     const [minListPrice, setMinListPrice] = useState<number | null>(null);
     const [activeIndex, setActiveIndex] = useState<number>(0); // Theo dõi chỉ số slide hiện tại
-
+    const [isFavorite, setIsFavorite] = useState(false);
     const mainSwiperRef = useRef<any>(null); // Ref để quản lý slider chính
     const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
-
-    
 
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
@@ -318,6 +315,119 @@ const Detail: React.FC = () => {
             message.error("Có lỗi xảy ra khi lấy thông tin sản phẩm.");
         }
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) return;
+
+        // Lấy trạng thái yêu thích từ localStorage
+        const localFavoriteStatus = localStorage.getItem(
+            `isFavorite_${product}`,
+        );
+        if (localFavoriteStatus) {
+            setIsFavorite(localFavoriteStatus === "true");
+        }
+
+        const checkFavoriteStatus = async () => {
+            try {
+                const response = await axios.get(
+                    `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${product}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
+                setIsFavorite(response.data.is_favorite);
+                // Cập nhật trạng thái yêu thích vào localStorage
+                localStorage.setItem(
+                    `isFavorite_${product}`,
+                    response.data.is_favorite.toString(),
+                );
+            } catch (error) {
+                console.error("Lỗi khi kiểm tra trạng thái yêu thích:", error);
+            }
+        };
+
+        checkFavoriteStatus();
+    }, [product]);
+
+    // Phần xử lý khi nhấn vào biểu tượng trái tim
+    const handleAddProductToFavorite = async (productId: number) => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            message.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            navigate("/login");
+            return;
+        }
+
+        try {
+            // Kiểm tra trạng thái yêu thích
+            const checkResponse = await axios.get(
+                `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${productId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+
+            if (checkResponse.data.is_favorite) {
+                // Xóa khỏi danh sách yêu thích nếu đã yêu thích
+                await axios.delete(
+                    `http://127.0.0.1:8000/api/favoriteProduct/${productId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
+                setIsFavorite(false);
+                localStorage.setItem(`isFavorite_${product}`, "false");
+                message.success("Đã xóa sản phẩm khỏi danh sách yêu thích.");
+            } else {
+                // Thêm vào danh sách yêu thích nếu chưa yêu thích
+                await axios.post(
+                    "http://127.0.0.1:8000/api/favoriteProduct",
+                    { product_id: productId },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
+                setIsFavorite(true);
+                localStorage.setItem(`isFavorite_${product}`, "true");
+                message.success("Đã thêm sản phẩm vào danh sách yêu thích.");
+            }
+        } catch (error) {
+            message.error("Có lỗi xảy ra khi thêm hoặc xóa sản phẩm yêu thích");
+            console.error("Lỗi:", error);
+        }
+    };
+
+    // useEffect(() => {
+    //     const checkFavoriteStatus = async () => {
+    //         try {
+    //             const token = localStorage.getItem("token"); // hoặc từ nơi bạn lưu trữ token
+    //             const response = await axios.get(
+    //                 `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${id}`,
+    //                 {
+    //                     headers: {
+    //                         Authorization: `Bearer ${token}`, // Thêm token vào header
+    //                     },
+    //                 },
+    //             );
+    //             setIsFavorite(response.data.is_favorite);
+    //         } catch (err) {
+    //             setError("lỗi");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     checkFavoriteStatus();
+    // }, [product]);
 
     const handleAddToCart = async () => {
         const token = localStorage.getItem("authToken");
@@ -656,19 +766,27 @@ const Detail: React.FC = () => {
                                     )}
 
                                     <div className="average-rating">
-                                        <div className="stars" >
-                                            {Array.from({ length: 5 }, (_, i) => (
-                                                <span 
-                                                    key={i}
-                                                    className={`star ${averageRating && i < Math.round(averageRating) ? "filled" : ""}`}
-                                                >
-                                                    ★
-                                                </span>
-                                            ))}
+                                        <div className="stars">
+                                            {Array.from(
+                                                { length: 5 },
+                                                (_, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className={`star ${averageRating && i < Math.round(averageRating) ? "filled" : ""}`}
+                                                    >
+                                                        ★
+                                                    </span>
+                                                ),
+                                            )}
                                         </div>
-                                        <p>({averageRating !== null ? averageRating.toFixed(1) : "Chưa có đánh giá"} / 5 sao)</p>
+                                        <p>
+                                            (
+                                            {averageRating !== null
+                                                ? averageRating.toFixed(1)
+                                                : "Chưa có đánh giá"}{" "}
+                                            / 5 sao)
+                                        </p>
                                     </div>
-
 
                                     <br />
                                     <div className="tf-color-selection d-flex align-items-center">
@@ -827,24 +945,48 @@ const Detail: React.FC = () => {
 
                                     <div
                                         className="tf-product-info-buy-button mt-4"
-                                        style={{ textAlign: "center" }}
+                                        style={{
+                                            textAlign: "center",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                        }}
                                     >
                                         <button
                                             className="tf-btn btn-fill"
                                             style={{
                                                 width: "60%",
-                                                margin: "0 auto",
                                                 display: "flex",
                                                 justifyContent: "center",
                                                 alignItems: "center",
                                                 height: "50px",
+                                                marginRight: "20px",
                                             }}
                                             onClick={handleAddToCart}
                                         >
                                             Thêm vào giỏ hàng
                                         </button>
+                                        <HeartOutlined
+                                            onClick={() =>
+                                                handleAddProductToFavorite(
+                                                    product.id,
+                                                )
+                                            }
+                                            style={{
+                                                fontSize: "35px",
+                                                color: isFavorite ? "red" : "",
+                                            }}
+                                        />
+                                        {isFavorite && (
+                                            <span
+                                                style={{
+                                                    color: "green",
+                                                    marginLeft: "5px",
+                                                }}
+                                            >
+                                                Đã yêu thích
+                                            </span>
+                                        )}
                                     </div>
-
                                     <div className="tf-product-info-buy-now-button mt-3">
                                         <button
                                             className="btns-full btn-buy-now"
@@ -912,28 +1054,47 @@ const Detail: React.FC = () => {
                                 Đánh giá sản phẩm
                             </h5>
                             <div className="comment-list">
-                        
-                        {comments.length === 0 ? (
-                            <p>Chưa có đánh giá nào.</p>
-                        ) : (
-                            comments.map((comment, index) => (
-                                <div key={index} className="comment-item">
-                                <div className="comment-header">
-                                    <strong>{comment.user_name}</strong> 
-                                    <div className="stars">
-                                        {Array.from({ length: 5 }, (_, i) => (
-                                            <span key={i} className={`star ${i < comment.rating ? "filled" : ""}`}>
-                                                ★
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                                <p className="comment-content">{comment.content}</p> {/* Nội dung đánh giá */}
-                                <p className="comment-date">{new Date(comment.created_at).toLocaleString()}</p> {/* Ngày đánh giá */}
+                                {comments.length === 0 ? (
+                                    <p>Chưa có đánh giá nào.</p>
+                                ) : (
+                                    comments.map((comment, index) => (
+                                        <div
+                                            key={index}
+                                            className="comment-item"
+                                        >
+                                            <div className="comment-header">
+                                                <strong>
+                                                    {comment.user_name}
+                                                </strong>
+
+                                                <div className="stars">
+                                                    {Array.from(
+                                                        { length: 5 },
+                                                        (_, i) => (
+                                                            <span
+                                                                key={i}
+                                                                className={`star ${i < comment.rating ? "filled" : ""}`}
+                                                            >
+                                                                ★
+                                                            </span>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <p className="comment-content">
+                                                {comment.content}
+                                            </p>{" "}
+                                            {/* Nội dung đánh giá */}
+                                            <p className="comment-date">
+                                                {new Date(
+                                                    comment.created_at,
+                                                ).toLocaleString()}
+                                            </p>{" "}
+                                            {/* Ngày đánh giá */}
+                                        </div>
+                                    ))
+                                )}
                             </div>
-                            ))
-                        )}
-                    </div>
                         </div>
 
                         <hr />

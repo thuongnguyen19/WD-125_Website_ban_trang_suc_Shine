@@ -6,6 +6,7 @@ import {
     ShoppingCartOutlined,
     MenuOutlined,
     CaretDownOutlined,
+    HeartOutlined,
 } from "@ant-design/icons";
 import { Category, fetchCategorys } from "../../Interface/Category";
 
@@ -14,13 +15,7 @@ const Header: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [cartCount, setCartCount] = useState<number>(0);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [searchTerm, setSearchTerm] = useState<string>("");
 
-    const handleSearch = (term: string) => {
-        setSearchTerm(term);
-        console.log("Searching for:", term);
-        // Bạn có thể gọi API tìm kiếm sản phẩm tại đây
-    };
     useEffect(() => {
         // Hàm tải danh mục sản phẩm
         const loadCategories = async () => {
@@ -63,7 +58,6 @@ const Header: React.FC = () => {
             window.removeEventListener("storage", fetchCartCount);
         };
     }, []);
-    
 
     return (
         <header id="header" className="header-default">
@@ -148,6 +142,16 @@ const Header: React.FC = () => {
                                     />
                                 </a>
                             </li>
+                            <li className="nav-cart">
+                                <Link to="/favorite" className="nav-icon-item">
+                                    <HeartOutlined
+                                        style={{ fontSize: "24px" }}
+                                    />
+                                    <span className="count-box">
+                                        {/* {cartCount} */}
+                                    </span>
+                                </Link>
+                            </li>
 
                             <li className="nav-user">
                                 <Link
@@ -173,36 +177,6 @@ const Header: React.FC = () => {
                         </ul>
                     </div>
                 </div>
-                {/* Offcanvas for search */}
-            <div
-                className="offcanvas offcanvas-start"
-                tabIndex={-1}
-                id="canvasSearch"
-                aria-labelledby="offcanvasLeftLabel"
-            >
-                <div className="offcanvas-header">
-                    <h5 className="offcanvas-title" id="offcanvasLeftLabel">
-                        Tìm kiếm sản phẩm
-                    </h5>
-                    <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="offcanvas"
-                        aria-label="Close"
-                    ></button>
-                </div>
-                <div className="offcanvas-body">
-                    <form>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Nhập tên sản phẩm..."
-                            value={searchTerm}
-                            onChange={(e) => handleSearch(e.target.value)}
-                        />
-                    </form>
-                </div>
-            </div>
             </div>
         </header>
     );

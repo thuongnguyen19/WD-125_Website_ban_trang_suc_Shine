@@ -323,6 +323,7 @@ const Pay: React.FC = () => {
             total_payment: totalAmount,
             payment_role: paymentRole,
             discount_code: discountCode,
+            discount_amount: discount,
             voucherId: voucherId || null,
             used_accum: pointsToUse,
         };
