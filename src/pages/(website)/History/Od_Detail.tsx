@@ -115,6 +115,7 @@ const handleOk = () => {
                     setReviews(prev => prev ? [...prev, { id_product, content, rating, id_variant }] : [{ id_product, content, rating, id_variant }]);
                     message.success("Đánh giá của bạn đã được gửi thành công!");
                     setIsReviewModalVisible(false);
+                    window.location.reload();
                 } catch (error) {
                     message.error("Lỗi khi gửi đánh giá.");
                 }
