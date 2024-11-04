@@ -50,6 +50,8 @@ const FavoritesList = () => {
                     },
                 );
 
+                updateLocalStorageFavorite(response.data);
+
                 if (Array.isArray(response.data)) {
                     setFavorites(response.data);
                 } else {
@@ -65,6 +67,11 @@ const FavoritesList = () => {
 
         fetchFavorites();
     }, []);
+
+    const updateLocalStorageFavorite = (favorite: Favorite[]) => {
+        localStorage.setItem("favorite", JSON.stringify(favorite));
+        window.dispatchEvent(new Event("storage"));
+    };
 
     const handleDelete = async (productId: string) => {
         const token = localStorage.getItem("authToken");
@@ -87,11 +94,18 @@ const FavoritesList = () => {
             message.success(response.data.message);
 
             // Cập nhật lại danh sách sản phẩm yêu thích
-            setFavorites((prevFavorites) =>
-                prevFavorites.filter(
-                    (item) => item.id_product !== Number(productId),
-                ),
+
+            const favoriteData = JSON.parse(
+                localStorage.getItem("favorite") || "",
             );
+
+            const favorites = favoriteData.filter(
+                (item) => item.id_product !== productId,
+            );
+            setFavorites(favorites);
+            console.log(favorites);
+
+            updateLocalStorageFavorite(favorites);
         } catch (error) {
             message.error("Không thể xóa sản phẩm yêu thích.");
             console.error("Error deleting favorite:", error);
@@ -126,6 +140,7 @@ const FavoritesList = () => {
                             hoverable
                             cover={
                                 <img
+                                    style={{ height: 400 }}
                                     alt={item.product.name}
                                     src={item.product.thumbnail}
                                 />
