@@ -7,8 +7,16 @@ import { message } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Navigation } from "swiper/modules";
+import { set } from "lodash";
 
 // Interfaces
+interface Favorite {
+    id: number;
+    id_user: number;
+    id_product: number;
+    product: Product;
+}
+
 interface Image {
     id_product: number;
     id_attribute_color: number;
@@ -101,15 +109,19 @@ const Detail: React.FC = () => {
 
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
+        setLoading(true);
+
         const fetchProductDetails = async () => {
             try {
                 const response = await axios.get(
                     `http://localhost:8000/api/detailProduct/${id}`,
                 );
                 const productData: Product = response.data.data;
+                console.log(productData);
 
                 if (productData) {
                     setProduct(productData);
+
                     setAverageRating(productData.averageRating);
                     setComments(productData.comments); // Gán danh sách đánh giá
                     fetchRelatedProducts(productData.id);
@@ -122,6 +134,7 @@ const Detail: React.FC = () => {
                                 ? prev
                                 : curr,
                     );
+
                     const minListVariant = productData.variant.reduce(
                         (prev, curr) =>
                             parseFloat(prev.list_price) <
@@ -153,7 +166,6 @@ const Detail: React.FC = () => {
                 console.error("Failed to fetch related products", err);
             }
         };
-
         fetchProductDetails();
     }, [id]);
 
@@ -321,9 +333,7 @@ const Detail: React.FC = () => {
         if (!token) return;
 
         // Lấy trạng thái yêu thích từ localStorage
-        const localFavoriteStatus = localStorage.getItem(
-            `isFavorite_${product}`,
-        );
+        const localFavoriteStatus = localStorage.getItem(`isFavorite_${id}`);
         if (localFavoriteStatus) {
             setIsFavorite(localFavoriteStatus === "true");
         }
@@ -331,7 +341,7 @@ const Detail: React.FC = () => {
         const checkFavoriteStatus = async () => {
             try {
                 const response = await axios.get(
-                    `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${product}`,
+                    `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -341,7 +351,7 @@ const Detail: React.FC = () => {
                 setIsFavorite(response.data.is_favorite);
                 // Cập nhật trạng thái yêu thích vào localStorage
                 localStorage.setItem(
-                    `isFavorite_${product}`,
+                    `isFavorite_${id}`,
                     response.data.is_favorite.toString(),
                 );
             } catch (error) {
@@ -351,6 +361,11 @@ const Detail: React.FC = () => {
 
         checkFavoriteStatus();
     }, [product]);
+
+    const updateLocalStorageFavorite = (favorite: Favorite[]) => {
+        localStorage.setItem("favorite", JSON.stringify(favorite));
+        window.dispatchEvent(new Event("storage"));
+    };
 
     // Phần xử lý khi nhấn vào biểu tượng trái tim
     const handleAddProductToFavorite = async (productId: number) => {
@@ -363,16 +378,16 @@ const Detail: React.FC = () => {
 
         try {
             // Kiểm tra trạng thái yêu thích
-            const checkResponse = await axios.get(
-                `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${productId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
-            );
+            //  const checkResponse = await axios.get(
+            //      `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${productId}`,
+            //      {
+            //          headers: {
+            //              Authorization: `Bearer ${token}`,
+            //          },
+            //      },
+            //  );
 
-            if (checkResponse.data.is_favorite) {
+            if (isFavorite) {
                 // Xóa khỏi danh sách yêu thích nếu đã yêu thích
                 await axios.delete(
                     `http://127.0.0.1:8000/api/favoriteProduct/${productId}`,
@@ -383,11 +398,24 @@ const Detail: React.FC = () => {
                     },
                 );
                 setIsFavorite(false);
+
+                const favoriteData = JSON.parse(
+                    localStorage.getItem("favorite") || "",
+                );
+
+                const favorites = favoriteData.filter(
+                    (item) => item.id_product !== productId,
+                );
+                console.log(favorites);
+
+                updateLocalStorageFavorite(favorites);
+
                 localStorage.setItem(`isFavorite_${product}`, "false");
+
                 message.success("Đã xóa sản phẩm khỏi danh sách yêu thích.");
             } else {
                 // Thêm vào danh sách yêu thích nếu chưa yêu thích
-                await axios.post(
+                const report = await axios.post(
                     "http://127.0.0.1:8000/api/favoriteProduct",
                     { product_id: productId },
                     {
@@ -396,13 +424,21 @@ const Detail: React.FC = () => {
                         },
                     },
                 );
+
+                const cartItems = JSON.parse(
+                    localStorage.getItem("favorite") || "[]",
+                );
+                cartItems.push({ id_product: productId });
+                localStorage.setItem("favorite", JSON.stringify(cartItems));
+
+                window.dispatchEvent(new Event("storage"));
+
                 setIsFavorite(true);
                 localStorage.setItem(`isFavorite_${product}`, "true");
                 message.success("Đã thêm sản phẩm vào danh sách yêu thích.");
             }
         } catch (error) {
             message.error("Có lỗi xảy ra khi thêm hoặc xóa sản phẩm yêu thích");
-            console.error("Lỗi:", error);
         }
     };
 
@@ -593,7 +629,7 @@ const Detail: React.FC = () => {
                                             }}
                                         >
                                             {getCombinedImages().map(
-                                                (image, index) => (
+                                                (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
                                                             src={getFullImagePath(
@@ -625,7 +661,7 @@ const Detail: React.FC = () => {
                                             ref={thumbSwiperRef}
                                         >
                                             {getCombinedImages().map(
-                                                (image, index) => (
+                                                (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
                                                             src={getFullImagePath(
@@ -1174,9 +1210,13 @@ const Detail: React.FC = () => {
                                                                 >
                                                                     <div className="card-product">
                                                                         <div className="card-product-wrapper">
-                                                                            <Link
-                                                                                to={`/detail/${relatedProduct.id}`}
+                                                                            <a
+                                                                                href={`/detail/${relatedProduct.id}`}
                                                                             >
+                                                                                {" "}
+                                                                                {/* <Link
+                                                                                    to={`/detail/${relatedProduct.id}`}
+                                                                                > */}
                                                                                 <img
                                                                                     src={getFullImagePath(
                                                                                         relatedProduct.thumbnail,
@@ -1191,17 +1231,17 @@ const Detail: React.FC = () => {
                                                                                             "cover",
                                                                                     }}
                                                                                 />
-                                                                            </Link>
+                                                                                {/* </Link> */}
+                                                                            </a>
                                                                         </div>
                                                                         <div className="card-product-info text-center">
-                                                                            <Link
-                                                                                to={`/detail/${relatedProduct.id}`}
-                                                                                className="title link"
+                                                                            <a
+                                                                                href={`/detail/${relatedProduct.id}`}
                                                                             >
                                                                                 {
                                                                                     relatedProduct.name
                                                                                 }
-                                                                            </Link>
+                                                                            </a>
                                                                             {relatedProduct
                                                                                 .variant
                                                                                 .length >
