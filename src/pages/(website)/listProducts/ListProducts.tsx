@@ -6,6 +6,7 @@ import {
     AlignCenterOutlined,
     DoubleLeftOutlined,
     DoubleRightOutlined,
+    HeartFilled,
     HeartOutlined, // Thêm biểu tượng trái tim
 } from "@ant-design/icons";
 import { fetchProducts, Product } from "../../../Interface/Product";
@@ -362,22 +363,38 @@ const ListProducts: React.FC = () => {
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <HeartOutlined
-                                                        style={{
-                                                            color: favorites.includes(
-                                                                product.id,
-                                                            )
-                                                                ? "red"
-                                                                : "#000",
-                                                            marginLeft: "10px",
-                                                            cursor: "pointer",
-                                                        }}
-                                                        onClick={() =>
-                                                            handleFavoriteToggle(
-                                                                product.id,
-                                                            )
-                                                        }
-                                                    />
+                                                    {favorites.includes(
+                                                        product.id,
+                                                    ) ? (
+                                                        <HeartFilled
+                                                            onClick={() =>
+                                                                handleFavoriteToggle(
+                                                                    product.id,
+                                                                )
+                                                            }
+                                                            style={{
+                                                                fontSize:
+                                                                    "25px",
+                                                                color: "red", // Biểu tượng trái tim đỏ
+                                                                cursor: "pointer",
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <HeartOutlined
+                                                            onClick={() =>
+                                                                handleFavoriteToggle(
+                                                                    product.id,
+                                                                )
+                                                            }
+                                                            style={{
+                                                                fontSize:
+                                                                    "25px",
+
+                                                                transition:
+                                                                    "color 0.3s ease", // Thêm hiệu ứng chuyển đổi
+                                                            }}
+                                                        />
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
