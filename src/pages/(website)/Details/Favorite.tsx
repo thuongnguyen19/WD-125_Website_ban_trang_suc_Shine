@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { HeartFilled, DeleteFilled } from "@ant-design/icons";
+import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import { message, Modal, Card, Row, Col } from "antd";
 import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Variant {
     id_product: number;
@@ -29,15 +30,15 @@ const FavoritesList = () => {
     const [favorites, setFavorites] = useState<Favorite[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFavorites = async () => {
             try {
                 const token = localStorage.getItem("authToken");
-
                 if (!token) {
-                    setError("Token không tồn tại.");
-                    setLoading(false);
+                    message.error("Bạn chưa đăng nhập.");
+                    navigate("/login");
                     return;
                 }
 
@@ -93,8 +94,6 @@ const FavoritesList = () => {
 
             message.success(response.data.message);
 
-            // Cập nhật lại danh sách sản phẩm yêu thích
-
             const favoriteData = JSON.parse(
                 localStorage.getItem("favorite") || "",
             );
@@ -103,8 +102,6 @@ const FavoritesList = () => {
                 (item) => item.id_product !== productId,
             );
             setFavorites(favorites);
-            console.log(favorites);
-
             updateLocalStorageFavorite(favorites);
         } catch (error) {
             message.error("Không thể xóa sản phẩm yêu thích.");
@@ -134,19 +131,21 @@ const FavoritesList = () => {
             <Row gutter={[16, 16]}>
                 {favorites.map((item) => (
                     <Col span={6} key={item.id}>
-                        {" "}
-                        {/* Đặt span là 6 để có 4 sản phẩm mỗi hàng */}
                         <Card
                             hoverable
                             cover={
                                 <img
-                                    style={{ height: 400 }}
+                                    style={{
+                                        height: 200,
+                                        width: "100%",
+                                        objectFit: "cover",
+                                    }} // Kích thước hình vuông
                                     alt={item.product.name}
                                     src={item.product.thumbnail}
                                 />
                             }
                             actions={[
-                                <DeleteFilled
+                                <HeartFilled
                                     onClick={() => {
                                         if (item.product && item.product.id) {
                                             confirmDelete(item.product.id);
@@ -159,7 +158,7 @@ const FavoritesList = () => {
                                     }}
                                     style={{
                                         fontSize: "20px",
-                                        color: "red",
+                                        color: "red", // Biểu tượng trái tim đỏ
                                         cursor: "pointer",
                                     }}
                                 />,
@@ -171,19 +170,27 @@ const FavoritesList = () => {
                                     <>
                                         <p>
                                             Giá bán:{" "}
-                                            {
-                                                item.product.variants[0]
-                                                    ?.selling_price
-                                            }{" "}
-                                            VND
+                                            {new Intl.NumberFormat("vi-VN", {
+                                                style: "currency",
+                                                currency: "VND",
+                                            }).format(
+                                                Number(
+                                                    item.product.variants[0]
+                                                        ?.selling_price,
+                                                ),
+                                            )}
                                         </p>
                                         <p>
                                             Giá niêm yết:{" "}
-                                            {
-                                                item.product.variants[0]
-                                                    ?.list_price
-                                            }{" "}
-                                            VND
+                                            {new Intl.NumberFormat("vi-VN", {
+                                                style: "currency",
+                                                currency: "VND",
+                                            }).format(
+                                                Number(
+                                                    item.product.variants[0]
+                                                        ?.list_price,
+                                                ),
+                                            )}
                                         </p>
                                     </>
                                 }
@@ -192,7 +199,7 @@ const FavoritesList = () => {
                     </Col>
                 ))}
             </Row>
-            <Footer></Footer>
+            <Footer />
         </div>
     );
 };

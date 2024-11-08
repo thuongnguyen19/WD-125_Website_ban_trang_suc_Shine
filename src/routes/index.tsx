@@ -21,6 +21,7 @@ import ListComments from "../pages/(website)/Comments/ListComments";
 import ResetPassword from "../pages/(website)/dkdn/ResetPassword";
 import ForgotPassword from "../pages/(website)/dkdn/ForgotPassword";
 import Favorite from "../pages/(website)/Details/Favorite";
+import Personal from "../layouts/Personal ";
 
 
 const Router = () => {
@@ -44,6 +45,7 @@ const Router = () => {
                 <Route path="/profile" element={<Profile />}>
                     <Route path="coupons" element={<Coupons />} />{" "}
                     <Route path="od_histori" element={<OrderHistory />} />{" "}
+                    <Route path="personal" element={<Personal />} />{" "}
                     <Route
                         path="od_histori/od_detail/:id"
                         element={<Od_Detail />}
@@ -53,7 +55,7 @@ const Router = () => {
 
                 <Route path="/" element={<Layoutweb />}></Route>
                 <Route path="cart" element={<ListCart />} />
-                <Route path="favorite" element={< Favorite />} />
+                <Route path="favorite" element={<Favorite />} />
                 <Route path="detail/:id" element={<Detail />} />
                 <Route path="od_detail" element={<Od_Detail />} />
                 <Route path="od_histori" element={<OdHistory />} />
@@ -65,7 +67,10 @@ const Router = () => {
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="forgotpassword" element={<ForgotPassword />} />
-                <Route path="reset-password/:token" element={<ResetPassword />} />
+                <Route
+                    path="reset-password/:token"
+                    element={<ResetPassword />}
+                />
                 <Route path="logout" element={<LogOut />} />
             </Routes>
         </>

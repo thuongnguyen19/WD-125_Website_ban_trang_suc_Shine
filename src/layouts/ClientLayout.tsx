@@ -50,6 +50,7 @@ const Layoutweb: React.FC = () => {
                 });
         }
     }, []);
+    
 
     // API Danh mục và giỏ hàng
     useEffect(() => {
@@ -288,5 +289,5 @@ const Layoutweb: React.FC = () => {
         </>
     );
 };
-
+    
 export default Layoutweb;
