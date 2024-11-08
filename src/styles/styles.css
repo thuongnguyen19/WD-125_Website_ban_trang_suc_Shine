@@ -50,6 +50,7 @@
   --text-3:#868686;
   --line: #ebebeb;
   --line-2: #ececec;
+  --bg-0: #f9f6f0;
   --bg-1: #fcfbf9;
   --bg-2: #f6f6f6;
   --bg-3: #fcffb2;
@@ -9930,10 +9931,10 @@ header.header-bg {
   background-color: var(--white);
   border: 1px solid var(--line-2);
 }
-.list-product-btn .box-icon:hover {
+/* .list-product-btn .box-icon:hover {
   background-color: var(--main) !important;
   color: var(--white);
-}
+} */
 .list-product-btn .box-icon:hover .tooltip {
   opacity: 0.9;
   visibility: visible;

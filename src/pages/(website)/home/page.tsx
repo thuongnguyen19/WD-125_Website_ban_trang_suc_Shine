@@ -4,6 +4,7 @@ import { Navigation } from "swiper/modules";
 import {
     CreditCardOutlined,
     CustomerServiceOutlined,
+    HeartFilled,
     HeartOutlined,
     InboxOutlined,
     LeftOutlined,
@@ -202,7 +203,7 @@ const Home: React.FC = () => {
                                             <Swiper
                                                 modules={[Navigation]} // Sử dụng module Navigation cho Swiper
                                                 spaceBetween={20}
-                                                slidesPerView={3} // Hiển thị 3 sản phẩm mỗi lần
+                                                slidesPerView={4} // Hiển thị 3 sản phẩm mỗi lần
                                                 navigation={{
                                                     nextEl: ".swiper-button-next",
                                                     prevEl: ".swiper-button-prev",
@@ -214,7 +215,7 @@ const Home: React.FC = () => {
                                                     <SwiperSlide
                                                         key={product.id}
                                                     >
-                                                        <div className="card-product style-skincare">
+                                                        <div className="card-product">
                                                             <div className="card-product-wrapper">
                                                                 <div
                                                                     onClick={() =>
@@ -236,10 +237,42 @@ const Home: React.FC = () => {
                                                                             product.name
                                                                         }
                                                                         style={{
-                                                                            width: "800px",
-                                                                            height: "500px",
+                                                                            width: "700px",
+                                                                            height: "400px",
                                                                         }}
                                                                     />
+                                                                </div>
+                                                                <div className="list-product-btn absolute-2">
+                                                                                
+                                                                    <a className="box-icon bg_white wishlist btn-icon-action">
+                                                                        <span>
+                                                                            {favorites.includes(product.id) ? (
+                                                                                <HeartFilled
+                                                                                    onClick={() => handleFavoriteToggle(product.id)}
+                                                                                    style={{
+                                                                                        fontSize: "25px",
+                                                                                        color: "red",
+                                                                                        cursor: "pointer",
+                                                                                        transition: "color 0.3s ease",
+                                                                                    }}
+                                                                                />
+                                                                            ) : (
+                                                                                <HeartOutlined
+                                                                                    onClick={() => handleFavoriteToggle(product.id)}
+                                                                                    style={{
+                                                                                        fontSize: "25px",
+                                                                                        color: undefined,
+                                                                                        cursor: "pointer",
+                                                                                        transition: "color 0.3s ease",
+                                                                                    }}
+                                                                                />
+                                                                            )}
+
+                                                                        </span>
+                                                                        <span className="tooltip">Add to Wishlist</span>
+                                                                        
+                                                                    </a>
+                                                                    
                                                                 </div>
                                                             </div>
                                                             <div className="card-product-info text-center">
@@ -259,66 +292,66 @@ const Home: React.FC = () => {
                                                                     }
                                                                 </h3>
 
-                                                                <HeartOutlined
-                                                                    onClick={() =>
-                                                                        handleFavoriteToggle(
-                                                                            product.id,
-                                                                        )
-                                                                    }
-                                                                    style={{
-                                                                        fontSize:
-                                                                            "35px",
-                                                                        color: favorites.includes(
-                                                                            product.id,
-                                                                        )
-                                                                            ? "red"
-                                                                            : undefined, // Nếu có trong favorites, màu sẽ là đỏ
-                                                                        cursor: "pointer",
-                                                                        transition:
-                                                                            "color 0.3s ease", // Thêm hiệu ứng chuyển đổi
-                                                                    }}
-                                                                />
+                                                                
 
-                                                                <div>
-                                                                    <span
-                                                                        style={{
-                                                                            fontWeight:
-                                                                                "bold",
-                                                                            color: "#f00",
-                                                                        }}
-                                                                    >
-                                                                        {product.variants[0]?.selling_price?.toLocaleString(
-                                                                            "vi-VN",
-                                                                            {
-                                                                                style: "currency",
-                                                                                currency:
-                                                                                    "VND",
-                                                                                minimumFractionDigits: 0, // Loại bỏ .00
-                                                                                maximumFractionDigits: 0, // Loại bỏ .00
-                                                                            },
-                                                                        )}{" "}
-                                                                        đ
-                                                                    </span>
-                                                                    <span
-                                                                        style={{
-                                                                            textDecoration:
-                                                                                "line-through",
-                                                                            color: "#999",
-                                                                        }}
-                                                                    >
-                                                                        {product.variants[0]?.list_price?.toLocaleString(
-                                                                            "vi-VN",
-                                                                            {
-                                                                                style: "currency",
-                                                                                currency:
-                                                                                    "VND",
-                                                                                minimumFractionDigits: 0, // Loại bỏ .00
-                                                                                maximumFractionDigits: 0, // Loại bỏ .00
-                                                                            },
-                                                                        )}{" "}
-                                                                        đ
-                                                                    </span>
-                                                                </div>
+                                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: 'center'
+                                                    }}
+                                                >
+                                                    <div className="price-on-sale">
+                                                        <span
+                                                            style={{
+                                                                fontWeight:
+                                                                    "bold",
+                                                                color: "#f00",
+                                                            }}
+                                                        >
+                                                            {new Intl.NumberFormat(
+                                                                "vi-VN",
+                                                                {
+                                                                    style: "currency",
+                                                                    currency:
+                                                                        "VND",
+                                                                },
+                                                            ).format(
+                                                                product
+                                                                    .variants[0]
+                                                                    ?.selling_price,
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <div
+                                                        className="price-list"
+                                                        style={{
+                                                            marginLeft: "10px",
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                textDecoration:
+                                                                    "line-through",
+                                                                color: "#999",
+                                                            }}
+                                                        >
+                                                            {new Intl.NumberFormat(
+                                                                "vi-VN",
+                                                                {
+                                                                    style: "currency",
+                                                                    currency:
+                                                                        "VND",
+                                                                },
+                                                            ).format(
+                                                                product
+                                                                    .variants[0]
+                                                                    ?.list_price,
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                </div>
 
                                                                 {/* <span className="price">Giá cũ: {product.variants[0]?.list_price.toLocaleString()} VND</span> */}
                                                             </div>

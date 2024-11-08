@@ -5,7 +5,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { message, Rate } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { HeartFilled, HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Navigation } from "swiper/modules";
 import { set } from "lodash";
 
@@ -988,27 +988,27 @@ const Detail: React.FC = () => {
                                         >
                                             Thêm vào giỏ hàng
                                         </button>
-                                        <HeartOutlined
-                                            onClick={() =>
-                                                handleAddProductToFavorite(
-                                                    product.id,
-                                                )
-                                            }
-                                            style={{
-                                                fontSize: "35px",
-                                                color: isFavorite ? "red" : "",
-                                            }}
-                                        />
-                                        {isFavorite && (
-                                            <span
+                                        {isFavorite ? (
+                                            <HeartFilled
+                                                onClick={() => handleAddProductToFavorite(product.id)}
                                                 style={{
-                                                    color: "green",
-                                                    marginLeft: "5px",
+                                                    fontSize: "35px",
+                                                    color: "red",
+                                                    cursor: "pointer",
                                                 }}
-                                            >
-                                                Đã yêu thích
-                                            </span>
+                                            />
+                                        ) : (
+                                            <HeartOutlined
+                                                onClick={() => handleAddProductToFavorite(product.id)}
+                                                style={{
+                                                    fontSize: "35px",
+                                                    color: "",
+                                                    cursor: "pointer",
+                                                }}
+                                            />
                                         )}
+
+
                                     </div>
                                     <div className="tf-product-info-buy-now-button mt-3">
                                         <button
@@ -1177,7 +1177,7 @@ const Detail: React.FC = () => {
                                                 <Swiper
                                                     modules={[Navigation]}
                                                     spaceBetween={20}
-                                                    slidesPerView={3}
+                                                    slidesPerView={4}
                                                     navigation={{
                                                         nextEl: ".swiper-button-next",
                                                         prevEl: ".swiper-button-prev",
@@ -1212,8 +1212,8 @@ const Detail: React.FC = () => {
                                                                                         relatedProduct.name
                                                                                     }
                                                                                     style={{
-                                                                                        width: "600px",
-                                                                                        height: "450px",
+                                                                                        width: "700px",
+                                                                                        height: "400px",
                                                                                         objectFit:
                                                                                             "cover",
                                                                                     }}
@@ -1222,49 +1222,34 @@ const Detail: React.FC = () => {
                                                                             </a>
                                                                         </div>
                                                                         <div className="card-product-info text-center">
-                                                                            <a
-                                                                                href={`/detail/${relatedProduct.id}`}
-                                                                            >
-                                                                                {
-                                                                                    relatedProduct.name
-                                                                                }
+                                                                            <a href={`/detail/${relatedProduct.id}`}>
+                                                                                {relatedProduct.name}
                                                                             </a>
-                                                                            {relatedProduct
-                                                                                .variant
-                                                                                .length >
-                                                                                0 && (
+                                                                            {relatedProduct.variant.length > 0 && (
                                                                                 <div>
                                                                                     <span className="price">
                                                                                         <span
                                                                                             style={{
-                                                                                                textDecoration:
-                                                                                                    "line-through",
+                                                                                                textDecoration: "line-through",
                                                                                                 color: "#999",
-                                                                                                marginRight:
-                                                                                                    "10px",
+                                                                                                marginRight: "10px",
                                                                                             }}
                                                                                         >
-                                                                                            {relatedProduct.variant[0].list_price.toLocaleString(
-                                                                                                "vi-VN",
-                                                                                            )}{" "}
-                                                                                            đ
+                                                                                            {Math.round(Number(relatedProduct.variant[0].list_price)).toLocaleString("vi-VN")} đ
                                                                                         </span>
                                                                                         <span
                                                                                             style={{
                                                                                                 color: "#f00",
-                                                                                                fontWeight:
-                                                                                                    "bold",
+                                                                                                fontWeight: "bold",
                                                                                             }}
                                                                                         >
-                                                                                            {relatedProduct.variant[0].selling_price.toLocaleString(
-                                                                                                "vi-VN",
-                                                                                            )}{" "}
-                                                                                            đ
+                                                                                            {Math.round(Number(relatedProduct.variant[0].selling_price)).toLocaleString("vi-VN")} đ
                                                                                         </span>
                                                                                     </span>
                                                                                 </div>
                                                                             )}
                                                                         </div>
+
                                                                     </div>
                                                                 </SwiperSlide>
                                                             ),
