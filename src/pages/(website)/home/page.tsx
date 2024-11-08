@@ -147,6 +147,7 @@ const Home: React.FC = () => {
 
     return (
         <>
+        
             <section className="flat-spacing-9 bg_grey-6 flat-spacing-26">
                 <div className="container">
                     <div className="flat-tab-store flat-animate-tab overflow-unset">
