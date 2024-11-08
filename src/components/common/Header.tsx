@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     SearchOutlined,
     UserOutlined,
@@ -10,13 +10,45 @@ import {
 } from "@ant-design/icons";
 import { Category, fetchCategorys } from "../../Interface/Category";
 import { number } from "joi";
+import axios from "axios";
+import { Avatar, message } from "antd";
 
 const Header: React.FC = () => {
+     const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [cartCount, setCartCount] = useState<number>(0);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [favoritecount, setFavorite] = useState<number>(0);
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra người dùng đăng nhập
+    const [user, setUser] = useState<{ name: string; image: string } | null>(
+        null,
+    ); // Lưu thông tin người dùng
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem("authToken");
+
+            try {
+                const response = await axios.get(
+                    "http://127.0.0.1:8000/api/listInformationOrder",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
+
+                setIsAuthenticated(true);
+                setUser(response.data.data.user);
+            } catch (error) {
+                message.error("Lấy thông tin người dùng không thành công!");
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
 
     useEffect(() => {
         // Hàm tải danh mục sản phẩm
@@ -65,6 +97,12 @@ const Header: React.FC = () => {
             window.removeEventListener("storage", fetchCartCount);
         };
     }, []);
+
+
+    // Điều hướng đến trang cá nhân
+    const goToProfile = () => {
+        navigate("/profile");
+    };
 
     return (
         <header id="header" className="header-default">
@@ -160,15 +198,32 @@ const Header: React.FC = () => {
                                 </Link>
                             </li>
 
-                            <li className="nav-user">
-                                <Link
-                                    to={isLoggedIn ? "/profile" : "/login"}
-                                    className="nav-icon-item"
-                                >
-                                    <UserOutlined
-                                        style={{ fontSize: "24px" }}
-                                    />
-                                </Link>
+                            <li className="nav-account">
+                                {isAuthenticated ? (
+                                    <div>
+                                        <span
+                                            onClick={goToProfile}
+                                            style={{
+                                                cursor: "pointer",
+                                            }}
+                                        >
+                                            <Avatar
+                                                style={{ marginLeft: 10 }}
+                                                size={40}
+                                                src={user?.image}
+                                                alt={user?.name}
+                                            />
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <Link to="/login" className="nav-icon-item">
+                                        <UserOutlined
+                                            style={{
+                                                fontSize: "24px",
+                                            }}
+                                        />
+                                    </Link>
+                                )}
                             </li>
 
                             <li className="nav-cart">
@@ -190,3 +245,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+

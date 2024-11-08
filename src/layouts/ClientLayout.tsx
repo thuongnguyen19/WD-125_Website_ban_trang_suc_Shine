@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import Header2 from "../components/common/Header2";
 import Footer from "../components/common/Footer";
-import { message } from "antd";
+import { Avatar, message } from "antd";
 import {
     CaretDownOutlined,
     HeartOutlined,
@@ -19,7 +19,7 @@ import { number } from "joi";
 const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
     const [messageAPI, contextHolder] = message.useMessage();
-    const [user, setUser] = useState<{ name: string } | null>(null); // Lưu thông tin người dùng
+    const [user, setUser] = useState<{ name: string , image: string} | null>(null); // Lưu thông tin người dùng
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra người dùng đăng nhập
     const [favorite, setFavorite] = useState<number>(0);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -29,29 +29,45 @@ const Layoutweb: React.FC = () => {
     const [cartCount, setCartCount] = useState<number>(0);
 
     // Kiểm tra xem người dùng đã đăng nhập hay chưa
-    useEffect(() => {
-        const token = localStorage.getItem("authToken");
+  
+  
+ useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                message.error("Vui lòng đăng nhập lại.");
+                return;
+            }
 
-        if (token) {
-            setIsAuthenticated(true);
-
-            // Gọi API lấy thông tin người dùng dựa trên token
-            axios
-                .get("http://localhost:8000/api/user", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+            try {
+                const response = await axios.get(
+                    "http://127.0.0.1:8000/api/listInformationOrder",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
                     },
-                })
-                .then((response) => {
-                    setUser(response.data.user); // Đặt thông tin người dùng
-                })
-                .catch((error) => {
-                    console.error("Không thể lấy dữ liệu người dùng:", error);
-                });
-        }
-    }, []);
+                );
+                
+  
+             
     
 
+                  setIsAuthenticated(true)
+                    setUser(response.data.data.user)
+              
+                    
+                   
+               
+            } catch (error) {
+                message.error("Lấy thông tin người dùng không thành công!");
+            }
+        };
+
+        fetchUserData();
+    }, []);
+    console.log(user);
+    
     // API Danh mục và giỏ hàng
     useEffect(() => {
         const loadCategorys = async () => {
@@ -243,7 +259,12 @@ const Layoutweb: React.FC = () => {
                                                             cursor: "pointer",
                                                         }}
                                                     >
-                                                        Xin chào, {user?.name}
+                                                        <Avatar
+                                                        style={{marginLeft : 10}}
+                                                        size={40}
+                                                            src={user?.image}
+                                                            alt={user?.name}
+                                                        />
                                                     </span>
                                                 </div>
                                             ) : (
