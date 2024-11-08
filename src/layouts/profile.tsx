@@ -63,6 +63,7 @@ const Profile = () => {
 
                     // Remove token from localStorage and clear cache
                     localStorage.removeItem("authToken");
+                        localStorage.clear();
                     queryClient.clear();
                     messageAPI.success("Đã đăng xuất thành công!");
 
@@ -83,7 +84,9 @@ const Profile = () => {
         ? "Lịch sử đơn hàng của bạn"
         : location.pathname.includes("coupons") // Check if the path is for coupons
           ? "Tất cả mã giảm giá"
-          : `Bảng điều khiển của ${user?.name || "người dùng"}`;
+          : location.pathname.includes("personal") // Check if the path is for personal info page
+            ? "Thông tin cá nhân"
+            : `Bảng điều khiển của ${user?.name || "người dùng"}`;
 
     return (
         <div>
@@ -97,16 +100,14 @@ const Profile = () => {
                             data-bs-toggle="offcanvas"
                             aria-controls="offcanvasLeft"
                             className="nav-icon-item"
-                        >
-                        </a>
+                        ></a>
                     </li>
                     <li className="nav-account">
                         <a
                             href="#login"
                             data-bs-toggle="modal"
                             className="nav-icon-item"
-                        >
-                        </a>
+                        ></a>
                     </li>
                 </ul>
             </div>
@@ -122,13 +123,11 @@ const Profile = () => {
                             <ul className="my-account-nav">
                                 <li>
                                     <Link
-                                        to="/profile"
-                                        className={`my-account-nav-item ${location.pathname === "/profile" ? "active" : ""}`}
+                                        to="/profile/personal" // Link to personal information page
+                                        className={`my-account-nav-item ${location.pathname.includes("personal") ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
-                                        {user?.name
-                                            ? `Bảng điều khiển của ${user.name}`
-                                            : "Bảng điều khiển người dùng"}
+                                        Thông tin cá nhân
                                     </Link>
                                 </li>
                                 <li>

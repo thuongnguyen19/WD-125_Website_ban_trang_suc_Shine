@@ -737,7 +737,7 @@ const Pay: React.FC = () => {
                                                     padding: "8px",
                                                 }}
                                                 value={
-                                                    pointsToUse == 0
+                                                    pointsToUse == 0                                
                                                         ? null
                                                         : pointsToUse
                                                 }
