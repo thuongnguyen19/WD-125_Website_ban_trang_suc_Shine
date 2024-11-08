@@ -4,6 +4,7 @@ import { Navigation } from "swiper/modules";
 import {
     CreditCardOutlined,
     CustomerServiceOutlined,
+    HeartFilled,
     HeartOutlined,
     InboxOutlined,
     LeftOutlined,
@@ -147,7 +148,6 @@ const Home: React.FC = () => {
 
     return (
         <>
-        
             <section className="flat-spacing-9 bg_grey-6 flat-spacing-26">
                 <div className="container">
                     <div className="flat-tab-store flat-animate-tab overflow-unset">
@@ -258,26 +258,38 @@ const Home: React.FC = () => {
                                                                         product.name
                                                                     }
                                                                 </h3>
+                                                                {favorites.includes(
+                                                                    product.id,
+                                                                ) ? (
+                                                                    <HeartFilled
+                                                                        onClick={() =>
+                                                                            handleFavoriteToggle(
+                                                                                product.id,
+                                                                            )
+                                                                        }
+                                                                        style={{
+                                                                            fontSize:
+                                                                                "35px",
+                                                                            color: "red", // Biểu tượng trái tim đỏ
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <HeartOutlined
+                                                                        onClick={() =>
+                                                                            handleFavoriteToggle(
+                                                                                product.id,
+                                                                            )
+                                                                        }
+                                                                        style={{
+                                                                            fontSize:
+                                                                                "35px",
 
-                                                                <HeartOutlined
-                                                                    onClick={() =>
-                                                                        handleFavoriteToggle(
-                                                                            product.id,
-                                                                        )
-                                                                    }
-                                                                    style={{
-                                                                        fontSize:
-                                                                            "35px",
-                                                                        color: favorites.includes(
-                                                                            product.id,
-                                                                        )
-                                                                            ? "red"
-                                                                            : undefined, // Nếu có trong favorites, màu sẽ là đỏ
-                                                                        cursor: "pointer",
-                                                                        transition:
-                                                                            "color 0.3s ease", // Thêm hiệu ứng chuyển đổi
-                                                                    }}
-                                                                />
+                                                                            transition:
+                                                                                "color 0.3s ease", // Thêm hiệu ứng chuyển đổi
+                                                                        }}
+                                                                    />
+                                                                )}
 
                                                                 <div>
                                                                     <span

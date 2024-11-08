@@ -5,7 +5,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { message, Rate } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { HeartFilled, HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Navigation } from "swiper/modules";
 import { set } from "lodash";
 
@@ -107,7 +107,98 @@ const Detail: React.FC = () => {
     const mainSwiperRef = useRef<any>(null); // Ref để quản lý slider chính
     const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
     const ratingValue = averageRating || 0;
+     const [favorites, setFavorites] = useState<number[]>([]);
+   
+ useEffect(() => {
+   
 
+     const loadFavorites = async () => {
+         const token = localStorage.getItem("authToken");
+         if (!token) return;
+
+         try {
+             const response = await axios.get(
+                 "http://127.0.0.1:8000/api/favoriteProduct",
+                 {
+                     headers: { Authorization: `Bearer ${token}` },
+                 },
+             );
+             setFavorites(
+                 response.data.map(
+                     (fav: { id_product: number }) => fav.id_product,
+                 ),
+             );
+         } catch (error) {
+             console.error("Error fetching favorites:", error);
+         }
+     };
+
+    
+     loadFavorites();
+ }, []);
+
+ 
+
+ const handleFavoriteToggle = async (productId: number) => {
+     const token = localStorage.getItem("authToken");
+     if (!token) {
+         message.error(
+             "Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.",
+         );
+         navigate("/login");
+         return;
+     }
+
+     const isFavorite = favorites.includes(productId);
+
+     try {
+         if (isFavorite) {
+             // Xóa khỏi danh sách yêu thích
+             await axios.delete(
+                 `http://127.0.0.1:8000/api/favoriteProduct/${productId}`,
+                 {
+                     headers: { Authorization: `Bearer ${token}` },
+                 },
+             );
+             setFavorites(favorites.filter((id) => id !== productId));
+
+             // Cập nhật localStorage
+             const favoriteData = JSON.parse(
+                 localStorage.getItem("favorite") || "[]",
+             );
+             const updatedFavorites = favoriteData.filter(
+                 (item: { id_product: number }) =>
+                     item.id_product !== productId,
+             );
+             updateLocalStorageFavorite(updatedFavorites);
+
+             localStorage.setItem(`isFavorite_${productId}`, "false");
+             message.success("Đã xóa sản phẩm khỏi danh sách yêu thích.");
+         } else {
+             // Thêm vào danh sách yêu thích
+             await axios.post(
+                 "http://127.0.0.1:8000/api/favoriteProduct",
+                 { product_id: productId },
+                 {
+                     headers: { Authorization: `Bearer ${token}` },
+                 },
+             );
+             setFavorites([...favorites, productId]);
+
+             // Cập nhật localStorage
+             const favoriteData = JSON.parse(
+                 localStorage.getItem("favorite") || "[]",
+             );
+             favoriteData.push({ id_product: productId });
+             updateLocalStorageFavorite(favoriteData);
+
+             localStorage.setItem(`isFavorite_${productId}`, "true");
+             message.success("Đã thêm sản phẩm vào danh sách yêu thích.");
+         }
+     } catch (error) {
+         message.error("Có lỗi xảy ra khi thêm hoặc xóa sản phẩm yêu thích.");
+     }
+ };
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
         setLoading(true);
@@ -170,6 +261,13 @@ const Detail: React.FC = () => {
         fetchProductDetails();
     }, [id]);
 
+
+
+
+
+
+
+    
     // Hàm tăng/giảm số lượng sản phẩm
     const handleQuantityChange = (change: number) => {
         setQuantity((prevQuantity) => {
@@ -708,11 +806,28 @@ const Detail: React.FC = () => {
                                     <div className="tf-product-info-title">
                                         <h5>{product?.name}</h5>
                                     </div>
-                                    <div className="average-rating" style={{display: 'flex', marginBottom: '20px'}}>
-                                        <div className="stars" style={{ transform: "scale(0.9)"}}>
-                                            <Rate allowHalf defaultValue={ratingValue} disabled />
+                                    <div
+                                        className="average-rating"
+                                        style={{
+                                            display: "flex",
+                                            marginBottom: "20px",
+                                        }}
+                                    >
+                                        <div
+                                            className="stars"
+                                            style={{ transform: "scale(0.9)" }}
+                                        >
+                                            <Rate
+                                                allowHalf
+                                                defaultValue={ratingValue}
+                                                disabled
+                                            />
                                         </div>
-                                        <div style={{marginLeft: '5px'}}>{averageRating !== null ? averageRating.toFixed(1) : "Chưa có đánh giá"}</div>
+                                        <div style={{ marginLeft: "5px" }}>
+                                            {averageRating !== null
+                                                ? averageRating.toFixed(1)
+                                                : "Chưa có đánh giá"}
+                                        </div>
                                     </div>
                                     {selectedColor && selectedSize ? (
                                         <div className="tf-product-info-price">
@@ -772,9 +887,12 @@ const Detail: React.FC = () => {
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <div className="price-on-sale" style={{
+                                                <div
+                                                    className="price-on-sale"
+                                                    style={{
                                                         marginRight: "10px",
-                                                    }}>
+                                                    }}
+                                                >
                                                     <span
                                                         style={{
                                                             fontWeight: "bold",
@@ -787,10 +905,7 @@ const Detail: React.FC = () => {
                                                         đ
                                                     </span>
                                                 </div>
-                                                <div
-                                                    className="price-list"
-                                                    
-                                                >
+                                                <div className="price-list">
                                                     <span
                                                         style={{
                                                             textDecoration:
@@ -804,12 +919,9 @@ const Detail: React.FC = () => {
                                                         đ
                                                     </span>
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                     )}
-
-                                    
 
                                     <br />
                                     <div className="tf-color-selection d-flex align-items-center">
@@ -988,26 +1100,34 @@ const Detail: React.FC = () => {
                                         >
                                             Thêm vào giỏ hàng
                                         </button>
-                                        <HeartOutlined
-                                            onClick={() =>
-                                                handleAddProductToFavorite(
-                                                    product.id,
-                                                )
-                                            }
-                                            style={{
-                                                fontSize: "35px",
-                                                color: isFavorite ? "red" : "",
-                                            }}
-                                        />
-                                        {isFavorite && (
-                                            <span
+
+                                        {isFavorite ? (
+                                            <HeartFilled
+                                                onClick={() =>
+                                                    handleAddProductToFavorite(
+                                                        product.id,
+                                                    )
+                                                }
                                                 style={{
-                                                    color: "green",
-                                                    marginLeft: "5px",
+                                                    fontSize: "25px",
+                                                    color: "red", // Biểu tượng trái tim đỏ
+                                                    cursor: "pointer",
                                                 }}
-                                            >
-                                                Đã yêu thích
-                                            </span>
+                                            />
+                                        ) : (
+                                            <HeartOutlined
+                                                onClick={() =>
+                                                    handleAddProductToFavorite(
+                                                        product.id,
+                                                    )
+                                                }
+                                                style={{
+                                                    fontSize: "25px",
+
+                                                    transition:
+                                                        "color 0.3s ease", // Thêm hiệu ứng chuyển đổi
+                                                }}
+                                            />
                                         )}
                                     </div>
                                     <div className="tf-product-info-buy-now-button mt-3">
@@ -1262,6 +1382,40 @@ const Detail: React.FC = () => {
                                                                                             đ
                                                                                         </span>
                                                                                     </span>
+                                                                                    {favorites.includes(
+                                                                                        relatedProduct.id,
+                                                                                    ) ? (
+                                                                                        <HeartFilled
+                                                                                            onClick={() =>
+                                                                                                handleFavoriteToggle(
+                                                                                                    relatedProduct.id,
+                                                                                                )
+                                                                                            }
+                                                                                            style={{
+                                                                                                fontSize:
+                                                                                                    "35px",
+                                                                                                color: "red", // Biểu tượng trái tim đỏ
+                                                                                                cursor: "pointer",
+                                                                                            }}
+                                                                                        />
+                                                                                    ) : (
+                                                                                        <HeartOutlined
+                                                                                            onClick={() =>
+                                                                                                handleFavoriteToggle(
+                                                                                                    relatedProduct
+                                                                                                       
+                                                                                                        .id,
+                                                                                                )
+                                                                                            }
+                                                                                            style={{
+                                                                                                fontSize:
+                                                                                                    "35px",
+
+                                                                                                transition:
+                                                                                                    "color 0.3s ease", // Thêm hiệu ứng chuyển đổi
+                                                                                            }}
+                                                                                        />
+                                                                                    )}
                                                                                 </div>
                                                                             )}
                                                                         </div>
