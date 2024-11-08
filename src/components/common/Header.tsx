@@ -137,18 +137,18 @@ const Header: React.FC = () => {
                                     </Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="#" className="item-link">
-                                        Danh mục <CaretDownOutlined />
-                                    </a>
+                                    <div className="item-link">
+                                        Danh mục 
+                                    </div>
                                     <div className="sub-menu submenu-default">
                                         <ul className="menu-list">
                                             {categories.map((category) => (
                                                 <li key={category.id}>
-                                                    <Link
-                                                        to={`/category/${category.id}`}
+                                                    <a
+                                                        href={`/products?category=${category.id}`}
                                                     >
                                                         {category.name}
-                                                    </Link>
+                                                    </a>
                                                 </li>
                                             ))}
                                         </ul>

@@ -242,7 +242,7 @@ const handleCancel = () => {
 
     return (
         <>
-            <section className="flat-spacing-11">
+            
                 <div className="col-lg-15">
                     {orders.map((order) => (
                         <div className="wd-form-order" key={order.id}>
@@ -709,7 +709,6 @@ const handleCancel = () => {
                         </div>
                     ))}
                 </div>
-            </section>
         </>
     );
 };

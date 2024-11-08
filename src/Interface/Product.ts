@@ -34,3 +34,21 @@ export const fetchProducts = async (
 
   return response.data; // Đảm bảo trả về đúng cấu trúc dữ liệu
 };
+
+export const fetchViews = async (
+       
+): Promise<{data: Product[]}> => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        throw new Error("No token found");
+    }
+
+    const response = await axiosInstance.get<{data: Product[]}>(`/view`, {
+       
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    });
+
+    return response.data;
+};
