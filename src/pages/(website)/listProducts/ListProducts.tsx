@@ -35,6 +35,10 @@ const ListProducts: React.FC = () => {
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const categoryId = params.get("category");
+        const selectedCategory = categoryId??'';
+        setSelectedCategory(selectedCategory);
         const loadProducts = async () => {
             try {
                 const { data, total_pages } = await fetchProducts(
@@ -47,11 +51,10 @@ const ListProducts: React.FC = () => {
                 );
                 setProducts(data);
                 setTotalPages(total_pages);
+                setLoading(false)
             } catch (err) {
                 console.error("Error fetching products:", err);
                 setError("Không thể tải sản phẩm.");
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -93,10 +96,12 @@ const ListProducts: React.FC = () => {
         loadCategories();
     }, []);
 
+    // Hàm thay đổi trang
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
     };
 
+    // Hàm thay đổi sắp xếp
     const handleSortChange = (value: string) => {
         if (value.includes("Giá")) {
             setSortBy("price");
@@ -294,6 +299,39 @@ const ListProducts: React.FC = () => {
                                                     style={{ height: 400 }}
                                                 />
                                             </div>
+                                            <div className="list-product-btn absolute-2">
+                                                                                
+                                                <a className="box-icon bg_white wishlist btn-icon-action">
+                                                    <span>
+                                                        {favorites.includes(product.id) ? (
+                                                            <HeartFilled
+                                                                onClick={() => handleFavoriteToggle(product.id)}
+                                                                style={{
+                                                                    fontSize: "25px",
+                                                                    color: "red",
+                                                                    cursor: "pointer",
+                                                                    transition: "color 0.3s ease",
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <HeartOutlined
+                                                                onClick={() => handleFavoriteToggle(product.id)}
+                                                                style={{
+                                                                    fontSize: "25px",
+                                                                    color: undefined,
+                                                                    cursor: "pointer",
+                                                                    transition: "color 0.3s ease",
+                                                                }}
+                                                            />
+                                                        )}
+
+                                                    </span>
+                                                    <span className="tooltip">Add to Wishlist</span>
+                                                    
+                                                </a>
+                                                
+                                            </div>
+                                        </div>
                                             <div className="card-product-info">
                                                 <h3
                                                     onClick={() =>
@@ -363,41 +401,10 @@ const ListProducts: React.FC = () => {
                                                             )}
                                                         </span>
                                                     </div>
-                                                    {favorites.includes(
-                                                        product.id,
-                                                    ) ? (
-                                                        <HeartFilled
-                                                            onClick={() =>
-                                                                handleFavoriteToggle(
-                                                                    product.id,
-                                                                )
-                                                            }
-                                                            style={{
-                                                                fontSize:
-                                                                    "25px",
-                                                                color: "red", // Biểu tượng trái tim đỏ
-                                                                cursor: "pointer",
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <HeartOutlined
-                                                            onClick={() =>
-                                                                handleFavoriteToggle(
-                                                                    product.id,
-                                                                )
-                                                            }
-                                                            style={{
-                                                                fontSize:
-                                                                    "25px",
-
-                                                                transition:
-                                                                    "color 0.3s ease", // Thêm hiệu ứng chuyển đổi
-                                                            }}
-                                                        />
-                                                    )}
+                                                    
                                                 </div>
                                             </div>
-                                        </div>
+                                        
                                     </div>
                                 ))
                             ) : (
@@ -406,29 +413,67 @@ const ListProducts: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="tf-pagination">
-                        <div className="pagination">
-                            <span
-                                className="prev"
-                                onClick={() =>
-                                    handlePageChange(page > 1 ? page - 1 : page)
-                                }
-                            >
-                                <DoubleLeftOutlined />
-                            </span>
-                            <span className="page-number">{page}</span>
-                            <span
-                                className="next"
-                                onClick={() =>
-                                    handlePageChange(
-                                        page < totalPages ? page + 1 : page,
-                                    )
-                                }
-                            >
-                                <DoubleRightOutlined />
-                            </span>
+                    {/* Phân trang */}
+                        <div className="phantrang">
+                            <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
+                                <li className={page === 1 ? "disabled" : ""}>
+                                    <a
+                                        href="#"
+                                        className="pagination-link"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (page > 1)
+                                                handlePageChange(page - 1);
+                                        }}
+                                    >
+                                        <span>
+                                            <DoubleLeftOutlined />
+                                        </span>
+                                    </a>
+                                </li>
+                                {Array.from(
+                                    { length: totalPages },
+                                    (_, i) => i + 1,
+                                ).map((pageNumber) => (
+                                    <li
+                                        key={pageNumber}
+                                        className={
+                                            page === pageNumber ? "active" : ""
+                                        }
+                                    >
+                                        <a
+                                            href="#"
+                                            className="pagination-link animate-hover-btn"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handlePageChange(pageNumber);
+                                            }}
+                                        >
+                                            {pageNumber}
+                                        </a>
+                                    </li>
+                                ))}
+                                <li
+                                    className={
+                                        page === totalPages ? "disabled" : ""
+                                    }
+                                >
+                                    <a
+                                        href="#"
+                                        className="pagination-link"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (page < totalPages)
+                                                handlePageChange(page + 1);
+                                        }}
+                                    >
+                                        <span>
+                                            <DoubleRightOutlined />
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
                 </div>
             </section>
 

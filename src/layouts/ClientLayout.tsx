@@ -189,7 +189,6 @@ const Layoutweb: React.FC = () => {
                                                     className="item-link"
                                                 >
                                                     Danh mục
-                                                    <CaretDownOutlined />
                                                 </a>
                                                 <div className="sub-menu submenu-default">
                                                     <ul className="menu-list">
@@ -201,14 +200,14 @@ const Layoutweb: React.FC = () => {
                                                                     }
                                                                 >
                                                                     <Link
-                                                                        to={`/category/${category.id}`}
+                                                                        to={`/products?category=${category.id}`}
                                                                     >
                                                                         {
                                                                             category.name
                                                                         }
                                                                     </Link>
                                                                 </li>
-                                                            ),
+                                                            )
                                                         )}
                                                     </ul>
                                                 </div>

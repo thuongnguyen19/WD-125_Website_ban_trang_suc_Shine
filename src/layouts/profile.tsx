@@ -79,12 +79,13 @@ const Profile = () => {
         });
     };
 
-    // Set the page title based on current location
     const pageTitle = location.pathname.includes("od_histori")
         ? "Lịch sử đơn hàng của bạn"
-        : location.pathname.includes("coupons") // Check if the path is for coupons
+        : location.pathname.includes("coupons") 
           ? "Tất cả mã giảm giá"
-          : location.pathname.includes("personal") // Check if the path is for personal info page
+          :location.pathname.includes("view")
+          ? "Sản phẩm xem gần đây"
+          : location.pathname.includes("personal") 
             ? "Thông tin cá nhân"
             : `Bảng điều khiển của ${user?.name || "người dùng"}`;
 
@@ -149,12 +150,13 @@ const Profile = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="my-account-address.html"
-                                        className="my-account-nav-item"
+                                    <Link
+                                        to="view" 
+                                        className={`my-account-nav-item ${location.pathname.includes("view") ? "active" : ""}`}
+                                        style={{ cursor: "pointer" }}
                                     >
-                                        Địa chỉ
-                                    </a>
+                                        Sản phẩm xem gần đây
+                                    </Link>
                                 </li>
                                 <li>
                                     <a

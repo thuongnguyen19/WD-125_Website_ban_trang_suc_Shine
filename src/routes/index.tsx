@@ -22,6 +22,7 @@ import ResetPassword from "../pages/(website)/dkdn/ResetPassword";
 import ForgotPassword from "../pages/(website)/dkdn/ForgotPassword";
 import Favorite from "../pages/(website)/Details/Favorite";
 import Personal from "../layouts/Personal ";
+import View from "../pages/(website)/Details/View";
 
 
 const Router = () => {
@@ -46,6 +47,7 @@ const Router = () => {
                     <Route path="coupons" element={<Coupons />} />{" "}
                     <Route path="od_histori" element={<OrderHistory />} />{" "}
                     <Route path="personal" element={<Personal />} />{" "}
+                    <Route path="view" element={<View />} />{" "}                    
                     <Route
                         path="od_histori/od_detail/:id"
                         element={<Od_Detail />}
