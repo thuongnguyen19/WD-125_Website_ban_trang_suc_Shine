@@ -113,9 +113,15 @@ const Detail: React.FC = () => {
         setLoading(true);
 
         const fetchProductDetails = async () => {
+            const token = localStorage.getItem("authToken");
             try {
                 const response = await axios.get(
                     `http://localhost:8000/api/detailProduct/${id}`,
+                     {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
                 );
                 const productData: Product = response.data.data;
                 console.log(productData);
@@ -442,6 +448,8 @@ const Detail: React.FC = () => {
             message.error("Có lỗi xảy ra khi thêm hoặc xóa sản phẩm yêu thích");
         }
     };
+
+    
 
     // useEffect(() => {
     //     const checkFavoriteStatus = async () => {
