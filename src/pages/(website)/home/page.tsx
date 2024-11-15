@@ -16,6 +16,7 @@ import "swiper/css/navigation";
 import { fetchProductsNew, ProductsNew } from "../../../Interface/ProductsNew";
 import axios from "axios";
 import { message } from "antd";
+import axiosInstance from "../../../configs/axios";
 
 const Home: React.FC = () => {
     const [productsnew, setProductsNew] = useState<ProductsNew[]>([]);
@@ -40,8 +41,8 @@ const Home: React.FC = () => {
             if (!token) return;
 
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/favoriteProduct",
+                const response = await axiosInstance.get(
+                    "/favoriteProduct",
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     },
@@ -80,8 +81,8 @@ const Home: React.FC = () => {
         try {
             if (isFavorite) {
                 // Xóa khỏi danh sách yêu thích
-                await axios.delete(
-                    `http://127.0.0.1:8000/api/favoriteProduct/${productId}`,
+                await axiosInstance.delete(
+                    `/favoriteProduct/${productId}`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     },
@@ -102,8 +103,8 @@ const Home: React.FC = () => {
                 message.success("Đã xóa sản phẩm khỏi danh sách yêu thích.");
             } else {
                 // Thêm vào danh sách yêu thích
-                await axios.post(
-                    "http://127.0.0.1:8000/api/favoriteProduct",
+                await axiosInstance.post(
+                    "/favoriteProduct",
                     { product_id: productId },
                     {
                         headers: { Authorization: `Bearer ${token}` },
