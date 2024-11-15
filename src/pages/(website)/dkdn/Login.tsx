@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Form, Input, message, Spin } from "antd";
 import axios from "axios";
+import axiosInstance from "../../../configs/axios";
 
 type FieldType = {
     email: string;
@@ -17,7 +18,7 @@ const Login: React.FC = () => {
 
     const { mutate } = useMutation({
         mutationFn: (user: FieldType) =>
-            axios.post(`http://localhost:8000/api/login`, user),
+            axiosInstance.post(`/login`, user),
         onSuccess: (response) => {
             const { token, role, user } = response.data.data;
             const numericRole = Number(role);

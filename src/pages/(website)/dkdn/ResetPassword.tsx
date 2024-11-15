@@ -2,6 +2,7 @@ import { Button, Card, Form, Input, message, Spin } from 'antd';
 import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
+import axiosInstance from '../../../configs/axios';
 
 const ResetPassword = () => {
     const [loading, setLoading] = useState(false);
@@ -12,7 +13,7 @@ const ResetPassword = () => {
     const handleSubmit = async (values: { password: string; confirmPassword: string }) => {
         try {
             setLoading(true);
-            await axios.post(`http://localhost:8000/api/resetpassword/${token}`, {
+            await axiosInstance.post(`/resetpassword/${token}`, {
                 password: values.password,
                 password_confirmation: values.confirmPassword
             });

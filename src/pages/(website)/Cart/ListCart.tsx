@@ -5,6 +5,7 @@ import axios from "axios";
 import { message, Spin, Modal } from "antd";
 import { DeleteOutlined, CloseOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../configs/axios";
 
 interface CartItem {
     id: number;
@@ -46,8 +47,8 @@ const ListCart: React.FC = () => {
 
         const fetchCartItems = async () => {
             try {
-                const response = await axios.get(
-                    "http://localhost:8000/api/listCart",
+                const response = await axiosInstance.get(
+                    "/listCart",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -138,8 +139,8 @@ const ListCart: React.FC = () => {
                         localStorage.getItem("user") || "{}",
                     );
 
-                    await axios.delete(
-                        "http://localhost:8000/api/deleteMutipleCart",
+                    await axiosInstance.delete(
+                        "/deleteMutipleCart",
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
@@ -245,8 +246,8 @@ const ListCart: React.FC = () => {
                     quantity: item.quantity,
                 }));
 
-            const response = await axios.put(
-                "http://localhost:8000/api/choseProductInCart",
+            const response = await axiosInstance.put(
+                "/choseProductInCart",
                 { cartItems: selectedCartItems },
                 {
                     headers: {
@@ -289,7 +290,7 @@ const ListCart: React.FC = () => {
                         return;
                     }
 
-                    await axios.delete("http://localhost:8000/api/deleteCart", {
+                    await axiosInstance.delete("/deleteCart", {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
