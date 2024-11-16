@@ -642,9 +642,9 @@ const Detail: React.FC = () => {
                                                 (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
-                                                            src={getFullImagePath(
-                                                                image,
-                                                            )}
+                                                            src={
+                                                                image
+                                                            }
                                                             alt={`Image ${index + 1}`}
                                                             style={{
                                                                 width: "100%",
@@ -674,9 +674,9 @@ const Detail: React.FC = () => {
                                                 (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
-                                                            src={getFullImagePath(
-                                                                image,
-                                                            )}
+                                                            src={
+                                                                image
+                                                            }
                                                             alt={`Thumbnail ${index + 1}`}
                                                             onClick={() =>
                                                                 handleThumbnailClick(
@@ -1214,9 +1214,9 @@ const Detail: React.FC = () => {
                                                                                     to={`/detail/${relatedProduct.id}`}
                                                                                 > */}
                                                                                 <img
-                                                                                    src={getFullImagePath(
-                                                                                        relatedProduct.thumbnail,
-                                                                                    )}
+                                                                                    src={
+                                                                                        relatedProduct.thumbnail
+                                                                                    }
                                                                                     alt={
                                                                                         relatedProduct.name
                                                                                     }
