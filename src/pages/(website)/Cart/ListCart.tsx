@@ -171,7 +171,7 @@ const ListCart: React.FC = () => {
             if (item.id === itemId) {
                 // Kiểm tra xem số lượng hiện tại có nhỏ hơn số lượng tồn kho không
                 if (item.quantity < (item.variant?.quantity || 0)) {
-                    const updatedQuantity = item.quantity + 1;
+                    const updatedQuantity = Number(item.quantity) + 1;
                     item.quantity = updatedQuantity;
                 } else {
                     message.warning(

@@ -34,6 +34,7 @@ interface Variant {
     colors: {
         id: number;
         name: string;
+        code: string;
     };
     sizes: {
         id: number;
@@ -195,23 +196,23 @@ const Detail: React.FC = () => {
         });
     };
 
-    const getColorCode = (colorName: string) => {
-        const colorMap: { [key: string]: string } = {
-            đỏ: "#FF0000",
-            xanh: "#0000FF",
-            green: "#00FF00",
-            black: "#000000",
-            white: "#FFFFFF",
-            pink: "#FFC0CB",
-            vàng: "#FFFF00",
-            tím: "#FF00FF",
-            trắng: "#FFFFFF",
-            hồng: "#FFC0CB",
-            đen: "#000000",
-        };
+    // const getColorCode = (colorName: string) => {
+    //     const colorMap: { [key: string]: string } = {
+    //         đỏ: "#FF0000",
+    //         xanh: "#0000FF",
+    //         green: "#00FF00",
+    //         black: "#000000",
+    //         white: "#FFFFFF",
+    //         pink: "#FFC0CB",
+    //         vàng: "#FFFF00",
+    //         tím: "#FF00FF",
+    //         trắng: "#FFFFFF",
+    //         hồng: "#FFC0CB",
+    //         đen: "#000000",
+    //     };
 
-        return colorMap[colorName.toLowerCase()] || "#CCCCCC";
-    };
+    //     return colorMap[colorName.toLowerCase()] || "#CCCCCC";
+    // };
 
     const handleColorChange = (colorName: string) => {
         setSelectedColor(colorName);
@@ -854,9 +855,9 @@ const Detail: React.FC = () => {
                                                         height: "30px",
                                                         borderRadius: "50%",
                                                         backgroundColor:
-                                                            getColorCode(
-                                                                variant.colors
-                                                                    .name,
+                                                            (
+                                                               variant.colors
+                                                                    .code
                                                             ),
                                                         border:
                                                             selectedColor ===

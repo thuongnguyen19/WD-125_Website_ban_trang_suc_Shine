@@ -100,7 +100,7 @@ const Pay: React.FC = () => {
         const fetchInformationOrder = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:8000/api/listInformationOrder",
+                    "/listInformationOrder",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -139,7 +139,7 @@ const Pay: React.FC = () => {
         const fetchAvailableVouchers = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:8000/api/vouchers/list",
+                    "/vouchers/list",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -254,7 +254,7 @@ const Pay: React.FC = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/vouchers/apply",
+                "/vouchers/apply",
                 {
                     voucher_code: code,
                     order_amount: originalTotalAmount,
@@ -330,7 +330,7 @@ const Pay: React.FC = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/payment",
+                "/payment",
                 orderData,
                 {
                     headers: {
