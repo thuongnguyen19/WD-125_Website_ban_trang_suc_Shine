@@ -13,6 +13,7 @@ import { fetchProducts, Product } from "../../../Interface/Product";
 import { Category, fetchCategorys } from "../../../Interface/Category";
 import axios from "axios"; // Đảm bảo import axios
 import { message } from "antd"; // Đảm bảo import message từ antd
+import axiosInstance from "../../../configs/axios";
 
 const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -63,8 +64,8 @@ const ListProducts: React.FC = () => {
             if (!token) return;
 
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/favoriteProduct",
+                const response = await axiosInstance.get(
+                    "/favoriteProduct",
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     },
@@ -146,8 +147,8 @@ const ListProducts: React.FC = () => {
         try {
             if (isFavorite) {
                 // Xóa khỏi danh sách yêu thích nếu đã yêu thích
-                await axios.delete(
-                    `http://127.0.0.1:8000/api/favoriteProduct/${productId}`,
+                await axiosInstance.delete(
+                    `/favoriteProduct/${productId}`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     },
@@ -170,8 +171,8 @@ const ListProducts: React.FC = () => {
                 message.success("Đã xóa sản phẩm khỏi danh sách yêu thích.");
             } else {
                 // Thêm vào danh sách yêu thích nếu chưa yêu thích
-                await axios.post(
-                    "http://127.0.0.1:8000/api/favoriteProduct",
+                await axiosInstance.post(
+                    "/favoriteProduct",
                     { product_id: productId },
                     {
                         headers: { Authorization: `Bearer ${token}` },

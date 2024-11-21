@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { EditOutlined, SaveOutlined, LockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom"; // Thay useHistory bằng useNavigate
+import axiosInstance from "../configs/axios";
 
 const { Title } = Typography;
 
@@ -60,8 +61,8 @@ const Personal = () => {
             }
 
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/listInformationOrder",
+                const response = await axiosInstance.get(
+                    "/listInformationOrder",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -108,8 +109,8 @@ const Personal = () => {
         }
 
         try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/updateUser",
+            const response = await axiosInstance.post(
+                "/updateUser",
                 updatedData,
                 {
                     headers: {
@@ -178,8 +179,8 @@ const Personal = () => {
                 }
 
                 try {
-                    const response = await axios.post(
-                        "http://127.0.0.1:8000/api/changePassword",
+                    const response = await axiosInstance.post(
+                        "/changePassword",
                         {
                             old_password: oldPassword,
                             new_password: newPassword,
@@ -195,8 +196,8 @@ const Personal = () => {
                     if (response.data.status) {
                         message.success("Mật khẩu đã được thay đổi!");
 
-                        await axios.post(
-                            "http://127.0.0.1:8000/api/logout",
+                        await axiosInstance.post(
+                            "/logout",
                             {},
                             {
                                 headers: {

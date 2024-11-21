@@ -3,6 +3,7 @@ import { Button, Form, Input, message, Card, Spin } from "antd";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axiosInstance from "../../../configs/axios";
 
 const Register = () => {
     const queryClient = useQueryClient();
@@ -30,7 +31,7 @@ const Register = () => {
     // Xử lý đăng ký
     const { mutate } = useMutation({
         mutationFn: (user) =>
-            axios.post(`http://localhost:8000/api/register`, user, {
+            axiosInstance.post(`/register`, user, {
                 headers: {
                     "Content-Type": "application/json",
                 },

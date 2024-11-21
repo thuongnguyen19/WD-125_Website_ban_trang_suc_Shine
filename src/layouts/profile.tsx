@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
+import axiosInstance from "../configs/axios";
 
 const Profile = () => {
     const queryClient = useQueryClient();
@@ -22,8 +23,8 @@ const Profile = () => {
             setIsAuthenticated(true);
 
             // Fetch user data from API using the token
-            axios
-                .get("http://localhost:8000/api/user", {
+           axiosInstance
+                .get("/user", {
                     headers: {
                         Authorization: `Bearer ${token}`, // Sending the token to authorize the request
                     },
@@ -51,8 +52,8 @@ const Profile = () => {
                     const token = localStorage.getItem("authToken");
 
                     // Call API to log out
-                    await axios.post(
-                        "http://localhost:8000/api/logout",
+                    await axiosInstance.post(
+                        "/logout",
                         {},
                         {
                             headers: {

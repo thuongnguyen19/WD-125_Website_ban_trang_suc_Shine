@@ -2,6 +2,7 @@ import { Button, Card, Form, Input, message, Spin } from 'antd';
 import axios from 'axios';
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../configs/axios';
 
 const ForgotPassword = () => {
     const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ const ForgotPassword = () => {
     const handleSubmit = async (values: { email: string }) => {
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:8000/api/forgotpassword', values);
+            const response = await axiosInstance.post('/forgotpassword', values);
             messageAPI.success('Vui lòng kiểm tra email của bạn để đặt lại mật khẩu!');
             navigate('/');
             

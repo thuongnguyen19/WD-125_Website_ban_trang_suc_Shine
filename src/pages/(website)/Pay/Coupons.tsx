@@ -20,7 +20,7 @@ const Coupons = () => {
         const fetchVouchers = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:8000/api/vouchers/list",
+                    "/vouchers/list",
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("authToken")}`,

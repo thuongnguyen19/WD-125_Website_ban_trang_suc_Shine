@@ -15,6 +15,7 @@ import axios from "axios";
 import Home from "../pages/(website)/home/page";
 import { Category, fetchCategorys } from "../Interface/Category";
 import { number } from "joi";
+import axiosInstance from "../configs/axios";
 
 const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
@@ -40,8 +41,8 @@ const Layoutweb: React.FC = () => {
             }
 
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/listInformationOrder",
+                const response = await axiosInstance.get(
+                    "/listInformationOrder",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

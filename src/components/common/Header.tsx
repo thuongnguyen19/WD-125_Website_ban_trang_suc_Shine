@@ -12,6 +12,7 @@ import { Category, fetchCategorys } from "../../Interface/Category";
 import { number } from "joi";
 import axios from "axios";
 import { Avatar, message } from "antd";
+import axiosInstance from "../../configs/axios";
 
 const Header: React.FC = () => {
      const navigate = useNavigate();
@@ -30,8 +31,8 @@ const Header: React.FC = () => {
             const token = localStorage.getItem("authToken");
 
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/listInformationOrder",
+                const response = await axiosInstance.get(
+                    "/listInformationOrder",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

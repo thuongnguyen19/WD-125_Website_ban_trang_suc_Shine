@@ -5,6 +5,7 @@ import { message, Modal, Card, Row, Col } from "antd";
 import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
 import { Navigate, useNavigate } from "react-router-dom";
+import axiosInstance from "../../../configs/axios";
 
 interface Variant {
     id_product: number;
@@ -42,8 +43,8 @@ const FavoritesList = () => {
                     return;
                 }
 
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/favoriteProduct",
+                const response = await axiosInstance.get(
+                    "/favoriteProduct",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -83,8 +84,8 @@ const FavoritesList = () => {
         }
 
         try {
-            const response = await axios.delete(
-                `http://127.0.0.1:8000/api/favoriteProduct/${productId}`,
+            const response = await axiosInstance.delete(
+                `/favoriteProduct/${productId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

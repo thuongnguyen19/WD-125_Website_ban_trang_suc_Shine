@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { HeartFilled, HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Navigation } from "swiper/modules";
 import { set } from "lodash";
+import axiosInstance from "../../../configs/axios";
 
 // Interfaces
 interface Favorite {
@@ -33,6 +34,7 @@ interface Variant {
     colors: {
         id: number;
         name: string;
+        code: string;
     };
     sizes: {
         id: number;
@@ -66,13 +68,13 @@ interface Comment {
     rating: number;
 }
 
-// Hàm để thêm URL đầy đủ cho đường dẫn ảnh
-const getFullImagePath = (imagePath: string) => {
-    if (!imagePath.startsWith("http")) {
-        return `http://127.0.0.1:8000/${imagePath}`;
-    }
-    return imagePath;
-};
+// // Hàm để thêm URL đầy đủ cho đường dẫn ảnh
+// const getFullImagePath = (imagePath: string) => {
+//     if (!imagePath.startsWith("http")) {
+//         return `http://127.0.0.1:8000/${imagePath}`;
+//     }
+//     return imagePath;
+// };
 
 const Detail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -115,8 +117,8 @@ const Detail: React.FC = () => {
         const fetchProductDetails = async () => {
             const token = localStorage.getItem("authToken");
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/api/detailProduct/${id}`,
+                const response = await axiosInstance.get(
+                    `/detailProduct/${id}`,
                      {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -165,8 +167,8 @@ const Detail: React.FC = () => {
 
         const fetchRelatedProducts = async (categoryId: number) => {
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/api/relatedProducts/${categoryId}`,
+                const response = await axiosInstance.get(
+                    `/relatedProducts/${categoryId}`,
                 );
                 setRelatedProducts(response.data.data);
             } catch (err) {
@@ -194,23 +196,23 @@ const Detail: React.FC = () => {
         });
     };
 
-    const getColorCode = (colorName: string) => {
-        const colorMap: { [key: string]: string } = {
-            đỏ: "#FF0000",
-            xanh: "#0000FF",
-            green: "#00FF00",
-            black: "#000000",
-            white: "#FFFFFF",
-            pink: "#FFC0CB",
-            vàng: "#FFFF00",
-            tím: "#FF00FF",
-            trắng: "#FFFFFF",
-            hồng: "#FFC0CB",
-            đen: "#000000",
-        };
+    // const getColorCode = (colorName: string) => {
+    //     const colorMap: { [key: string]: string } = {
+    //         đỏ: "#FF0000",
+    //         xanh: "#0000FF",
+    //         green: "#00FF00",
+    //         black: "#000000",
+    //         white: "#FFFFFF",
+    //         pink: "#FFC0CB",
+    //         vàng: "#FFFF00",
+    //         tím: "#FF00FF",
+    //         trắng: "#FFFFFF",
+    //         hồng: "#FFC0CB",
+    //         đen: "#000000",
+    //     };
 
-        return colorMap[colorName.toLowerCase()] || "#CCCCCC";
-    };
+    //     return colorMap[colorName.toLowerCase()] || "#CCCCCC";
+    // };
 
     const handleColorChange = (colorName: string) => {
         setSelectedColor(colorName);
@@ -308,8 +310,8 @@ const Detail: React.FC = () => {
                 quantity: quantity,
             };
 
-            const response = await axios.get(
-                "http://localhost:8000/api/listInformationOrder",
+            const response = await axiosInstance.get(
+                "/listInformationOrder",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -347,8 +349,8 @@ const Detail: React.FC = () => {
 
         const checkFavoriteStatus = async () => {
             try {
-                const response = await axios.get(
-                    `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${id}`,
+                const response = await axiosInstance.get(
+                    `/favoriteProduct/check?product_id=${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -396,8 +398,8 @@ const Detail: React.FC = () => {
 
             if (isFavorite) {
                 // Xóa khỏi danh sách yêu thích nếu đã yêu thích
-                await axios.delete(
-                    `http://127.0.0.1:8000/api/favoriteProduct/${productId}`,
+                await axiosInstance.delete(
+                    `/favoriteProduct/${productId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -422,8 +424,8 @@ const Detail: React.FC = () => {
                 message.success("Đã xóa sản phẩm khỏi danh sách yêu thích.");
             } else {
                 // Thêm vào danh sách yêu thích nếu chưa yêu thích
-                const report = await axios.post(
-                    "http://127.0.0.1:8000/api/favoriteProduct",
+                const report = await axiosInstance.post(
+                    "/favoriteProduct",
                     { product_id: productId },
                     {
                         headers: {
@@ -511,8 +513,8 @@ const Detail: React.FC = () => {
                 id_variant: selectedVariant.id,
                 quantity: quantity,
             };
-            const response = await axios.post(
-                "http://localhost:8000/api/addCart",
+            const response = await axiosInstance.post(
+                "/addCart",
                 cartData,
                 {
                     headers: {
@@ -641,9 +643,9 @@ const Detail: React.FC = () => {
                                                 (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
-                                                            src={getFullImagePath(
-                                                                image,
-                                                            )}
+                                                            src={
+                                                                image
+                                                            }
                                                             alt={`Image ${index + 1}`}
                                                             style={{
                                                                 width: "100%",
@@ -673,9 +675,9 @@ const Detail: React.FC = () => {
                                                 (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
-                                                            src={getFullImagePath(
-                                                                image,
-                                                            )}
+                                                            src={
+                                                                image
+                                                            }
                                                             alt={`Thumbnail ${index + 1}`}
                                                             onClick={() =>
                                                                 handleThumbnailClick(
@@ -853,9 +855,9 @@ const Detail: React.FC = () => {
                                                         height: "30px",
                                                         borderRadius: "50%",
                                                         backgroundColor:
-                                                            getColorCode(
-                                                                variant.colors
-                                                                    .name,
+                                                            (
+                                                               variant.colors
+                                                                    .code
                                                             ),
                                                         border:
                                                             selectedColor ===
@@ -1213,9 +1215,9 @@ const Detail: React.FC = () => {
                                                                                     to={`/detail/${relatedProduct.id}`}
                                                                                 > */}
                                                                                 <img
-                                                                                    src={getFullImagePath(
-                                                                                        relatedProduct.thumbnail,
-                                                                                    )}
+                                                                                    src={
+                                                                                        relatedProduct.thumbnail
+                                                                                    }
                                                                                     alt={
                                                                                         relatedProduct.name
                                                                                     }
