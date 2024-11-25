@@ -23,10 +23,14 @@ const Success: React.FC = () => {
         const vnp_TxnRef = params.get("vnp_TxnRef");
         const vnp_ResponseCode = params.get("vnp_ResponseCode");
         const vnp_OrderInfo = params.get("vnp_OrderInfo");
+console.log(vnp_OrderInfo);
 
         const fetchPaymentResult = async () => {
             if (vnp_TxnRef && vnp_ResponseCode) {
                 try {
+                       const token = localStorage.getItem("authToken");
+                       console.log(token);
+                       
                     if (vnp_ResponseCode === "24") {
                         setStatus(false);
                         setMessageText(
@@ -35,6 +39,43 @@ const Success: React.FC = () => {
                         setLoading(false);
                         return;
                     }
+                    
+                      if (
+                          vnp_OrderInfo == `Thanh toán dịch vụ:${vnp_TxnRef}`
+                      ) {
+                        const service = await axios.get(
+                         "http://localhost:8000/api/adsPayment",
+                         {
+                             params: {
+                                 vnp_TxnRef,
+                                 vnp_ResponseCode,
+                             },
+                             headers: {
+                                 Authorization: `Bearer ${token}`,
+                             },
+                         },
+                     );
+                       if (service.data.status) {
+                        setStatus(true);
+                        setMessageText(
+                            service.data.message || "Dịch vụ thành công!",
+                        );
+
+                    
+                      
+                    } else {
+                        setStatus(false);
+                        setMessageText(
+                            service.data.message || "dịch vụ đặt thất bại.",
+                        );
+                    }
+                    return;
+                } 
+            
+        
+
+
+
 
                     const response = await axios.get(
                         "http://localhost:8000/api/paymentResult",

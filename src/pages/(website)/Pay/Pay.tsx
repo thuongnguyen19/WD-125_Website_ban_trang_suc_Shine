@@ -16,6 +16,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import axios from "axios";
+import axiosInstance from "../../../configs/axios";
 
 // Interface cho CartItem và Voucher
 interface CartItem {
@@ -99,7 +100,7 @@ const Pay: React.FC = () => {
 
         const fetchInformationOrder = async () => {
             try {
-                const response = await axios.get(
+                const response = await axiosInstance.get(
                     "/listInformationOrder",
                     {
                         headers: {
@@ -138,7 +139,7 @@ const Pay: React.FC = () => {
 
         const fetchAvailableVouchers = async () => {
             try {
-                const response = await axios.get(
+                const response = await axiosInstance.get(
                     "/vouchers/list",
                     {
                         headers: {
@@ -253,7 +254,7 @@ const Pay: React.FC = () => {
         const userId = user.id;
 
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 "/vouchers/apply",
                 {
                     voucher_code: code,
@@ -329,7 +330,7 @@ const Pay: React.FC = () => {
         };
 
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 "/payment",
                 orderData,
                 {
@@ -568,6 +569,8 @@ const Pay: React.FC = () => {
                                                                         }}
                                                                     />
                                                                 </td>
+                                                             
+                                                                
                                                                 <td
                                                                     style={{
                                                                         padding:

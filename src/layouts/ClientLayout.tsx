@@ -11,28 +11,23 @@ import {
     ShoppingCartOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import axios from "axios";
 import Home from "../pages/(website)/home/page";
 import { Category, fetchCategorys } from "../Interface/Category";
-import { number } from "joi";
 import axiosInstance from "../configs/axios";
 
 const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
     const [messageAPI, contextHolder] = message.useMessage();
-    const [user, setUser] = useState<{ name: string , image: string} | null>(null); // Lưu thông tin người dùng
+    const [user, setUser] = useState<{ name: string; image: string } | null>(
+        null,
+    ); // Lưu thông tin người dùng
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra người dùng đăng nhập
     const [favorite, setFavorite] = useState<number>(0);
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    // Thêm biến trạng thái để lưu số lượng sản phẩm trong giỏ hàng
     const [cartCount, setCartCount] = useState<number>(0);
-
-    // Kiểm tra xem người dùng đã đăng nhập hay chưa
-  
-  
- useEffect(() => {
+    useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem("authToken");
             if (!token) {
@@ -49,17 +44,9 @@ const Layoutweb: React.FC = () => {
                         },
                     },
                 );
-                
-  
-             
-    
 
-                  setIsAuthenticated(true)
-                    setUser(response.data.data.user)
-              
-                    
-                   
-               
+                setIsAuthenticated(true);
+                setUser(response.data.data.user);
             } catch (error) {
                 message.error("Lấy thông tin người dùng không thành công!");
             }
@@ -68,8 +55,7 @@ const Layoutweb: React.FC = () => {
         fetchUserData();
     }, []);
     console.log(user);
-    
-    // API Danh mục và giỏ hàng
+
     useEffect(() => {
         const loadCategorys = async () => {
             try {
@@ -81,7 +67,6 @@ const Layoutweb: React.FC = () => {
             setLoading(false);
         };
 
-        // Tính tổng số lượng sản phẩm trong giỏ hàng từ localStorage
         const fetchCartCount = () => {
             const cartData = localStorage.getItem("cartItems");
             const favoriteData = localStorage.getItem("favorite");
@@ -117,7 +102,6 @@ const Layoutweb: React.FC = () => {
         return <p>Đang tải...</p>;
     }
 
-    // Điều hướng đến trang cá nhân
     const goToProfile = () => {
         navigate("/profile");
     };
@@ -136,7 +120,7 @@ const Layoutweb: React.FC = () => {
                 <div>
                     <header
                         id="header"
-                        className="header-default header-absolute header-white"
+                        className="header-default header-absolute header-black"
                     >
                         <div className="container-full px_15 lg-px_40">
                             <div className="row wrapper-header align-items-center">
@@ -167,12 +151,17 @@ const Layoutweb: React.FC = () => {
                                         className="logo-header"
                                     >
                                         <img
-                                            src="images/logo/logo-white@2x.png"
+                                            src="/public/duan/Logo. shine.2.png"
+                                            style={{
+                                                height: "60px",
+                                                width: "60px",
+                                            }}
                                             alt="logo"
                                             className="logo"
                                         />
                                     </a>
                                 </div>
+
                                 <div className="col-xl-6 tf-md-hidden">
                                     <nav className="box-navigation text-center">
                                         <ul className="box-nav-ul d-flex align-items-center justify-content-center gap-30">
@@ -208,7 +197,7 @@ const Layoutweb: React.FC = () => {
                                                                         }
                                                                     </Link>
                                                                 </li>
-                                                            )
+                                                            ),
                                                         )}
                                                     </ul>
                                                 </div>
@@ -219,6 +208,30 @@ const Layoutweb: React.FC = () => {
                                                     className="item-link"
                                                 >
                                                     Sản phẩm
+                                                </Link>
+                                            </li>
+                                            <li className="menu-item">
+                                                <Link
+                                                    to="/ser"
+                                                    className="item-link"
+                                                >
+                                                    Dịch vụ
+                                                </Link>
+                                            </li>
+                                            <li className="menu-item">
+                                                <Link
+                                                    to="/about-us"
+                                                    className="item-link"
+                                                >
+                                                    Về chúng tôi
+                                                </Link>
+                                            </li>
+                                            <li className="menu-item">
+                                                <Link
+                                                    to="/contact"
+                                                    className="item-link"
+                                                >
+                                                    Liên hệ
                                                 </Link>
                                             </li>
                                         </ul>
@@ -261,8 +274,10 @@ const Layoutweb: React.FC = () => {
                                                         }}
                                                     >
                                                         <Avatar
-                                                        style={{marginLeft : 10}}
-                                                        size={40}
+                                                            style={{
+                                                                marginLeft: 10,
+                                                            }}
+                                                            size={40}
                                                             src={user?.image}
                                                             alt={user?.name}
                                                         />
@@ -310,5 +325,5 @@ const Layoutweb: React.FC = () => {
         </>
     );
 };
-    
+
 export default Layoutweb;
