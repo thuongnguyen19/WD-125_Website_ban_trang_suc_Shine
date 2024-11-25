@@ -1,3 +1,4 @@
+// Profile.js
 import React, { useEffect, useState } from "react";
 import { Modal, message } from "antd";
 import { useNavigate, Link, useLocation, Outlet } from "react-router-dom";
@@ -23,7 +24,7 @@ const Profile = () => {
             setIsAuthenticated(true);
 
             // Fetch user data from API using the token
-           axiosInstance
+            axiosInstance
                 .get("/user", {
                     headers: {
                         Authorization: `Bearer ${token}`, // Sending the token to authorize the request
@@ -64,7 +65,7 @@ const Profile = () => {
 
                     // Remove token from localStorage and clear cache
                     localStorage.removeItem("authToken");
-                        localStorage.clear();
+                    localStorage.clear();
                     queryClient.clear();
                     messageAPI.success("Đã đăng xuất thành công!");
 
@@ -82,13 +83,15 @@ const Profile = () => {
 
     const pageTitle = location.pathname.includes("od_histori")
         ? "Lịch sử đơn hàng của bạn"
-        : location.pathname.includes("coupons") 
+        : location.pathname.includes("coupons")
           ? "Tất cả mã giảm giá"
-          :location.pathname.includes("view")
-          ? "Sản phẩm xem gần đây"
-          : location.pathname.includes("personal") 
-            ? "Thông tin cá nhân"
-            : `Bảng điều khiển của ${user?.name || "người dùng"}`;
+          : location.pathname.includes("view")
+            ? "Sản phẩm xem gần đây"
+            : location.pathname.includes("dv")
+              ? "Thông tin dịch vụ"
+              : location.pathname.includes("personal")
+                ? "Thông tin cá nhân"
+                : `Bảng điều khiển của ${user?.name || "người dùng"}`;
 
     return (
         <div>
@@ -125,7 +128,7 @@ const Profile = () => {
                             <ul className="my-account-nav">
                                 <li>
                                     <Link
-                                        to="/profile/personal" // Link to personal information page
+                                        to="/profile/personal"
                                         className={`my-account-nav-item ${location.pathname.includes("personal") ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
@@ -143,7 +146,7 @@ const Profile = () => {
                                 </li>
                                 <li>
                                     <Link
-                                        to="coupons" // Add link to coupons page
+                                        to="coupons"
                                         className={`my-account-nav-item ${location.pathname.includes("coupons") ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
@@ -152,11 +155,20 @@ const Profile = () => {
                                 </li>
                                 <li>
                                     <Link
-                                        to="view" 
+                                        to="view"
                                         className={`my-account-nav-item ${location.pathname.includes("view") ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
                                         Sản phẩm xem gần đây
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        to="dv" // Thêm mục menu Dịch vụ
+                                        className={`my-account-nav-item ${location.pathname.includes("dv") ? "active" : ""}`}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        Dịch vụ
                                     </Link>
                                 </li>
                                 <li>

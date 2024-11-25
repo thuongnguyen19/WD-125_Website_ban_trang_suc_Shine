@@ -10,10 +10,15 @@ import {
     Col,
     Typography,
     Modal,
+    Spin,
 } from "antd";
-import axios from "axios";
-import { EditOutlined, SaveOutlined, LockOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom"; // Thay useHistory bằng useNavigate
+import {
+    EditOutlined,
+    SaveOutlined,
+    LockOutlined,
+    CameraOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../configs/axios";
 
 const { Title } = Typography;
@@ -33,7 +38,7 @@ interface ChangePasswordData {
 }
 
 const Personal = () => {
-    const navigate = useNavigate(); // Hook để chuyển hướng
+    const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [formData, setFormData] = useState<FormData>({
@@ -45,6 +50,7 @@ const Personal = () => {
     });
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false); // state cho trạng thái loading
 
     const [passwordData, setPasswordData] = useState<ChangePasswordData>({
         oldPassword: "",
@@ -92,6 +98,7 @@ const Personal = () => {
     }, []);
 
     const handleUpdate = async () => {
+            setLoading(true); 
         const updatedData = new FormData();
         updatedData.append("name", formData.name);
         updatedData.append("email", formData.email || "");
@@ -129,6 +136,7 @@ const Personal = () => {
         } catch (error) {
             message.error("Cập nhật thông tin không thành công!");
         }
+        setLoading(false);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,7 +215,7 @@ const Personal = () => {
                         );
 
                         localStorage.removeItem("authToken");
-                        navigate("/login"); // Sử dụng navigate để chuyển hướng về trang login
+                        navigate("/login");
                     } else {
                         message.error(response.data.message);
                     }
@@ -264,17 +272,53 @@ const Personal = () => {
                             </Button>
                         </div>
 
-                        <Avatar
-                            size={150}
-                            src={avatarPreview || formData.avatar || undefined}
-                            style={{
-                                marginBottom: "20px",
-                                borderRadius: "50%",
-                            }}
-                        />
+                        {/* Avatar chỉ hiển thị khi không ở chế độ đổi mật khẩu */}
+                        {!isChangingPassword && (
+                            <Avatar
+                                size={150}
+                                src={
+                                    avatarPreview ||
+                                    formData.avatar ||
+                                    undefined
+                                }
+                                style={{
+                                    marginBottom: "20px",
+                                    borderRadius: "50%",
+                                }}
+                            />
+                        )}
+
+                        {isEditing && (
+                            <>
+                                <Button
+                                    type="link"
+                                    icon={<CameraOutlined />}
+                                    onClick={() =>
+                                        document
+                                            .getElementById("avatarInput")
+                                            ?.click()
+                                    }
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "-10px",
+                                        left: "50%",
+                                        transform: "translateX(-50%)",
+                                        color: "black", // Icon màu đen
+                                    }}
+                                />
+                                <input
+                                    id="avatarInput"
+                                    type="file"
+                                    style={{ display: "none" }}
+                                    accept="image/*"
+                                    onChange={handleAvatarChange}
+                                />
+                            </>
+                        )}
                     </Col>
                 </Row>
 
+                {/* Phần thông tin và thay đổi mật khẩu giữ nguyên */}
                 {!isChangingPassword && (
                     <Row gutter={[16, 16]} style={{ marginTop: "30px" }}>
                         <Col span={24}>
@@ -343,47 +387,28 @@ const Personal = () => {
                                     />
                                 </Form.Item>
 
-                                <Form.Item
-                                    label="Avatar"
-                                    style={{ marginBottom: "20px" }}
-                                >
-                                    <Avatar
-                                        size={150}
-                                        src={
-                                            avatarPreview ||
-                                            formData.avatar ||
-                                            undefined
-                                        }
-                                        style={{
-                                            marginBottom: "20px",
-                                            borderRadius: "50%",
-                                        }}
-                                    />
-                                    {isEditing && (
-                                        <input
-                                            type="file"
-                                            onChange={handleAvatarChange}
-                                            disabled={!isEditing}
-                                            style={{ marginTop: "10px" }}
-                                        />
-                                    )}
-                                </Form.Item>
-
                                 {isEditing ? (
-                                    <Button
-                                        type="primary"
-                                        icon={<SaveOutlined />}
-                                        onClick={handleUpdate}
-                                    >
-                                        Lưu thay đổi
-                                    </Button>
+                                    <Spin spinning={loading}>
+                                        {" "}
+                                        {/* Bao bọc nút với Spin */}
+                                        <Button
+                                            type="primary"
+                                            icon={<SaveOutlined />}
+                                            onClick={handleUpdate}
+                                            style={{ marginTop: "20px" }}
+                                            loading={loading} // Hiển thị biểu tượng quay tròn khi đang loading
+                                        >
+                                            Lưu thay đổi
+                                        </Button>
+                                    </Spin>
                                 ) : (
                                     <Button
-                                        type="default"
+                                        type="primary"
                                         icon={<EditOutlined />}
                                         onClick={() => setIsEditing(true)}
+                                        style={{ marginTop: "20px" }}
                                     >
-                                        Chỉnh sửa
+                                        Chỉnh sửa thông tin
                                     </Button>
                                 )}
                             </Form>
@@ -432,6 +457,7 @@ const Personal = () => {
                                     type="primary"
                                     icon={<LockOutlined />}
                                     onClick={handlePasswordChange}
+                                    style={{ marginTop: "20px" }}
                                 >
                                     Đổi mật khẩu
                                 </Button>

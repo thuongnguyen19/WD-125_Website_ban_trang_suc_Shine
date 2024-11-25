@@ -76,7 +76,7 @@ const Header: React.FC = () => {
 
                 const totalQuantity = cartItems.reduce(
                     (total: number, item: { quantity: number }) =>
-                        total + item.quantity,
+                        total + Number(item.quantity),
                     0,
                 );
 
@@ -122,7 +122,7 @@ const Header: React.FC = () => {
                     <div className="col-xl-3 col-md-4 col-6">
                         <Link to="/" className="logo-header">
                             <img
-                                src="images/logo/logo@2x.png"
+                                src="/public/duan/Logo. shine.2.png" style={{height : "60px" , width:"60px"}}
                                 alt="logo"
                                 className="logo"
                             />
@@ -138,9 +138,7 @@ const Header: React.FC = () => {
                                     </Link>
                                 </li>
                                 <li className="menu-item">
-                                    <div className="item-link">
-                                        Danh mục 
-                                    </div>
+                                    <div className="item-link">Danh mục</div>
                                     <div className="sub-menu submenu-default">
                                         <ul className="menu-list">
                                             {categories.map((category) => (
@@ -158,6 +156,11 @@ const Header: React.FC = () => {
                                 <li className="menu-item">
                                     <Link to="/products" className="item-link">
                                         Sản phẩm
+                                    </Link>
+                                </li>
+                                <li className="menu-item">
+                                    <Link to="/ser" className="item-link">
+                                        Dịch vụ
                                     </Link>
                                 </li>
                                 <li className="menu-item">
