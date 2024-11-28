@@ -23,6 +23,10 @@ import ForgotPassword from "../pages/(website)/dkdn/ForgotPassword";
 import Favorite from "../pages/(website)/Details/Favorite";
 import Personal from "../layouts/Personal ";
 import View from "../pages/(website)/Details/View";
+import Service from "../layouts/Service";
+import Banner from "../layouts/banner";
+import Dv from "../layouts/Dv";
+import Service_details from "../layouts/Service_details";
 
 
 const Router = () => {
@@ -47,11 +51,12 @@ const Router = () => {
                     <Route path="coupons" element={<Coupons />} />{" "}
                     <Route path="od_histori" element={<OrderHistory />} />{" "}
                     <Route path="personal" element={<Personal />} />{" "}
-                    <Route path="view" element={<View />} />{" "}                    
+                    <Route path="view" element={<View />} />{" "}
+                    <Route path="dv" element={<Dv />} />{" "}
+                    <Route path="dv/detail_service/:id" element={<Service_details />} />
                     <Route
-                        path="od_histori/od_detail/:id"
-                        element={<Od_Detail />}
-                    />
+                        path="od_histori/od_detail/:id"element={<Od_Detail />}/>
+                        
                     <Route path="comment" element={<ListComments />} />
                 </Route>
 
@@ -69,6 +74,11 @@ const Router = () => {
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="forgotpassword" element={<ForgotPassword />} />
+
+                <Route path="ser" element={<Service />}></Route>
+
+                <Route path="banner" element={<Banner />} />
+
                 <Route
                     path="reset-password/:token"
                     element={<ResetPassword />}
