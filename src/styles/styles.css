@@ -18541,3 +18541,85 @@ blockquote .text {
 }
 
 /*# sourceMappingURL=styles.css.map */
+
+
+.combo-promotion {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.promotion-btn {
+  background-color: #fff1f0;
+  color: #f5222d;
+  border: 1px solid #f5222d;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.promotion-btn:hover {
+  background-color: #f5222d;
+  color: white;
+}
+
+.view-all {
+  font-size: 14px;
+  color: #f5222d;
+  text-decoration: none;
+}
+
+.view-all:hover {
+  text-decoration: underline;
+}
+
+.products {
+  display: flex;
+  gap: 20px;
+}
+
+.product-item {
+  width: 150px;
+  text-align: center;
+}
+
+.product-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.product-name {
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.product-price {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.discount-price {
+  color: #f5222d;
+  font-weight: bold;
+}
