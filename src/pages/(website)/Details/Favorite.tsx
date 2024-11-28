@@ -125,85 +125,143 @@ const FavoritesList = () => {
     if (loading) return <p>Đang tải...</p>;
     if (error) return <p>{error}</p>;
 
+    function handleProductClick(id: number): void {
+        throw new Error("Function not implemented.");
+    }
+
     return (
         <div>
             <Header />
             <div className="tf-page-title">
                 <div className="container-full">
-                    <div className="heading text-center">Sản phẩm yêu thích</div>
+                    <div className="heading text-center">
+                        Sản phẩm yêu thích
+                    </div>
                 </div>
             </div>
-            <Row gutter={[16, 16]}>
-                {favorites.map((item) => (
-                    <Col span={6} key={item.id}>
-                        <Card
-                            hoverable
-                            cover={
-                                <img
-                                    style={{
-                                        height: 200,
-                                        width: "100%",
-                                        objectFit: "cover",
-                                    }} // Kích thước hình vuông
-                                    alt={item.product.name}
-                                    src={item.product.thumbnail}
-                                />
-                            }
-                            actions={[
-                                <HeartFilled
-                                    onClick={() => {
-                                        if (item.product && item.product.id) {
-                                            confirmDelete(item.product.id);
-                                        } else {
-                                            console.error(
-                                                "ID sản phẩm không hợp lệ",
-                                                item,
-                                            );
+            <div className="wrapper-control-shop" style={{ padding: "40px" }}>
+                <div className="grid-layout wrapper-shop" data-grid="grid-4">
+                    {Array.isArray(favorites) && favorites.length > 0 ? (
+                        favorites.map((item) => (
+                            <div key={item.id} className="card-product">
+                                <div className="card-product-wrapper">
+                                    <div
+                                        className="product-img"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() =>
+                                            handleProductClick(item.product.id)
                                         }
-                                    }}
-                                    style={{
-                                        fontSize: "20px",
-                                        color: "red", // Biểu tượng trái tim đỏ
-                                        cursor: "pointer",
-                                    }}
-                                />,
-                            ]}
-                        >
-                            <Card.Meta
-                                title={item.product.name}
-                                description={
-                                    <>
-                                        <p>
-                                            Giá bán:{" "}
-                                            {new Intl.NumberFormat("vi-VN", {
-                                                style: "currency",
-                                                currency: "VND",
-                                            }).format(
-                                                Number(
-                                                    item.product.variants[0]
-                                                        ?.selling_price,
-                                                ),
-                                            )}
-                                        </p>
-                                        <p>
-                                            Giá niêm yết:{" "}
-                                            {new Intl.NumberFormat("vi-VN", {
-                                                style: "currency",
-                                                currency: "VND",
-                                            }).format(
-                                                Number(
-                                                    item.product.variants[0]
-                                                        ?.list_price,
-                                                ),
-                                            )}
-                                        </p>
-                                    </>
-                                }
-                            />
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
+                                    >
+                                        <img
+                                            className="lazyload img-product"
+                                            src={item.product.thumbnail}
+                                            alt={item.product.name}
+                                            style={{ height: 300 }}
+                                        />
+                                    </div>
+                                    <div className="list-product-btn absolute-2">
+                                        <a className="box-icon bg_white wishlist btn-icon-action">
+                                            <span>
+                                                <HeartFilled
+                                                    onClick={() => {
+                                                        if (item.product.id) {
+                                                            confirmDelete(
+                                                                item.product.id,
+                                                            );
+                                                        } else {
+                                                            console.error(
+                                                                "ID sản phẩm không hợp lệ",
+                                                                item,
+                                                            );
+                                                        }
+                                                    }}
+                                                    style={{
+                                                        fontSize: "25px",
+                                                        color: "red",
+                                                        cursor: "pointer",
+                                                        transition:
+                                                            "color 0.3s ease",
+                                                    }}
+                                                />
+                                            </span>
+                                            <span className="tooltip">
+                                                Xóa khỏi yêu thích
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div className="card-product-info">
+                                    <h3
+                                        onClick={() =>
+                                            handleProductClick(item.product.id)
+                                        }
+                                        style={{ cursor: "pointer" }}
+                                        className="title link"
+                                    >
+                                        {item.product.name}
+                                    </h3>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <div className="price-on-sale">
+                                            <span
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    color: "#f00",
+                                                }}
+                                            >
+                                                {new Intl.NumberFormat(
+                                                    "vi-VN",
+                                                    {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    },
+                                                ).format(
+                                                    Number(
+                                                        item.product.variants[0]
+                                                            ?.selling_price,
+                                                    ),
+                                                )}
+                                            </span>
+                                        </div>
+                                        <div
+                                            className="price-list"
+                                            style={{ marginLeft: "10px" }}
+                                        >
+                                            <span
+                                                style={{
+                                                    textDecoration:
+                                                        "line-through",
+                                                    color: "#999",
+                                                }}
+                                            >
+                                                {new Intl.NumberFormat(
+                                                    "vi-VN",
+                                                    {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    },
+                                                ).format(
+                                                    Number(
+                                                        item.product.variants[0]
+                                                            ?.list_price,
+                                                    ),
+                                                )}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div>Không có sản phẩm nào.</div>
+                    )}
+                </div>
+            </div>
+
             <Footer />
         </div>
     );
