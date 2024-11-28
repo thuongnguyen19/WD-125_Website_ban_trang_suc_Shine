@@ -695,4 +695,180 @@ img {
                                   /* Màu chữ khi chọn */
                                 }
                                 
+                                
+}
+/* Hiệu ứng phóng to khi hover */
+.hover-zoom-text {
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.hover-zoom-text:hover {
+  transform: scale(1.2);
+  /* Phóng to */
+  color: #f39c12;
+  /* Đổi màu chữ khi hover */
+}
+
+/* Hiệu ứng marquee */
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-left 10s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Hiệu ứng slide-in từ hai bên */
+.slide-in-wrapper {
+  opacity: 0;
+  transform: translateX(0);
+  transition: all 1s ease-in-out;
+}
+
+.slide-in-left {
+  transform: translateX(-100%);
+}
+
+.slide-in-right {
+  transform: translateX(100%);
+}
+
+.slide-in-visible.slide-in-left {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-in-visible.slide-in-right {
+  transform: translateX(0);
+  opacity: 1;
+}
+@keyframes colorChange {
+  0% {
+    background-color: #1890ff;
+  }
+
+  50% {
+    background-color: #ff4d4f;
+  }
+
+  100% {
+    background-color: #1890ff;
+  }
+}
+
+@keyframes scaleChange {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.button-animated {
+  animation: scaleChange 2s infinite, colorChange 2s infinite;
+  transition: transform 0.3s;
+}
+.form-container {
+  position: relative;
+  animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+/* Thêm hiệu ứng hover cho ảnh */
+.banner-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+/* Khi hover vào ảnh */
+.banner-image:hover {
+  opacity: 0.7;
+  /* Làm mờ ảnh khi hover */
+}
+
+/* Thêm hiệu ứng cho chữ */
+.banner-text {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Khi hover vào container (banner) */
+.banner-image:hover+.banner-text {
+  transform: translateY(-10px);
+  /* Di chuyển chữ lên một chút */
+  opacity: 1;
+  /* Đảm bảo chữ sáng lên */
+}
+
+/* Thêm hiệu ứng cho nút */
+.banner-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff5722;
+  border-color: #ff5722;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Khi hover vào banner */
+.banner-image:hover+.banner-text+.banner-button {
+  transform: translateY(-10px);
+  /* Di chuyển nút lên một chút */
+  opacity: 1;
+}
+/* Hiệu ứng chạy cho dòng highlight */
+@keyframes scroll-text {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Nếu bạn muốn tùy chỉnh thêm, có thể thêm vào class riêng cho .banner-highlight */
+.banner-highlight {
+  position: absolute;
+  bottom: 5px;
+  left: 20px;
+  color: white;
+  font-size: 18px;
+  font-weight: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  animation: scroll-text 10s linear infinite;
 }

@@ -21,19 +21,19 @@ import './styles/font-icons.css';
 import './styles/fonts.css';
 
 // Import JavaScript files
-import './js/bootstrap.min.js';
-import './js/bootstrap-select.min.js';
-import './js/carousel.js';
-import './js/count-down.js';
-import './js/drift.min.js';
-import './js/jquery-validate.js'
-import './js/jquery.min.js';
-import './js/lazysize.min.js'
-import './js/main.js';
-import './js/shop.js';
-import './js/wow.min.js';
-import './js/swiper-bundle.min.js';
-import './js/rangle-slider.js';
+    // import './js/bootstrap.min.js';
+    // import './js/bootstrap-select.min.js';
+    // import './js/carousel.js';
+    // import './js/count-down.js';
+    // import './js/drift.min.js';
+    // import './js/jquery-validate.js'
+    // import './js/jquery.min.js';
+    // import './js/lazysize.min.js'
+    // import './js/main.js';
+    // import './js/shop.js';
+    // import './js/wow.min.js';
+    // import './js/swiper-bundle.min.js';
+    // import './js/rangle-slider.js';
 
 
 

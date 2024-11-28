@@ -128,7 +128,11 @@ const FavoritesList = () => {
     return (
         <div>
             <Header />
-            <h6>Sản phẩm yêu thích</h6>
+            <div className="tf-page-title">
+                <div className="container-full">
+                    <div className="heading text-center">Sản phẩm yêu thích</div>
+                </div>
+            </div>
             <Row gutter={[16, 16]}>
                 {favorites.map((item) => (
                     <Col span={6} key={item.id}>
