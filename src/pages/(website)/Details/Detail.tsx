@@ -1061,8 +1061,8 @@ const handleComboClick = (combo: Combo) => {
             <div key={currentCombo.id} className="product-item">
                 <div className="product-img">
                     <img
-                        onClick={() => handleComboClick(currentCombo)} // Khi click vào hình ảnh, sẽ hiển thị modal cho combo này
-                        src={currentCombo.image || "http://webcoban.vn/image/flower.gif"} // Sử dụng giá trị hình ảnh combo hoặc mặc định
+                         onClick={() => handleComboClick(currentCombo)} 
+                                                src={currentCombo.image} 
                     />
                     <p
                         className="product-name"
@@ -1117,7 +1117,121 @@ const handleComboClick = (combo: Combo) => {
                     {selectedCombo.products.map((product) => (
                         <div className="combo-product" key={product.id}>
                             <h5 className="product-name">{product.name}</h5>
-                            
+                            <div className="tf-color-selection d-flex align-items-center">
+                                        <h6 style={{ marginRight: "10px" }}>
+                                            Màu sắc:
+                                        </h6>
+                                        {selectedColorName && (
+                                            <div style={{ marginLeft: "10px" }}>
+                                                <h6>{selectedColorName}</h6>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="tf-variant-colors d-flex">
+                                        {uniqueColors.map(
+                                            (variant: Variant) => (
+                                                <input
+                                                    key={variant.id}
+                                                    type="radio"
+                                                    name="color"
+                                                    checked={
+                                                        selectedColor ===
+                                                        variant.colors.name
+                                                    }
+                                                    onChange={() =>
+                                                        handleColorChange(
+                                                            variant.colors.name,
+                                                        )
+                                                    }
+                                                    style={{
+                                                        appearance: "none",
+                                                        width: "30px",
+                                                        height: "30px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor:
+                                                            (
+                                                               variant.colors
+                                                                    .code
+                                                            ),
+                                                        border:
+                                                            selectedColor ===
+                                                            variant.colors.name
+                                                                ? "2px solid #000"
+                                                                : "1px solid #ccc",
+                                                        margin: "0 10px",
+                                                        cursor: "pointer",
+                                                    }}
+                                                />
+                                            ),
+                                        )}
+                                    </div>
+
+                                    <div className="tf-size-selection mt-3">
+                                        <h6>Kích thước:</h6>
+                                        <br />
+                                        <div className="tf-variant-sizes d-flex flex-wrap">
+                                            {allSizes.map((sizeName, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={`size-box ${selectedSize === sizeName ? "selected" : ""}`}
+                                                    onClick={() =>
+                                                        handleSizeChange(
+                                                            sizeName,
+                                                        )
+                                                    }
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent:
+                                                            "center",
+                                                        alignItems: "center",
+                                                        width: "40px",
+                                                        height: "40px",
+                                                        margin: "5px",
+                                                        cursor: isSizeAvailable(
+                                                            sizeName,
+                                                        )
+                                                            ? "pointer"
+                                                            : "not-allowed",
+                                                        border:
+                                                            selectedSize ===
+                                                            sizeName
+                                                                ? "3px solid #000"
+                                                                : "1px solid #ccc",
+                                                        borderRadius: "5px",
+                                                        textAlign: "center",
+                                                        backgroundColor:
+                                                            selectedSize ===
+                                                            sizeName
+                                                                ? "#ff6600"
+                                                                : "#f9f9f9",
+                                                        fontWeight: "bold",
+                                                        color:
+                                                            selectedSize ===
+                                                            sizeName
+                                                                ? "#fff"
+                                                                : "#000",
+                                                        opacity:
+                                                            isSizeAvailable(
+                                                                sizeName,
+                                                            )
+                                                                ? 1
+                                                                : 0.5,
+                                                        transition:
+                                                            "background-color 0.3s ease, border 0.3s ease, opacity 0.3s ease",
+                                                        pointerEvents:
+                                                            isSizeAvailable(
+                                                                sizeName,
+                                                            )
+                                                                ? "auto"
+                                                                : "none",
+                                                    }}
+                                                >
+                                                    {sizeName}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                         </div>
                     ))}
 
