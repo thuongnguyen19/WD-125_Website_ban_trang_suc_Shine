@@ -9,6 +9,7 @@ export interface Order {
     recipient_address: string;
     created_at: string;
     status: string;
+    urlBackPayment: string;
     updated_at: string;
     payment_role: number;
     status_payment: number;
