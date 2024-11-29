@@ -3,11 +3,10 @@ import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { message, Rate } from "antd";
+import { Button, message, Modal, Rate } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { HeartFilled, HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Navigation } from "swiper/modules";
-import { set } from "lodash";
 import axiosInstance from "../../../configs/axios";
 
 // Interfaces
@@ -59,6 +58,16 @@ interface Product {
     images: Image[];
     averageRating: number | null;
     comments: Comment[];
+    relatedCombos: Combo[]
+}
+
+export interface Combo {
+  id: number;
+  name: string;
+  image: string;
+  price: number;
+  description: string;
+  products: RelatedProduct[];
 }
 
 interface Comment {
@@ -109,6 +118,17 @@ const Detail: React.FC = () => {
     const mainSwiperRef = useRef<any>(null); // Ref để quản lý slider chính
     const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
     const ratingValue = averageRating || 0;
+    const [combo, setCombo] = useState<Combo[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+const [selectedCombo, setSelectedCombo] = useState<Combo | null>(null);
+
+    
+
+const handleComboClick = (combo: Combo) => {
+    setSelectedCombo(combo); // Cập nhật combo đã chọn vào state
+    setIsModalVisible(true);  // Hiển thị modal
+};
+
 
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
@@ -133,6 +153,7 @@ const Detail: React.FC = () => {
 
                     setAverageRating(productData.averageRating);
                     setComments(productData.comments); // Gán danh sách đánh giá
+                    setCombo(productData.relatedCombos)
                     fetchRelatedProducts(productData.id);
 
                     // Lấy giá nhỏ nhất từ các biến thể sản phẩm
@@ -175,6 +196,18 @@ const Detail: React.FC = () => {
                 console.error("Failed to fetch related products", err);
             }
         };
+
+        const fetchCombos = async (categoryId: number) => {
+            try {
+                const response = await axiosInstance.get(
+                    `/relatedProducts/${categoryId}`,
+                );
+                setRelatedProducts(response.data.data);
+            } catch (err) {
+                console.error("Failed to fetch related products", err);
+            }
+        };
+        
         fetchProductDetails();
     }, [id]);
 
@@ -280,6 +313,7 @@ const Detail: React.FC = () => {
             return;
         }
 
+        
         if (!selectedColor || !selectedSize) {
             message.error("Vui lòng chọn màu sắc và kích thước.");
             return;
@@ -386,15 +420,6 @@ const Detail: React.FC = () => {
         }
 
         try {
-            // Kiểm tra trạng thái yêu thích
-            //  const checkResponse = await axios.get(
-            //      `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${productId}`,
-            //      {
-            //          headers: {
-            //              Authorization: `Bearer ${token}`,
-            //          },
-            //      },
-            //  );
 
             if (isFavorite) {
                 // Xóa khỏi danh sách yêu thích nếu đã yêu thích
@@ -452,29 +477,6 @@ const Detail: React.FC = () => {
     };
 
     
-
-    // useEffect(() => {
-    //     const checkFavoriteStatus = async () => {
-    //         try {
-    //             const token = localStorage.getItem("token"); // hoặc từ nơi bạn lưu trữ token
-    //             const response = await axios.get(
-    //                 `http://127.0.0.1:8000/api/favoriteProduct/check?product_id=${id}`,
-    //                 {
-    //                     headers: {
-    //                         Authorization: `Bearer ${token}`, // Thêm token vào header
-    //                     },
-    //                 },
-    //             );
-    //             setIsFavorite(response.data.is_favorite);
-    //         } catch (err) {
-    //             setError("lỗi");
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     checkFavoriteStatus();
-    // }, [product]);
 
     const handleAddToCart = async () => {
         const token = localStorage.getItem("authToken");
@@ -598,6 +600,10 @@ const Detail: React.FC = () => {
         return <div>Sản phẩm không hợp lệ hoặc không tìm thấy</div>;
     }
 
+    if (!combo) {
+  return <p>Không tìm thấy combo!</p>;
+}
+
     return (
         <div>
             <Header />
@@ -608,7 +614,7 @@ const Detail: React.FC = () => {
                             <a href="/" className="text">
                                 Trang chủ
                             </a>
-                            <i className="icon icon-arrow-right"></i>
+                            <i><RightOutlined /></i>
                             <span className="text">{product?.name}</span>
                         </div>
                     </div>
@@ -1044,6 +1050,92 @@ const Detail: React.FC = () => {
                         </div>
 
                         <hr />
+
+                        <div className="combo-promotion">
+    <div className="header">
+        <h5>Combo khuyến mãi</h5>
+    </div>
+    <div className="products">
+        {/* Lặp qua mảng combo để hiển thị thông tin từng combo */}
+        {combo.map((currentCombo) => (
+            <div key={currentCombo.id} className="product-item">
+                <div className="product-img">
+                    <img
+                        onClick={() => handleComboClick(currentCombo)} // Khi click vào hình ảnh, sẽ hiển thị modal cho combo này
+                        src={currentCombo.image || "http://webcoban.vn/image/flower.gif"} // Sử dụng giá trị hình ảnh combo hoặc mặc định
+                    />
+                    <p
+                        className="product-name"
+                        onClick={() => handleComboClick(currentCombo)}
+                    >
+                        {currentCombo.name}
+                    </p>
+                </div>
+                <div className="product-price">
+                    <span style={{ fontWeight: "bold", color: "#f00" }}>
+                        {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                        }).format(currentCombo.price)}
+                    </span>
+                </div>
+            </div>
+        ))}
+    </div>
+</div>
+
+{/* Modal để hiển thị chi tiết combo */}
+<Modal
+    title="Combo khuyến mãi"
+    open={isModalVisible}
+    onCancel={() => setIsModalVisible(false)}
+    footer={null}
+    centered
+    width={800}
+>
+    <div className="combo-popup">
+        {selectedCombo && (
+            <>
+                <div className="combo-image">
+                    <img
+                        src={selectedCombo.image}
+                        alt={selectedCombo.name}
+                        style={{ width: "100%", borderRadius: "5px" }}
+                    />
+                </div>
+
+                <div className="combo-details">
+                    <h5 className="combo-name">{selectedCombo.name}</h5>
+                    <h6 className="combo-price">
+                        {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                        }).format(selectedCombo.price)}
+                    </h6>
+
+                    {/* Lặp qua danh sách sản phẩm trong combo */}
+                    {selectedCombo.products.map((product) => (
+                        <div className="combo-product" key={product.id}>
+                            <h5 className="product-name">{product.name}</h5>
+                            
+                        </div>
+                    ))}
+
+                    {/* Nút Mua ngay */}
+                    <Button
+                        type="primary"
+                        onClick={handleBuyNow}
+                        style={{ marginTop: "20px" }}
+                    >
+                        Mua ngay
+                    </Button>
+                </div>
+            </>
+        )}
+    </div>
+</Modal>
+
+
                         <div
                             className="tf-product-description mt-4"
                             style={{
