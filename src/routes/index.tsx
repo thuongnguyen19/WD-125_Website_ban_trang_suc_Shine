@@ -27,6 +27,7 @@ import Service from "../layouts/Service";
 import Banner from "../layouts/banner";
 import Dv from "../layouts/Dv";
 import Service_details from "../layouts/Service_details";
+import ComboDetail from "../pages/(website)/Details/ComboDetail";
 
 
 const Router = () => {
@@ -64,6 +65,7 @@ const Router = () => {
                 <Route path="cart" element={<ListCart />} />
                 <Route path="favorite" element={<Favorite />} />
                 <Route path="detail/:id" element={<Detail />} />
+                <Route path="combo_detail/:id" element={<ComboDetail />} />
                 <Route path="od_detail" element={<Od_Detail />} />
                 <Route path="od_histori" element={<OdHistory />} />
                 <Route path="comment" element={<ListComments />} />

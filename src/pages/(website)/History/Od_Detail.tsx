@@ -56,6 +56,14 @@ const Od_Detail = () => {
         });
     };
 
+    const handleContinuePayment = (url: string) => {
+        if (url) {
+            window.location.href = url; // Điều hướng đến URL thanh toán
+        } else {
+            message.error("Không tìm thấy URL thanh toán.");
+        }
+    };
+
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         if (!token) {
@@ -261,6 +269,21 @@ const handleCancel = () => {
                                     <h6 className="mt-2 fw-5">
                                         Đơn hàng #{order.id}
                                     </h6>
+                                    {order.urlBackPayment!=null && (
+                                        <div
+                                            className="button"
+                                            style={{textAlign: 'right'}}
+                                        >
+                                            <a
+                                                className="view-btn"
+                                                
+                                                onClick={() => handleContinuePayment(order.urlBackPayment)}
+                                            >
+                                                Tiếp tục thanh toán
+                                            </a>
+                                            
+                                        </div>
+                                    )}
                                     {Number(
                                         order.status,
                                     ) === 1 && (
