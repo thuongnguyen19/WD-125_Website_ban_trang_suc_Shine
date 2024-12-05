@@ -61,13 +61,20 @@ interface Product {
     relatedCombos: Combo[]
 }
 
-export interface Combo {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  description: string;
-  products: RelatedProduct[];
+interface Combo {
+    id: number;
+    name: string;
+    image: string;
+    price: number;
+    description?: string;
+    products: ComboProduct[];
+}
+
+interface ComboProduct {
+    id: number;
+    name: string;
+    thumbnail?: string;
+    variants: Variant[];
 }
 
 interface Comment {
@@ -121,13 +128,16 @@ const Detail: React.FC = () => {
     const [combo, setCombo] = useState<Combo[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
 const [selectedCombo, setSelectedCombo] = useState<Combo | null>(null);
-
+  const [selectedVariants, setSelectedVariants] = useState<{
+      [productId: number]: { variantId: number; size: string; color: string };
+  }>({});
     
 
 const handleComboClick = (combo: Combo) => {
     setSelectedCombo(combo); // Cập nhật combo đã chọn vào state
     setIsModalVisible(true);  // Hiển thị modal
 };
+
 
 
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
@@ -210,6 +220,7 @@ const handleComboClick = (combo: Combo) => {
         
         fetchProductDetails();
     }, [id]);
+    
 
     // Hàm tăng/giảm số lượng sản phẩm
     const handleQuantityChange = (change: number) => {

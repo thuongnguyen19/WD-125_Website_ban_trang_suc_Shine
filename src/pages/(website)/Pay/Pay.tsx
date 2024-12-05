@@ -860,7 +860,7 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <label htmlFor="bank">
-                                                Chuyển khoản ngân hàng trực tiếp
+                                                Thanh toán VNP 
                                             </label>
                                         </div>
                                         <div className="fieldset-radio mb_20">

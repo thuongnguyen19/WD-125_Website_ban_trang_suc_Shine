@@ -210,14 +210,14 @@ const Layoutweb: React.FC = () => {
                                                     Sản phẩm
                                                 </Link>
                                             </li>
-                                            <li className="menu-item">
+                                            {/* <li className="menu-item">
                                                 <Link
                                                     to="/ser"
                                                     className="item-link"
                                                 >
                                                     Dịch vụ
                                                 </Link>
-                                            </li>
+                                            </li> */}
                                             <li className="menu-item">
                                                 <Link
                                                     to="/about-us"

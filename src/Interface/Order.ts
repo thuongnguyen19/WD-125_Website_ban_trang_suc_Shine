@@ -12,11 +12,12 @@ export interface Order {
     updated_at: string;
     payment_role: number;
     status_payment: number;
+    urlBackPayment: string;
     total_payment: number;
     order_detail: Array<{
         id: number;
         id_oder: number;
-        id_product: number;  
+        id_product: number;
         id_variant: number;
         selling_price: number;
         list_price: number;
@@ -25,8 +26,7 @@ export interface Order {
         quantity: number;
         is_comment: number;
         product_variant: Variant;
-
-  }>;
+    }>;
 }
 
 
