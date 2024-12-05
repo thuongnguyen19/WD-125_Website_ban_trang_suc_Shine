@@ -30,7 +30,7 @@ const ListProducts: React.FC = () => {
     const [search, setSearch] = useState("");
     const perPage = 12;
     const navigate = useNavigate();
-
+    
     const [error, setError] = useState<string | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]); // Danh sách sản phẩm yêu thích
 
@@ -38,7 +38,7 @@ const ListProducts: React.FC = () => {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const categoryId = params.get("category");
-        const selectedCategory = categoryId??'';
+        const selectedCategory = categoryId == 'all'? '':categoryId??'';
         setSelectedCategory(selectedCategory);
         const loadProducts = async () => {
             try {
@@ -115,6 +115,7 @@ const ListProducts: React.FC = () => {
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCategory(e.target.value);
+        navigate(`/products?category=${e.target.value}`)
         setPage(1);
     };
 
@@ -218,7 +219,7 @@ const ListProducts: React.FC = () => {
                                 value={selectedCategory}
                                 onChange={handleCategoryChange}
                             >
-                                <option value="">Tất cả danh mục</option>
+                                <option value="all">Tất cả danh mục</option>
                                 {categories.map((category) => (
                                     <option
                                         key={category.id}

@@ -108,32 +108,39 @@ const OrderHistory = () => {
                 </tbody>
             </table>
             {/* Phân trang */}
-                <div className="phantrang">
-                    <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
-                        <li className={page === 1 ? "disabled" : ""}>
-                            <a
-                                href="#"
-                                className="pagination-link"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    if (page > 1)
-                                        handlePageChange(page - 1);
-                                }}
-                            >
-                                <span>
-                                    <DoubleLeftOutlined />
-                                </span>
-                            </a>
+                 <div className="phantrang">
+                <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
+                    {/* Nút chuyển đến trang trước */}
+                    <li className={page === 1 ? "disabled" : ""}>
+                        <a
+                            href="#"
+                            className="pagination-link"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (page > 1) handlePageChange(page - 1);
+                            }}
+                        >
+                            <span>
+                                <DoubleLeftOutlined />
+                            </span>
+                        </a>
+                    </li>
+
+                    {/* Logic hiển thị các trang */}
+                    
+                    {page > 2 && (
+                        <li>
+                            <span className="pagination-ellipsis">...</span>
                         </li>
-                        {Array.from(
-                            { length: totalPages },
-                            (_, i) => i + 1,
-                        ).map((pageNumber) => (
+                    )}
+
+                    {/* Hiển thị trang hiện tại và các trang xung quanh */}
+                    {Array.from({ length: 3 }, (_, i) => page - 1 + i)
+                        .filter((pageNumber) => pageNumber > 0 && pageNumber <= totalPages)
+                        .map((pageNumber) => (
                             <li
                                 key={pageNumber}
-                                className={
-                                    page === pageNumber ? "active" : ""
-                                }
+                                className={page === pageNumber ? "active" : ""}
                             >
                                 <a
                                     href="#"
@@ -147,27 +154,25 @@ const OrderHistory = () => {
                                 </a>
                             </li>
                         ))}
-                        <li
-                            className={
-                                page === totalPages ? "disabled" : ""
-                            }
+
+                
+                    {/* Nút chuyển đến trang sau */}
+                    <li className={page === totalPages ? "disabled" : ""}>
+                        <a
+                            href="#"
+                            className="pagination-link"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (page < totalPages) handlePageChange(page + 1);
+                            }}
                         >
-                            <a
-                                href="#"
-                                className="pagination-link"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    if (page < totalPages)
-                                        handlePageChange(page + 1);
-                                }}
-                            >
-                                <span>
-                                    <DoubleRightOutlined />
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                            <span>
+                                <DoubleRightOutlined />
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
         
     );
