@@ -31,18 +31,7 @@ console.log(vnp_OrderInfo);
                        const token = localStorage.getItem("authToken");
                        console.log(token);
                        
-                    if (vnp_ResponseCode === "24") {
-                        setStatus(false);
-                        setMessageText(
-                            "Đặt hàng thất bại do bạn chưa hoàn tất thanh toán.",
-                        );
-                        setLoading(false);
-                        return;
-                    }
-                    
-                      if (
-                          vnp_OrderInfo == `Thanh toán dịch vụ:${vnp_TxnRef}`
-                      ) {
+                {
                         const service = await axios.get(
                          "http://localhost:8000/api/adsPayment",
                          {

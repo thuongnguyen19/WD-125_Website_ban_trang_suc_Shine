@@ -126,16 +126,16 @@ const Detail: React.FC = () => {
     const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
     const ratingValue = averageRating || 0;
     const [combo, setCombo] = useState<Combo[]>([]);
-<<<<<<< HEAD
-    const [isModalVisible, setIsModalVisible] = useState(false);
-const [selectedCombo, setSelectedCombo] = useState<Combo | null>(null);
-  const [selectedVariants, setSelectedVariants] = useState<{
-      [productId: number]: { variantId: number; size: string; color: string };
-  }>({});
-=======
+// <<<<<<< HEAD
+//     const [isModalVisible, setIsModalVisible] = useState(false);
+// const [selectedCombo, setSelectedCombo] = useState<Combo | null>(null);
+//   const [selectedVariants, setSelectedVariants] = useState<{
+//       [productId: number]: { variantId: number; size: string; color: string };
+//   }>({});
+// =======
     
 
->>>>>>> a97e83348852d71f7b70d364641872fb1a7a752d
+// x`
     
 
 
