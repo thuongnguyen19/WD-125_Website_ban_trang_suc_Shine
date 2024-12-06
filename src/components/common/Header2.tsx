@@ -5,6 +5,7 @@ import { Pagination } from "swiper/modules";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../configs/axios";
+import { DoubleRightOutlined } from "@ant-design/icons";
 
 // Định nghĩa các interface
 interface AdConfig {
@@ -22,9 +23,18 @@ interface ApiResponse {
         [key: string]: string | AdConfig;
     };
 }
+interface Combo {
+    id: number;
+    name: string;
+    price: string;
+    description: string;
+    quantity: number;
+    image: string;
+}
 
 const Header2 = () => {
     const [adConfig, setAdConfig] = useState<ApiResponse | null>(null);
+    const [combos, setCombos] = useState<Combo[]>([]);
 const navigate = useNavigate();
     useEffect(() => {
         const fetchAdConfig = async () => {
@@ -33,8 +43,6 @@ const navigate = useNavigate();
                     "/getConfig",
                 );
                 setAdConfig(response.data);
-                console.log(response.data);
-                
             } catch (error) {
                 console.error("Failed to fetch ad config:", error);
             }
@@ -45,30 +53,21 @@ const navigate = useNavigate();
    const handleNavigate = () => {
        navigate("/banner"); // Điều hướng đến trang "/banner"
    };
-    const collections = [
-        {
-            imgSrc: "images/collections/collection-27.jpg",
-            heading: "Modern Backpack",
-            subheading: "Start from $199",
-            link: "shop-collection-sub.html",
-        },
-        {
-            imgSrc: "images/collections/collection-28.jpg",
-            heading: "Season Collection",
-            subheading: "Start from $199",
-            link: "shop-collection-sub.html",
-        },
-        {
-            imgSrc: "images/collections/collection-26.jpg",
-            heading: "Stradivarius top trainers",
-            subheading: "Start from $199",
-            link: "shop-collection-sub.html",
-        },
-    ];
+  useEffect(() => {
+      const fetchCombos = async () => {
+          try {
+              const response = await axiosInstance.get<Combo[]>("/combo"); // Gọi API combo
+              setCombos(response.data);
+          } catch (error) {
+              console.error("Lỗi khi gọi API combo:", error);
+          }
+      };
 
+      fetchCombos();
+  }, []);
     const handleAdClick = async (id: number) => {
         try {
-            const response = await axiosInstance.get(
+            const response = await axios.get(
                 `/visits/${id}`,
             );
             console.log(response.data); // Log kết quả trả về từ API
@@ -117,7 +116,7 @@ const navigate = useNavigate();
 
             <div style={{ padding: 20 }}>
                 {adConfig ? (
-                    adConfig.data === "Vị trí này còn trống" ? (
+                    adConfig.data[1] === "Vị trí này còn trống" ? (
                         <div
                             style={{
                                 textAlign: "center",
@@ -139,7 +138,7 @@ const navigate = useNavigate();
                                 }}
                                 onClick={handleNavigate} // Gọi hàm điều hướng khi bấm nút
                             >
-                                đăng kí ngay tại đây 
+                                đăng kí ngay tại đây
                             </Button>
                         </div>
                     ) : (
@@ -147,17 +146,17 @@ const navigate = useNavigate();
                             hoverable
                             cover={
                                 <a
-                                    href={adConfig.data?.url}
+                                    href={adConfig.data[1]?.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() =>
-                                        handleAdClick(adConfig.data?.id_ads!)
+                                        handleAdClick(adConfig.data[1]?.id_ads!)
                                     }
                                 >
                                     <div style={{ position: "relative" }}>
                                         <img
                                             alt="Banner"
-                                            src={adConfig.data?.image}
+                                            src={adConfig.data[1]?.image}
                                             style={{
                                                 width: "1000px",
                                                 height: "300px",
@@ -178,7 +177,7 @@ const navigate = useNavigate();
                                             }}
                                             className="banner-title"
                                         >
-                                            {adConfig.data?.title}
+                                            {adConfig.data[1]?.title}
                                         </div>
 
                                         {/* Nút "Xem ngay tại đây" ở giữa */}
@@ -216,7 +215,7 @@ const navigate = useNavigate();
                                             }}
                                             className="banner-highlight"
                                         >
-                                            {adConfig.data?.highlight}
+                                            {adConfig.data[1]?.highlight}
                                         </div>
                                     </div>
                                 </a>
@@ -246,43 +245,63 @@ const navigate = useNavigate();
                 <h2>COMBO</h2>
                 <div className="container-full">
                     <Swiper
-                        modules={[Pagination]} // Sử dụng Pagination module
-                        spaceBetween={30} // Khoảng cách giữa các slide
-                        slidesPerView={3} // Hiển thị 3 sản phẩm trên màn hình lớn
-                        pagination={{ clickable: true }} // Cho phép bấm vào phân trang
+                        modules={[Pagination]}
+                        spaceBetween={30}
+                        slidesPerView={3}
+                        pagination={{ clickable: true }}
                         breakpoints={{
-                            1024: { slidesPerView: 3 }, // Trên màn hình lớn, hiển thị 3 sản phẩm
-                            768: { slidesPerView: 3 }, // Trên màn hình tablet, hiển thị 3 sản phẩm
-                            576: { slidesPerView: 1.3 }, // Trên màn hình nhỏ, hiển thị 1.3 sản phẩm
+                            1024: { slidesPerView: 3 },
+                            768: { slidesPerView: 3 },
+                            576: { slidesPerView: 1.3 },
+                        }}
+                        grabCursor={true} // Hiển thị con trỏ dạng "grab" để người dùng biết có thể kéo
+                        loop={true} // Vòng lặp các slide
+                        autoplay={{
+                            delay: 3000, // Tự động cuộn sau 3 giây
+                            disableOnInteraction: false, // Tiếp tục autoplay ngay cả khi người dùng tương tác
                         }}
                     >
-                        {collections.map((item, index) => (
-                            <SwiperSlide key={index}>
+                        {combos.map((combo) => (
+                            <SwiperSlide key={combo.id}>
                                 <div className="collection-item-v2 hover-img">
                                     <a
-                                        href={item.link}
+                                        href={`/combo_detail/${combo.id}`} // Điều hướng đến chi tiết combo
                                         className="collection-inner"
                                     >
                                         <div className="collection-image img-style">
                                             <img
+                                                style={{
+                                                    height: 550,
+                                                    width: 425,
+                                                }}
                                                 className="lazyload"
-                                                src={item.imgSrc}
-                                                alt="collection-img"
+                                                src={
+                                                    combo.image ||
+                                                    "https://via.placeholder.com/300"
+                                                } // Hiển thị ảnh mặc định nếu không có ảnh
+                                                alt={combo.name}
                                             />
                                         </div>
                                         <div className="collection-content">
                                             <div className="top">
                                                 <h5 className="heading">
-                                                    {item.heading}
+                                                    {combo.name}
                                                 </h5>
                                                 <p className="subheading">
-                                                    {item.subheading}
+                                                    Giá chỉ còn :{" "}
+                                                    {Number(
+                                                        combo.price,
+                                                    ).toLocaleString(
+                                                        "vi-VN",
+                                                    )}{" "}
+                                                    VND
                                                 </p>
+                                                {/* <p>{combo.description}</p> */}
                                             </div>
                                             <div className="bottom">
                                                 <button className="tf-btn btn-line collection-other-link fw-6">
-                                                    <span>Shop now</span>
-                                                    <i className="icon icon-arrow1-top-left"></i>
+                                                    <span>Mua ngay </span>
+                                                    <DoubleRightOutlined />
                                                 </button>
                                             </div>
                                         </div>

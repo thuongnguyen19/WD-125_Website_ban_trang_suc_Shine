@@ -28,6 +28,7 @@ import Banner from "../layouts/banner";
 import Dv from "../layouts/Dv";
 import Service_details from "../layouts/Service_details";
 import ComboDetail from "../pages/(website)/Details/ComboDetail";
+import Paycombo from "../pages/(website)/Pay/Paycombo";
 
 
 const Router = () => {
@@ -54,10 +55,14 @@ const Router = () => {
                     <Route path="personal" element={<Personal />} />{" "}
                     <Route path="view" element={<View />} />{" "}
                     <Route path="dv" element={<Dv />} />{" "}
-                    <Route path="dv/detail_service/:id" element={<Service_details />} />
                     <Route
-                        path="od_histori/od_detail/:id"element={<Od_Detail />}/>
-                        
+                        path="dv/detail_service/:id"
+                        element={<Service_details />}
+                    />
+                    <Route
+                        path="od_histori/od_detail/:id"
+                        element={<Od_Detail />}
+                    />
                     <Route path="comment" element={<ListComments />} />
                 </Route>
 
@@ -76,7 +81,7 @@ const Router = () => {
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
                 <Route path="forgotpassword" element={<ForgotPassword />} />
-
+                <Route path="payCombo" element={<Paycombo />}></Route>
                 <Route path="ser" element={<Service />}></Route>
 
                 <Route path="banner" element={<Banner />} />

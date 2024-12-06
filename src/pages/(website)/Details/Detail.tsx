@@ -61,13 +61,20 @@ interface Product {
     relatedCombos: Combo[]
 }
 
-export interface Combo {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  description: string;
-  products: RelatedProduct[];
+interface Combo {
+    id: number;
+    name: string;
+    image: string;
+    price: number;
+    description?: string;
+    products: ComboProduct[];
+}
+
+interface ComboProduct {
+    id: number;
+    name: string;
+    thumbnail?: string;
+    variants: Variant[];
 }
 
 interface Comment {
@@ -119,14 +126,23 @@ const Detail: React.FC = () => {
     const thumbSwiperRef = useRef<any>(null); // Ref cho slider nhỏ
     const ratingValue = averageRating || 0;
     const [combo, setCombo] = useState<Combo[]>([]);
+// <<<<<<< HEAD
+//     const [isModalVisible, setIsModalVisible] = useState(false);
+// const [selectedCombo, setSelectedCombo] = useState<Combo | null>(null);
+//   const [selectedVariants, setSelectedVariants] = useState<{
+//       [productId: number]: { variantId: number; size: string; color: string };
+//   }>({});
+// =======
     
 
+// x`
     
 
 
 const handleComboClick = (id: number) => {
         navigate(`/combo_detail/${id}`);
     };
+
 
     // Fetch sản phẩm và sản phẩm liên quan khi id thay đổi
     useEffect(() => {
@@ -198,6 +214,7 @@ const handleComboClick = (id: number) => {
         
         fetchProductDetails();
     }, [id]);
+    
 
     // Hàm tăng/giảm số lượng sản phẩm
     const handleQuantityChange = (change: number) => {
