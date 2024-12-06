@@ -13627,7 +13627,7 @@ blockquote .text {
   flex-wrap: wrap;
   align-items: self-end;
   justify-content: safe center;
-  gap: 10px;
+  gap: 5px;
   line-height: 1;
 }
 .tf-cart-item .cart-total {
@@ -18616,4 +18616,111 @@ blockquote .text {
   border-color: #f2a93b;
   border-radius: 5px;
   font-weight: bold;
+}
+
+.total-price {
+  text-align: right;
+  margin-bottom: 10px;
+  /* Tạo khoảng cách giữa các dòng */
+  font-size: 18px;
+  /* Tăng kích thước chữ tiêu đề */
+  font-weight: 400;
+  /* Làm nổi bật chữ */
+}
+
+.total-price span {
+  color: red;
+  font-size: 18px;
+  /* Tăng kích thước chữ giá trị */
+  font-weight: bold;
+}
+
+/* Tùy chỉnh chiều rộng và giao diện của Offcanvas */
+.offcanvas {
+  max-width: 300px;
+  /* Chiều rộng */
+  background-color: #f9f9f9;
+  /* Màu nền */
+  border-right: 1px solid #e0e0e0;
+  /* Đường viền */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Đổ bóng */
+}
+
+
+
+.offcanvas-header h5 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.offcanvas-header .btn-close {
+  color: white;
+  /* Nút close màu trắng */
+  background: transparent;
+  font-size: 16px;
+  opacity: 1;
+}
+
+/* Giao diện cho danh sách menu */
+.offcanvas-body .list-group {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.offcanvas-body .list-group-item {
+  border: none;
+  padding: 12px 15px;
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.offcanvas-body .list-group-item:hover {
+  background-color: #fbd764;
+  color: white;
+  border-radius: 5px;
+}
+
+/* Submenu (danh mục con) */
+.offcanvas-body .list-group-item ul {
+  list-style: none;
+  padding-left: 15px;
+  margin-top: 10px;
+}
+
+.offcanvas-body .list-group-item ul li {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.offcanvas-body .list-group-item ul li:hover a {
+  text-decoration: underline;
+}
+
+.offcanvas-body .list-group-item ul li a {
+  text-decoration: none;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+/* Căn chỉnh văn bản */
+.offcanvas-body .list-group-item a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Responsive chỉnh chiều cao */
+.offcanvas-body {
+  max-height: calc(100vh - 56px);
+  /* Điều chỉnh chiều cao body */
+  overflow-y: auto;
+  /* Cuộn nếu quá dài */
 }

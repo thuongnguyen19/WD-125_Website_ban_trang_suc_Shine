@@ -538,7 +538,7 @@ const ListCart: React.FC = () => {
                                                             </button>
                                                             <span
                                                                 style={{
-                                                                    margin: "0 10px",
+                                                                    margin: "0 5px",
                                                                 }}
                                                             >
                                                                 {item.quantity}
