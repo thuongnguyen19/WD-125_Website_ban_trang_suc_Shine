@@ -15,6 +15,7 @@ export interface Order {
     status_payment: number;
     urlBackPayment: string;
     total_payment: number;
+    discount_value: number;
     order_detail: Array<{
         id: number;
         id_oder: number;
@@ -52,6 +53,7 @@ export interface Review {
 
 export interface Comment {
     id: string;
+    product_id: number;
     product_name: string;
     image_variant: string;
     color: string;

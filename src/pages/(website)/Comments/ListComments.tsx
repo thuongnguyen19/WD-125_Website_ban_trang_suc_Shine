@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Comment, fetchComment } from '../../../Interface/Order';
 import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const ListComments = () => {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -26,6 +28,10 @@ const ListComments = () => {
         loadComments();
     }, []);
 
+    const handleProductClick = (id: number) => {
+        navigate(`/detail/${id}`);
+    };
+
     if (loading) {
         return <p>Đang tải...</p>;
     }
@@ -40,14 +46,27 @@ const ListComments = () => {
         {Array.isArray(comments) && comments.length > 0 ? (
           comments.map(comment => (
             <div className='list-comment'>
-            <div key={comment.id} className="product-infor">
+            <div key={comment.id} className="product-infor"
+            onClick={() =>
+                handleProductClick(
+                    comment.product_id
+                )
+            }
+            >
               <img
                   className="product-image"
                   src={comment.image_variant}
                   alt={comment.product_name}
               />
               <div className="product-details">
-                  <div className="product-name">{comment.product_name}</div>
+                  <div className="product-name"
+                  onClick={() =>
+                      handleProductClick(
+                          comment.product_id
+                      )
+                  }
+                  >
+                    {comment.product_name}</div>
                   <div className="stars">
                     {Array.from({ length: 5 }, (_, i) => (
                                                 <span key={i} className={`star ${i < comment.rating ? "filled" : ""}`}>

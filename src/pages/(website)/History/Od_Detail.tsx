@@ -240,6 +240,10 @@ const handleCancel = () => {
     navigate(`/profile/comment`);
     };
 
+    const handleProductsClick = (id: number) => {
+        navigate(`/detail/${id}`);
+    };
+
     if (loading) {
         return <p>Đang tải trang...</p>;
     }
@@ -409,6 +413,11 @@ const handleCancel = () => {
                                                         >
                                                             <figure
                                                                 className="img-product"
+                                                                onClick={() =>
+                                                                    handleProductsClick(
+                                                                        item.id_product
+                                                                    )
+                                                                }
                                                                 style={{
                                                                     marginRight:
                                                                         "15px",
@@ -431,7 +440,13 @@ const handleCancel = () => {
                                                                 />
                                                             </figure>
                                                             <div className="content" >
-                                                                <div className="text-3 fw-6">
+                                                                <div className="text-3 fw-6"
+                                                                onClick={() =>
+                                                                    handleProductsClick(
+                                                                        item.id_product
+                                                                    )
+                                                                }
+                                                                >
                                                                     {
                                                                         item.product_name
                                                                     }
@@ -551,31 +566,26 @@ const handleCancel = () => {
                                                     </div>
                                                 </div>
                                             ))}
-                                            <div
-                                                className="total-price"
-                                                style={{ textAlign: "right" }}
-                                            >
-                                                Tổng tiền:
-                                                <span
-                                                    style={{
-                                                        color: "red",
-                                                        fontSize: "15px",
-                                                        fontWeight: "bold",
-                                                    }}
-                                                >
-                                                    {new Intl.NumberFormat(
-                                                        "vi-VN",
-                                                        {
-                                                            style: "currency",
-                                                            currency: "VND",
-                                                        },
-                                                    ).format(
-                                                        calculateTotalPrice(
-                                                            order,
-                                                        ),
-                                                    )}
+
+                                            <div className="total-price">
+                                                Số tiền giảm:
+                                                <span>
+                                                    {new Intl.NumberFormat("vi-VN", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    }).format(order.discount_value)}
                                                 </span>
                                             </div>
+                                            <div className="total-price">
+                                                Tổng tiền:
+                                                <span>
+                                                    {new Intl.NumberFormat("vi-VN", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    }).format(calculateTotalPrice(order))}
+                                                </span>
+                                            </div>
+
                                         </div>
 
                                          <ul className="widget-menu-tab">

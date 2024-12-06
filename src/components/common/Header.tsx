@@ -63,24 +63,21 @@ const Header: React.FC = () => {
             setLoading(false);
         };
 
-        // Hàm tính tổng số lượng sản phẩm trong giỏ hàng
+        // Hàm tính số sản phẩm trong giỏ hàng
         const fetchCartCount = () => {
             const cartData = localStorage.getItem("cartItems");
             const favoriteData = localStorage.getItem("favorite");
+
             if (favoriteData) {
                 const favoriteItems = JSON.parse(favoriteData);
                 setFavorite(favoriteItems.length);
             }
+
             if (cartData) {
                 const cartItems = JSON.parse(cartData);
-
-                const totalQuantity = cartItems.reduce(
-                    (total: number, item: { quantity: number }) =>
-                        total + Number(item.quantity),
-                    0,
-                );
-
-                setCartCount(totalQuantity);
+                setCartCount(cartItems.length); // Đếm số sản phẩm thay vì tổng số lượng
+            } else {
+                setCartCount(0); // Nếu không có sản phẩm nào thì đặt về 0
             }
         };
 
@@ -100,6 +97,7 @@ const Header: React.FC = () => {
     }, []);
 
 
+
     // Điều hướng đến trang cá nhân
     const goToProfile = () => {
         navigate("/profile");
@@ -111,13 +109,61 @@ const Header: React.FC = () => {
                 <div className="row wrapper-header align-items-center">
                     <div className="col-md-4 col-3 tf-lg-hidden">
                         <a
-                            href="#mobileMenu"
-                            data-bs-toggle="offcanvas"
-                            aria-controls="offcanvasLeft"
-                        >
-                            <MenuOutlined style={{ fontSize: "24px" }} />
-                        </a>
+    href="#mobileMenu"
+    data-bs-toggle="offcanvas"
+    aria-controls="mobileMenu"
+>
+    <MenuOutlined style={{ fontSize: "24px" }} />
+</a>
                     </div>
+                    <div
+    className="offcanvas offcanvas-start"
+    tabIndex={-1}
+    id="mobileMenu"
+    aria-labelledby="offcanvasLabel"
+>
+    <div className="offcanvas-header">
+        
+        <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+        ></button>
+    </div>
+    <div className="offcanvas-body">
+        <ul className="list-group">
+            <li className="list-group-item">
+                <Link to="/">Trang chủ</Link>
+            </li>
+            <li className="list-group-item">
+                <div>Danh mục</div>
+                <ul>
+                    {categories.map((category) => (
+                        <li key={category.id}>
+                            <a href={`/products?category=${category.id}`}>
+                                {category.name}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </li>
+            <li className="list-group-item">
+                <Link to="/products">Sản phẩm</Link>
+            </li>
+            <li className="list-group-item">
+                <Link to="/ser">Dịch vụ</Link>
+            </li>
+            <li className="list-group-item">
+                <Link to="/about-us">Về chúng tôi</Link>
+            </li>
+            <li className="list-group-item">
+                <Link to="/contact">Liên hệ</Link>
+            </li>
+        </ul>
+    </div>
+</div>
+
 
                     <div className="col-xl-3 col-md-4 col-6">
                         <Link to="/" className="logo-header">
