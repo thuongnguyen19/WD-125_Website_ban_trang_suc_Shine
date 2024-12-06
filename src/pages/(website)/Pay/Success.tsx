@@ -30,36 +30,7 @@ console.log(vnp_OrderInfo);
                 try {
                        const token = localStorage.getItem("authToken");
                        console.log(token);
-                       
-                {
-                        const service = await axios.get(
-                         "http://localhost:8000/api/adsPayment",
-                         {
-                             params: {
-                                 vnp_TxnRef,
-                                 vnp_ResponseCode,
-                             },
-                             headers: {
-                                 Authorization: `Bearer ${token}`,
-                             },
-                         },
-                     );
-                       if (service.data.status) {
-                        setStatus(true);
-                        setMessageText(
-                            service.data.message || "Dịch vụ thành công!",
-                        );
-
-                    
-                      
-                    } else {
-                        setStatus(false);
-                        setMessageText(
-                            service.data.message || "dịch vụ đặt thất bại.",
-                        );
-                    }
-                    return;
-                } 
+               
             
         
 
