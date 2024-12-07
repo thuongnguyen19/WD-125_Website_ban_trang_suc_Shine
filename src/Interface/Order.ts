@@ -9,7 +9,6 @@ export interface Order {
     recipient_address: string;
     created_at: string;
     status: string;
-    urlBackPayment: string;
     updated_at: string;
     payment_role: number;
     status_payment: number;
@@ -115,15 +114,19 @@ export const submitReview = async (
 };
 
 export const fetchComment = async (
-       
-): Promise<{data: Comment[]}> => {
+       page: number,
+        perPage: number
+): Promise<{data: Comment[]; total_pages: number}> => {
     const token = localStorage.getItem("authToken");
     if (!token) {
         throw new Error("No token found");
     }
 
-    const response = await axiosInstance.get<{data: Comment[]}>("/listCommentUser", {
-       
+    const response = await axiosInstance.get<{data: Comment[]; total_pages: number}>("/listCommentUser", {
+        params: {
+            page: page,           // Trang hiện tại
+            per_page: perPage     // Số sản phẩm trên mỗi trang
+            },
     headers: {
         Authorization: `Bearer ${token}`,
     },
