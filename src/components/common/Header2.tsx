@@ -111,7 +111,7 @@ const Header2 = () => {
 
             <div style={{ padding: 20 }}>
                 {adConfig ? (
-                    adConfig.data[1] === "Vị trí này còn trống" ? (
+                    adConfig.data === "Vị trí này còn trống" ? (
                         <div
                             style={{
                                 textAlign: "center",
@@ -137,63 +137,146 @@ const Header2 = () => {
                             </Button>
                         </div>
                     ) : (
-                        <div
-                            style={{
-                                position: "relative",
-                                maxWidth: "1000px",
-                                margin: "0 auto",
-                            }}
-                        >
-                            <a
-                                href={adConfig.data?.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <img
-                                    alt="Banner"
-                                    src={adConfig.data?.image}
-                                    style={{
-                                        width: "1000px", // Giữ nguyên kích thước ảnh
-                                        height: "300px", // Giữ nguyên kích thước ảnh
-                                        objectFit: "cover", // Đảm bảo ảnh không bị méo
-                                    }}
-                                    className="banner-image"
-                                />
-                                {/* Tiêu đề */}
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        bottom: "60px", // Đặt vị trí của tiêu đề
-                                        left: "20px",
-                                        color: "white",
-                                        fontSize: "24px",
-                                        fontWeight: "bold",
-                                        zIndex: 1, // Đảm bảo tiêu đề nằm trên ảnh
-                                    }}
-                                >
-                                    {adConfig.data?.title}
-                                </div>
+// <<<<<<< HEAD
+//                         <div
+//                             style={{
+//                                 position: "relative",
+//                                 maxWidth: "1000px",
+//                                 margin: "0 auto",
+//                             }}
+//                         >
+//                             <a
+//                                 href={adConfig.data?.url}
+//                                 target="_blank"
+//                                 rel="noopener noreferrer"
+//                             >
+//                                 <img
+//                                     alt="Banner"
+//                                     src={adConfig.data?.image}
+//                                     style={{
+//                                         width: "1000px", // Giữ nguyên kích thước ảnh
+//                                         height: "300px", // Giữ nguyên kích thước ảnh
+//                                         objectFit: "cover", // Đảm bảo ảnh không bị méo
+//                                     }}
+//                                     className="banner-image"
+//                                 />
+//                                 {/* Tiêu đề */}
+//                                 <div
+//                                     style={{
+//                                         position: "absolute",
+//                                         bottom: "60px", // Đặt vị trí của tiêu đề
+//                                         left: "20px",
+//                                         color: "white",
+//                                         fontSize: "24px",
+//                                         fontWeight: "bold",
+//                                         zIndex: 1, // Đảm bảo tiêu đề nằm trên ảnh
+//                                     }}
+//                                 >
+//                                     {adConfig.data?.title}
+//                                 </div>
 
-                                {/* Mô tả hoặc phần highlight */}
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        bottom: "20px", // Đặt vị trí cho phần mô tả
-                                        left: "20px",
-                                        color: "white",
-                                        fontSize: "18px",
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        width: "100%",
-                                        animation:
-                                            "scroll-text 10s linear infinite",
-                                        zIndex: 1, // Đảm bảo văn bản nằm trên ảnh
-                                    }}
+//                                 {/* Mô tả hoặc phần highlight */}
+//                                 <div
+//                                     style={{
+//                                         position: "absolute",
+//                                         bottom: "20px", // Đặt vị trí cho phần mô tả
+//                                         left: "20px",
+//                                         color: "white",
+//                                         fontSize: "18px",
+//                                         whiteSpace: "nowrap",
+//                                         overflow: "hidden",
+//                                         width: "100%",
+//                                         animation:
+//                                             "scroll-text 10s linear infinite",
+//                                         zIndex: 1, // Đảm bảo văn bản nằm trên ảnh
+//                                     }}
+//                                 >
+//                                     {adConfig.data?.highlight}
+//                                 </div>
+//                             </a>
+//                         </div>
+// =======
+                        <Card
+                            hoverable
+                            cover={
+                                <a
+                                    href={adConfig.data?.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() =>
+                                        handleAdClick(adConfig.data?.id_ads!)
+                                    }
                                 >
-                                    {adConfig.data?.highlight}
-                                </div>
-                            </a>
-                        </div>
+                                    <div style={{ position: "relative" }}>
+                                        <img
+                                            alt="Banner"
+                                            src={adConfig.data?.image}
+                                            style={{
+                                                width: "1000px",
+                                                height: "300px",
+                                            }}
+                                            className="banner-image"
+                                        />
+                                        {/* Tiêu đề trên nút */}
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                bottom: "40px",
+                                                left: "20px",
+                                                color: "white",
+                                                fontSize: "24px",
+                                                fontWeight: "bold",
+                                                paddingBottom: "140px",
+                                                paddingLeft: "190px",
+                                            }}
+                                            className="banner-title"
+                                        >
+                                            {adConfig.data?.title}
+                                        </div>
+
+                                        {/* Nút "Xem ngay tại đây" ở giữa */}
+                                        <Button
+                                            type="primary"
+                                            style={{
+                                                position: "absolute",
+                                                bottom: "100px",
+                                                left: "50%",
+                                                transform: "translateX(-50%)",
+                                                backgroundColor: "#ff5722",
+                                                borderColor: "#ff5722",
+                                                padding: "10px 10px",
+                                                width: "120px",
+                                            }}
+                                            className="banner-button"
+                                        >
+                                            Xem ngay tại đây
+                                        </Button>
+
+                                        {/* Dòng chữ highlight chạy ở góc dưới */}
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                bottom: "5px",
+                                                left: "20px",
+                                                color: "white",
+                                                fontSize: "18px",
+                                                fontWeight: "normal",
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                                width: "100%",
+                                                animation:
+                                                    "scroll-text 10s linear infinite",
+                                            }}
+                                            className="banner-highlight"
+                                        >
+                                            {adConfig.data?.highlight}
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                            style={{ maxWidth: 1000, margin: "0 auto" }}
+                        />
+>>>>>>> 4f4b3798c554a2a6eaff3982629d5f690d1236cf
                     )
                 ) : (
                     <div

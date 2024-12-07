@@ -11,8 +11,9 @@ import {
 import { Category, fetchCategorys } from "../../Interface/Category";
 import { number } from "joi";
 import axios from "axios";
-import { Avatar, message } from "antd";
+import { Avatar, Button, Input, message, Modal, Spin } from "antd";
 import axiosInstance from "../../configs/axios";
+import { fetchSearchs, Search } from "../../Interface/Product";
 
 const Header: React.FC = () => {
      const navigate = useNavigate();
@@ -25,6 +26,41 @@ const Header: React.FC = () => {
     const [user, setUser] = useState<{ name: string; image: string } | null>(
         null,
     ); // Lưu thông tin người dùng
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Search[]>([]);
+  const handleOpenModal = () => setIsModalVisible(true);
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setQuery(""); // Reset query
+    setResults([]); // Reset kết quả
+  };
+
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value.length < 3) {
+      setResults([]);
+      return;
+    }
+
+    try {
+      const data = await fetchSearchs(value); // Gọi API tìm kiếm
+      setResults(data); // Lưu kết quả tìm kiếm
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm sản phẩm:", error);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && query.trim()) {
+      // Chuyển sang trang sản phẩm đã lọc theo từ khóa
+      navigate(`/products?query=${encodeURIComponent(query)}`);
+      handleCloseModal(); // Đóng modal sau khi chuyển trang
+    }
+  };
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -63,24 +99,21 @@ const Header: React.FC = () => {
             setLoading(false);
         };
 
-        // Hàm tính tổng số lượng sản phẩm trong giỏ hàng
+        // Hàm tính số sản phẩm trong giỏ hàng
         const fetchCartCount = () => {
             const cartData = localStorage.getItem("cartItems");
             const favoriteData = localStorage.getItem("favorite");
+
             if (favoriteData) {
                 const favoriteItems = JSON.parse(favoriteData);
                 setFavorite(favoriteItems.length);
             }
+
             if (cartData) {
                 const cartItems = JSON.parse(cartData);
-
-                const totalQuantity = cartItems.reduce(
-                    (total: number, item: { quantity: number }) =>
-                        total + Number(item.quantity),
-                    0,
-                );
-
-                setCartCount(totalQuantity);
+                setCartCount(cartItems.length); // Đếm số sản phẩm thay vì tổng số lượng
+            } else {
+                setCartCount(0); // Nếu không có sản phẩm nào thì đặt về 0
             }
         };
 
@@ -99,6 +132,9 @@ const Header: React.FC = () => {
         };
     }, []);
 
+    const handleProductClick = (id: number) => {
+        navigate(`/detail/${id}`);
+    };
 
     // Điều hướng đến trang cá nhân
     const goToProfile = () => {
@@ -113,11 +149,59 @@ const Header: React.FC = () => {
                         <a
                             href="#mobileMenu"
                             data-bs-toggle="offcanvas"
-                            aria-controls="offcanvasLeft"
+                            aria-controls="mobileMenu"
                         >
                             <MenuOutlined style={{ fontSize: "24px" }} />
                         </a>
                     </div>
+                    <div
+                        className="offcanvas offcanvas-start"
+                        tabIndex={-1}
+                        id="mobileMenu"
+                        aria-labelledby="offcanvasLabel"
+                    >
+                        <div className="offcanvas-header">
+                            
+                            <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="offcanvas"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div className="offcanvas-body">
+                            <ul className="list-group">
+                                <li className="list-group-item">
+                                    <Link to="/">Trang chủ</Link>
+                                </li>
+                                <li className="list-group-item">
+                                    <div>Danh mục</div>
+                                    <ul>
+                                        {categories.map((category) => (
+                                            <li key={category.id}>
+                                                <a href={`/products?category=${category.id}`}>
+                                                    {category.name}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li>
+                                <li className="list-group-item">
+                                    <Link to="/products">Sản phẩm</Link>
+                                </li>
+                                <li className="list-group-item">
+                                    <Link to="/ser">Dịch vụ</Link>
+                                </li>
+                                <li className="list-group-item">
+                                    <Link to="/about-us">Về chúng tôi</Link>
+                                </li>
+                                <li className="list-group-item">
+                                    <Link to="/contact">Liên hệ</Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
 
                     <div className="col-xl-3 col-md-4 col-6">
                         <Link to="/" className="logo-header">
@@ -188,9 +272,58 @@ const Header: React.FC = () => {
                                 >
                                     <SearchOutlined
                                         style={{ fontSize: "24px" }}
+                                        onClick={handleOpenModal}
                                     />
                                 </a>
                             </li>
+                            <Modal
+                            open={isModalVisible}
+                            onCancel={handleCloseModal}
+                            footer={null}
+                            centered
+                            width={500}
+                            >
+                            {/* Input tìm kiếm */}
+                            <div className="modal-header">
+                                <Input
+                                placeholder="Nhập tên sản phẩm..."
+                                value={query}
+                                onChange={handleSearch}
+                                onKeyPress={handleKeyPress} 
+                                prefix={<SearchOutlined />}
+                                />
+                            </div>
+
+                            {/* Kết quả tìm kiếm */}
+                            <div className="search-results">
+                                {loading ? (
+                                <Spin tip="Đang tìm kiếm..." />
+                                ) : results.length > 0 ? (
+                                <ul>
+                                    {results.map((product) => (
+                                    <li key={product.id} className="result-item" onClick={() =>
+                                                handleProductClick(
+                                                    product.id
+                                                )
+                                            }>
+                                        <img
+                                        src={product.thumbnail}
+                                        alt={product.name}
+                                        className="result-thumbnail"
+                                        />
+                                        <div className="result-details">
+                                        <span className="result-name">{product.name}</span>
+                                        
+                                        </div>
+                                    </li>
+                                    ))}
+                                </ul>
+                                ) : query.length >= 3 ? (
+                                <p style={{ textAlign: "center" }}>Không tìm thấy sản phẩm</p>
+                                ) : null}
+                            </div>
+                            </Modal>
+
                             <li className="nav-cart">
                                 <Link to="/favorite" className="nav-icon-item">
                                     <HeartOutlined
