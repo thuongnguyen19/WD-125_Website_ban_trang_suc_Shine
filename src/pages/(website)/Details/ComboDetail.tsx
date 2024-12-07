@@ -112,6 +112,16 @@ const ComboDetail: React.FC = () => {
         }
     };
 
+    const getUniqueColors = (variants: Variant[]) => {
+    return variants.reduce((unique: Variant[], variant: Variant) => {
+        if (!unique.some((v) => v.colors.name === variant.colors.name)) {
+            unique.push(variant);
+        }
+        return unique;
+    }, []);
+};
+
+
     const validateSelections = () => {
         return combo?.products.every((product) => {
             const color = selectedColor[product.id.toString()];
@@ -307,54 +317,34 @@ const ComboDetail: React.FC = () => {
                                             </div>
 
                                             <div className="tf-variant-colors d-flex">
-                                                {product.variants.map(
-                                                    (variant: Variant) => (
-                                                        <input
-                                                            key={variant.id}
-                                                            type="radio"
-                                                            name={`color-${product.id}`}
-                                                            checked={
-                                                                selectedColor[
-                                                                    product.id.toString()
-                                                                ] ===
-                                                                variant.colors
-                                                                    .name
-                                                            }
-                                                            onChange={() =>
-                                                                handleColorChange(
-                                                                    variant
-                                                                        .colors
-                                                                        .name,
-                                                                    product,
-                                                                )
-                                                            }
-                                                            style={{
-                                                                appearance:
-                                                                    "none",
-                                                                width: "30px",
-                                                                height: "30px",
-                                                                borderRadius:
-                                                                    "50%",
-                                                                backgroundColor:
-                                                                    variant
-                                                                        .colors
-                                                                        .code,
-                                                                border:
-                                                                    selectedColor[
-                                                                        product.id.toString()
-                                                                    ] ===
-                                                                    variant
-                                                                        .colors
-                                                                        .name
-                                                                        ? "2px solid #000"
-                                                                        : "1px solid #ccc",
-                                                                margin: "0 10px",
-                                                                cursor: "pointer",
-                                                            }}
-                                                        />
-                                                    ),
-                                                )}
-                                            </div>
+    {getUniqueColors(product.variants).map((variant: Variant) => (
+        <input
+            key={variant.id}
+            type="radio"
+            name={`color-${product.id}`}
+            checked={
+                selectedColor[product.id.toString()] === variant.colors.name
+            }
+            onChange={() =>
+                handleColorChange(variant.colors.name, product)
+            }
+            style={{
+                appearance: "none",
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                backgroundColor: variant.colors.code,
+                border:
+                    selectedColor[product.id.toString()] === variant.colors.name
+                        ? "2px solid #000"
+                        : "1px solid #ccc",
+                margin: "0 10px",
+                cursor: "pointer",
+            }}
+        />
+    ))}
+</div>
+
 
                                             <div className="tf-size-selection mt-3">
                                                 <h6>Kích thước:</h6>

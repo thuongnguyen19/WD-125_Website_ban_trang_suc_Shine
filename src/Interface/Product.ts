@@ -11,6 +11,12 @@ export interface Product {
   }>;
 }
 
+export interface Search {
+  id: number;
+  name: string;
+  thumbnail: string;
+}
+
 
 // Hàm lấy sản phẩm với lọc, sắp xếp và phân trang
 export const fetchProducts = async (
@@ -51,4 +57,11 @@ export const fetchViews = async (
     });
 
     return response.data;
+};
+
+export const fetchSearchs = async (query: string): Promise<Search[]> => {
+  const response = await axiosInstance.get<Search[]>("/search-product", {
+    params: { query },
+  });
+  return response.data;
 };

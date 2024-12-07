@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     AlignCenterOutlined,
     DoubleLeftOutlined,
@@ -26,13 +26,33 @@ const ListProducts: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<string | number>(
         "",
     );
-
     const [search, setSearch] = useState("");
     const perPage = 12;
     const navigate = useNavigate();
-    
+    const [searchParams] = useSearchParams();
+    const keyword = searchParams.get("keyword") || ""; // Lấy từ khóa từ URL
     const [error, setError] = useState<string | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]); // Danh sách sản phẩm yêu thích
+
+    useEffect(() => {
+    const fetchFilteredProducts = async () => {
+      if (keyword.trim()) {
+        setLoading(true);
+        try {
+          const response = await axiosInstance.get<Product[]>(
+            `/search-product?query=${encodeURIComponent(keyword)}`
+          );
+          setProducts(response.data);
+        } catch (error) {
+          console.error("Lỗi khi lấy sản phẩm:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchFilteredProducts();
+  }, [keyword]);
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
@@ -278,7 +298,10 @@ const ListProducts: React.FC = () => {
                             className="grid-layout wrapper-shop"
                             data-grid="grid-4"
                         >
-                            {Array.isArray(products) && products.length > 0 ? (
+      
+                            {loading ? (
+                                <p>Đang tải...</p>
+                            ) :Array.isArray(products) && products.length > 0 ? (
                                 products.map((product) => (
                                     <div
                                         key={product.id}
@@ -413,6 +436,7 @@ const ListProducts: React.FC = () => {
                                 <div>Không có sản phẩm nào.</div>
                             )}
                         </div>
+                        
                     </div>
 
                     {/* Phân trang */}

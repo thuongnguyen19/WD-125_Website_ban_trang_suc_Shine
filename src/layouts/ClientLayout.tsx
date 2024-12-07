@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import Header2 from "../components/common/Header2";
 import Footer from "../components/common/Footer";
-import { Avatar, message } from "antd";
+import { Avatar, Input, message, Modal, Spin } from "antd";
 import {
     CaretDownOutlined,
     HeartOutlined,
@@ -15,6 +15,7 @@ import {
 import Home from "../pages/(website)/home/page";
 import { Category, fetchCategorys } from "../Interface/Category";
 import axiosInstance from "../configs/axios";
+import { fetchSearchs, Search } from "../Interface/Product";
 
 const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
@@ -30,6 +31,35 @@ const Layoutweb: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const [cartCount, setCartCount] = useState<number>(0);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Search[]>([]);
+  const handleOpenModal = () => setIsModalVisible(true);
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setQuery(""); // Reset query
+    setResults([]); // Reset kết quả
+  };
+
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value.length < 3) {
+      setResults([]);
+      return;
+    }
+
+    
+    try {
+      const data = await fetchSearchs(value); // Gọi API tìm kiếm
+      setResults(data); // Lưu kết quả tìm kiếm
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm sản phẩm:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem("authToken");
@@ -109,6 +139,9 @@ const Layoutweb: React.FC = () => {
         return <p>Đang tải...</p>;
     }
 
+    const handleProductClick = (id: number) => {
+        navigate(`/detail/${id}`);
+    };
     const goToProfile = () => {
         navigate("/profile");
     };
@@ -133,59 +166,59 @@ const Layoutweb: React.FC = () => {
                             <div className="row wrapper-header align-items-center">
                                 <div className="col-md-4 col-3 tf-lg-hidden">
                                     <a
-    href="#mobileMenu"
-    data-bs-toggle="offcanvas"
-    aria-controls="mobileMenu"
->
-    <MenuOutlined style={{ fontSize: "24px" }} />
-</a>
+                                        href="#mobileMenu"
+                                        data-bs-toggle="offcanvas"
+                                        aria-controls="mobileMenu"
+                                    >
+                                        <MenuOutlined style={{ fontSize: "24px" }} />
+                                    </a>
                                 </div>
                                 <div
-    className="offcanvas offcanvas-start"
-    tabIndex={-1}
-    id="mobileMenu"
-    aria-labelledby="offcanvasLabel"
->
-    <div className="offcanvas-header">
-        <button
-            type="button"
-            className="btn-close"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-        ></button>
-    </div>
-    <div className="offcanvas-body">
-        <ul className="list-group">
-            <li className="list-group-item">
-                <Link to="/">Trang chủ</Link>
-            </li>
-            <li className="list-group-item">
-                <div>Danh mục</div>
-                <ul>
-                    {categories.map((category) => (
-                        <li key={category.id}>
-                            <a href={`/products?category=${category.id}`}>
-                                {category.name}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </li>
-            <li className="list-group-item">
-                <Link to="/products">Sản phẩm</Link>
-            </li>
-            <li className="list-group-item">
-                <Link to="/ser">Dịch vụ</Link>
-            </li>
-            <li className="list-group-item">
-                <Link to="/about-us">Về chúng tôi</Link>
-            </li>
-            <li className="list-group-item">
-                <Link to="/contact">Liên hệ</Link>
-            </li>
-        </ul>
-    </div>
-</div>
+                                    className="offcanvas offcanvas-start"
+                                    tabIndex={-1}
+                                    id="mobileMenu"
+                                    aria-labelledby="offcanvasLabel"
+                                >
+                                    <div className="offcanvas-header">
+                                        <button
+                                            type="button"
+                                            className="btn-close"
+                                            data-bs-dismiss="offcanvas"
+                                            aria-label="Close"
+                                        ></button>
+                                    </div>
+                                    <div className="offcanvas-body">
+                                        <ul className="list-group">
+                                            <li className="list-group-item">
+                                                <Link to="/">Trang chủ</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <div>Danh mục</div>
+                                                <ul>
+                                                    {categories.map((category) => (
+                                                        <li key={category.id}>
+                                                            <a href={`/products?category=${category.id}`}>
+                                                                {category.name}
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/products">Sản phẩm</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/ser">Dịch vụ</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/about-us">Về chúng tôi</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/contact">Liên hệ</Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
 
 
                                 <div className="col-xl-3 col-md-4 col-6">
@@ -291,9 +324,63 @@ const Layoutweb: React.FC = () => {
                                             >
                                                 <SearchOutlined
                                                     style={{ fontSize: "24px" }}
+                                                    onClick={handleOpenModal}
                                                 />
                                             </a>
                                         </li>
+                                        <Modal
+                                open={isModalVisible}
+                                onCancel={handleCloseModal}
+                                footer={null}
+                                centered
+                                width={500}
+                            >
+                                {/* Input tìm kiếm */}
+                                <div className="modal-header">
+                                <Input
+                                    placeholder="Nhập tên sản phẩm..."
+                                    value={query}
+                                    onChange={handleSearch}
+                                    
+                                />
+                                </div>
+
+                                {/* Kết quả tìm kiếm */}
+                                <div className="search-results">
+                                {loading ? (
+                                    <Spin tip="Đang tìm kiếm..." />
+                                ) : results.length > 0 ? (
+                                    <ul>
+                                    {results.map((product) => (
+                                        <li key={product.id} className="result-item">
+                                        <img
+                                            onClick={() =>
+                                                handleProductClick(
+                                                    product.id
+                                                )
+                                            }
+                                            src={product.thumbnail}
+                                            alt={product.name}
+                                            className="result-thumbnail"
+                                        />
+                                        <div
+                                            className="result-details"
+                                            onClick={() =>
+                                                handleProductClick(
+                                                    product.id
+                                                )
+                                            }
+                                        >
+                                            <span className="result-name">{product.name}</span>
+                                        </div>
+                                        </li>
+                                    ))}
+                                    </ul>
+                                ) : query.length >= 3 ? (
+                                    <p style={{ textAlign: "center" }}>Không tìm thấy sản phẩm</p>
+                                ) : null}
+                                </div>
+                            </Modal>
                                         <li className="nav-cart">
                                             <Link
                                                 to="/favorite"

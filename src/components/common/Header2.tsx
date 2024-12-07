@@ -116,7 +116,7 @@ const navigate = useNavigate();
 
             <div style={{ padding: 20 }}>
                 {adConfig ? (
-                    adConfig.data[1] === "Vị trí này còn trống" ? (
+                    adConfig.data === "Vị trí này còn trống" ? (
                         <div
                             style={{
                                 textAlign: "center",
@@ -146,17 +146,17 @@ const navigate = useNavigate();
                             hoverable
                             cover={
                                 <a
-                                    href={adConfig.data[1]?.url}
+                                    href={adConfig.data?.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() =>
-                                        handleAdClick(adConfig.data[1]?.id_ads!)
+                                        handleAdClick(adConfig.data?.id_ads!)
                                     }
                                 >
                                     <div style={{ position: "relative" }}>
                                         <img
                                             alt="Banner"
-                                            src={adConfig.data[1]?.image}
+                                            src={adConfig.data?.image}
                                             style={{
                                                 width: "1000px",
                                                 height: "300px",
@@ -177,7 +177,7 @@ const navigate = useNavigate();
                                             }}
                                             className="banner-title"
                                         >
-                                            {adConfig.data[1]?.title}
+                                            {adConfig.data?.title}
                                         </div>
 
                                         {/* Nút "Xem ngay tại đây" ở giữa */}
@@ -215,7 +215,7 @@ const navigate = useNavigate();
                                             }}
                                             className="banner-highlight"
                                         >
-                                            {adConfig.data[1]?.highlight}
+                                            {adConfig.data?.highlight}
                                         </div>
                                     </div>
                                 </a>

@@ -567,24 +567,36 @@ const handleCancel = () => {
                                                 </div>
                                             ))}
 
-                                            <div className="total-price">
-                                                Số tiền giảm:
-                                                <span>
-                                                    {new Intl.NumberFormat("vi-VN", {
-                                                        style: "currency",
-                                                        currency: "VND",
-                                                    }).format(order.discount_value)}
-                                                </span>
+                                            <div className="price-summary">
+                                                <div className="row">
+                                                    <div className="label">Tổng tiền:</div>
+                                                    <div className="value">
+                                                        {new Intl.NumberFormat("vi-VN", {
+                                                            style: "currency",
+                                                            currency: "VND",
+                                                        }).format(calculateTotalPrice(order))}
+                                                    </div>
+                                                </div>
+                                                <div className="row">
+                                                    <div className="label">Điểm tiêu dùng:</div>
+                                                    <div className="value">
+                                                        -{new Intl.NumberFormat("vi-VN", {
+                                                            style: "currency",
+                                                            currency: "VND",
+                                                        }).format(order.discount_value)}
+                                                    </div>
+                                                </div>
+                                                <div className="row">
+                                                    <div className="label">Thành tiền:</div>
+                                                    <div className="value">
+                                                        {new Intl.NumberFormat("vi-VN", {
+                                                            style: "currency",
+                                                            currency: "VND",
+                                                        }).format(order.total_payment)}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="total-price">
-                                                Tổng tiền:
-                                                <span>
-                                                    {new Intl.NumberFormat("vi-VN", {
-                                                        style: "currency",
-                                                        currency: "VND",
-                                                    }).format(calculateTotalPrice(order))}
-                                                </span>
-                                            </div>
+
 
                                         </div>
 
