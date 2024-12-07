@@ -569,8 +569,7 @@ const Pay: React.FC = () => {
                                                                         }}
                                                                     />
                                                                 </td>
-                                                             
-                                                                
+
                                                                 <td
                                                                     style={{
                                                                         padding:
@@ -734,13 +733,13 @@ const Pay: React.FC = () => {
                                         <div style={{ marginTop: "20px" }}>
                                             <input
                                                 type="number"
-                                                placeholder="Nhập điểm tích lũy 1 điểm = 1000 VNĐ"
+                                                placeholder="Nhập điểm tích lũy 1 điểm = 50.000 VNĐ"
                                                 style={{
                                                     marginRight: "10px",
                                                     padding: "8px",
                                                 }}
                                                 value={
-                                                    pointsToUse == 0                                
+                                                    pointsToUse == 0
                                                         ? null
                                                         : pointsToUse
                                                 }
@@ -752,11 +751,12 @@ const Pay: React.FC = () => {
                                             />
                                             <p>điểm tiêu dùng : {Point}</p>
                                             <Button
+                                                className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center"
                                                 onClick={handlePointsApply}
                                                 style={{
                                                     marginTop: "10px",
                                                     padding: "8px",
-                                                    backgroundColor: "#996699",
+                                                    backgroundColor: "black",
                                                     borderRadius: "5px",
                                                 }}
                                             >
@@ -767,7 +767,7 @@ const Pay: React.FC = () => {
                                         <div className="d-flex justify-content-between line pb_20">
                                             <h6
                                                 className="fw-5"
-                                                style={{ marginBottom: "20px" }}
+                                                style={{ marginBottom: "20px" , paddingTop:"10px"}}
                                             >
                                                 Tổng tiền gốc:
                                             </h6>
@@ -816,7 +816,7 @@ const Pay: React.FC = () => {
                                                             -{" "}
                                                             {(
                                                                 pointsToUse *
-                                                                1000
+                                                                50000
                                                             ).toLocaleString(
                                                                 "vi-VN",
                                                             )}{" "}
@@ -860,7 +860,7 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <label htmlFor="bank">
-                                                Thanh toán VNP 
+                                                Thanh toán VNP
                                             </label>
                                         </div>
                                         <div className="fieldset-radio mb_20">

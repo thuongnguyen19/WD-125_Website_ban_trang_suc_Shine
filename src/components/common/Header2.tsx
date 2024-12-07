@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Carousel } from "antd"; // Import Carousel từ Ant Design
 import { Swiper, SwiperSlide } from "swiper/react"; // Import Swiper và SwiperSlide
-import { Pagination } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../configs/axios";
-import { DoubleRightOutlined } from "@ant-design/icons";
+import {
+    DoubleRightOutlined,
+    LeftOutlined,
+    RightOutlined,
+} from "@ant-design/icons";
 
 // Định nghĩa các interface
 interface AdConfig {
@@ -35,13 +39,13 @@ interface Combo {
 const Header2 = () => {
     const [adConfig, setAdConfig] = useState<ApiResponse | null>(null);
     const [combos, setCombos] = useState<Combo[]>([]);
-const navigate = useNavigate();
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchAdConfig = async () => {
             try {
-                const response = await axiosInstance.get<ApiResponse>(
-                    "/getConfig",
-                );
+                const response =
+                    await axiosInstance.get<ApiResponse>("/getConfig");
                 setAdConfig(response.data);
             } catch (error) {
                 console.error("Failed to fetch ad config:", error);
@@ -50,30 +54,22 @@ const navigate = useNavigate();
 
         fetchAdConfig();
     }, []);
-   const handleNavigate = () => {
-       navigate("/banner"); // Điều hướng đến trang "/banner"
-   };
-  useEffect(() => {
-      const fetchCombos = async () => {
-          try {
-              const response = await axiosInstance.get<Combo[]>("/combo"); // Gọi API combo
-              setCombos(response.data);
-          } catch (error) {
-              console.error("Lỗi khi gọi API combo:", error);
-          }
-      };
 
-      fetchCombos();
-  }, []);
-    const handleAdClick = async (id: number) => {
-        try {
-            const response = await axios.get(
-                `/visits/${id}`,
-            );
-            console.log(response.data); // Log kết quả trả về từ API
-        } catch (error) {
-            console.error("Failed to register ad click:", error);
-        }
+    useEffect(() => {
+        const fetchCombos = async () => {
+            try {
+                const response = await axiosInstance.get<Combo[]>("/combo"); // Gọi API combo
+                setCombos(response.data);
+            } catch (error) {
+                console.error("Lỗi khi gọi API combo:", error);
+            }
+        };
+
+        fetchCombos();
+    }, []);
+
+    const handleAdClick = (id: number) => {
+        navigate(`/combo_detail/${id}`); // Điều hướng đến trang combo_detail với id của combo
     };
 
     return (
@@ -102,7 +98,6 @@ const navigate = useNavigate();
                             className="carousel-image"
                         />
                     </div>
-
                     <div className="wrap-slider">
                         <img
                             src="https://huythanhjewelry.vn/storage/photos/uploads/banner-cnc-03_1726623182.jpg"
@@ -136,92 +131,69 @@ const navigate = useNavigate();
                                     backgroundColor: "#007bff",
                                     borderColor: "#007bff",
                                 }}
-                                onClick={handleNavigate} // Gọi hàm điều hướng khi bấm nút
+                                onClick={() => navigate("/banner")}
                             >
-                                đăng kí ngay tại đây
+                                Đăng ký ngay tại đây
                             </Button>
                         </div>
                     ) : (
-                        <Card
-                            hoverable
-                            cover={
-                                <a
-                                    href={adConfig.data[1]?.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={() =>
-                                        handleAdClick(adConfig.data[1]?.id_ads!)
-                                    }
+                        <div
+                            style={{
+                                position: "relative",
+                                maxWidth: "1000px",
+                                margin: "0 auto",
+                            }}
+                        >
+                            <a
+                                href={adConfig.data?.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img
+                                    alt="Banner"
+                                    src={adConfig.data?.image}
+                                    style={{
+                                        width: "1000px", // Giữ nguyên kích thước ảnh
+                                        height: "300px", // Giữ nguyên kích thước ảnh
+                                        objectFit: "cover", // Đảm bảo ảnh không bị méo
+                                    }}
+                                    className="banner-image"
+                                />
+                                {/* Tiêu đề */}
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "60px", // Đặt vị trí của tiêu đề
+                                        left: "20px",
+                                        color: "white",
+                                        fontSize: "24px",
+                                        fontWeight: "bold",
+                                        zIndex: 1, // Đảm bảo tiêu đề nằm trên ảnh
+                                    }}
                                 >
-                                    <div style={{ position: "relative" }}>
-                                        <img
-                                            alt="Banner"
-                                            src={adConfig.data[1]?.image}
-                                            style={{
-                                                width: "1000px",
-                                                height: "300px",
-                                            }}
-                                            className="banner-image"
-                                        />
-                                        {/* Tiêu đề trên nút */}
-                                        <div
-                                            style={{
-                                                position: "absolute",
-                                                bottom: "40px",
-                                                left: "20px",
-                                                color: "white",
-                                                fontSize: "24px",
-                                                fontWeight: "bold",
-                                                paddingBottom: "140px",
-                                                paddingLeft: "190px",
-                                            }}
-                                            className="banner-title"
-                                        >
-                                            {adConfig.data[1]?.title}
-                                        </div>
+                                    {adConfig.data?.title}
+                                </div>
 
-                                        {/* Nút "Xem ngay tại đây" ở giữa */}
-                                        <Button
-                                            type="primary"
-                                            style={{
-                                                position: "absolute",
-                                                bottom: "100px",
-                                                left: "50%",
-                                                transform: "translateX(-50%)",
-                                                backgroundColor: "#ff5722",
-                                                borderColor: "#ff5722",
-                                                padding: "10px 10px",
-                                                width: "120px",
-                                            }}
-                                            className="banner-button"
-                                        >
-                                            Xem ngay tại đây
-                                        </Button>
-
-                                        {/* Dòng chữ highlight chạy ở góc dưới */}
-                                        <div
-                                            style={{
-                                                position: "absolute",
-                                                bottom: "5px",
-                                                left: "20px",
-                                                color: "white",
-                                                fontSize: "18px",
-                                                fontWeight: "normal",
-                                                whiteSpace: "nowrap",
-                                                overflow: "hidden",
-                                                width: "100%",
-                                                animation:
-                                                    "scroll-text 10s linear infinite",
-                                            }}
-                                            className="banner-highlight"
-                                        >
-                                            {adConfig.data[1]?.highlight}
-                                        </div>
-                                    </div>
-                                </a>
-                            }
-                            style={{ maxWidth: 1000, margin: "0 auto" }}
-                        />
+                                {/* Mô tả hoặc phần highlight */}
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "20px", // Đặt vị trí cho phần mô tả
+                                        left: "20px",
+                                        color: "white",
+                                        fontSize: "18px",
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        width: "100%",
+                                        animation:
+                                            "scroll-text 10s linear infinite",
+                                        zIndex: 1, // Đảm bảo văn bản nằm trên ảnh
+                                    }}
+                                >
+                                    {adConfig.data?.highlight}
+                                </div>
+                            </a>
+                        </div>
                     )
                 ) : (
                     <div
@@ -241,75 +213,122 @@ const navigate = useNavigate();
             </div>
 
             {/* Swiper */}
-            <div className="flat-spacing-13">
-                <h2>COMBO</h2>
-                <div className="container-full">
-                    <Swiper
-                        modules={[Pagination]}
-                        spaceBetween={30}
-                        slidesPerView={3}
-                        pagination={{ clickable: true }}
-                        breakpoints={{
-                            1024: { slidesPerView: 3 },
-                            768: { slidesPerView: 3 },
-                            576: { slidesPerView: 1.3 },
-                        }}
-                        grabCursor={true} // Hiển thị con trỏ dạng "grab" để người dùng biết có thể kéo
-                        loop={true} // Vòng lặp các slide
-                        autoplay={{
-                            delay: 3000, // Tự động cuộn sau 3 giây
-                            disableOnInteraction: false, // Tiếp tục autoplay ngay cả khi người dùng tương tác
-                        }}
+            <div className="flat-tab-store flat-animate-tab overflow-unset">
+                <ul
+                    className="widget-tab-3 d-flex justify-content-center flex-wrap wow fadeInUp"
+                    data-wow-delay="0s"
+                    role="tablist"
+                >
+                    <li className="nav-tab-item" role="presentation">
+                        <a
+                            href="#essentials"
+                            className="active"
+                            data-bs-toggle="tab"
+                        >
+                            COMBO KHUYẾN MÃI
+                        </a>
+                    </li>
+                </ul>
+                <div className="tab-content">
+                    <div
+                        className="tab-pane active show"
+                        id="essentials"
+                        role="tabpanel"
                     >
-                        {combos.map((combo) => (
-                            <SwiperSlide key={combo.id}>
-                                <div className="collection-item-v2 hover-img">
-                                    <a
-                                        href={`/combo_detail/${combo.id}`} // Điều hướng đến chi tiết combo
-                                        className="collection-inner"
+                        <div className="wrap-carousel">
+                            <div
+                                className="swiper tf-sw-product-sell-1"
+                                data-preview="4"
+                                data-tablet="3"
+                                data-mobile="2"
+                                data-space-lg="30"
+                                data-space-md="15"
+                                data-pagination="2"
+                                data-pagination-md="3"
+                                data-pagination-lg="3"
+                            >
+                                <div className="swiper-wrapper">
+                                    {/* Nút điều hướng slider */}
+                                    <div
+                                        className="swiper-button-prev"
+                                        style={{ color: "black" }}
                                     >
-                                        <div className="collection-image img-style">
-                                            <img
-                                                style={{
-                                                    height: 550,
-                                                    width: 425,
-                                                }}
-                                                className="lazyload"
-                                                src={
-                                                    combo.image ||
-                                                    "https://via.placeholder.com/300"
-                                                } // Hiển thị ảnh mặc định nếu không có ảnh
-                                                alt={combo.name}
-                                            />
-                                        </div>
-                                        <div className="collection-content">
-                                            <div className="top">
-                                                <h5 className="heading">
-                                                    {combo.name}
-                                                </h5>
-                                                <p className="subheading">
-                                                    Giá chỉ còn :{" "}
-                                                    {Number(
-                                                        combo.price,
-                                                    ).toLocaleString(
-                                                        "vi-VN",
-                                                    )}{" "}
-                                                    VND
-                                                </p>
-                                                {/* <p>{combo.description}</p> */}
-                                            </div>
-                                            <div className="bottom">
-                                                <button className="tf-btn btn-line collection-other-link fw-6">
-                                                    <span>Mua ngay </span>
-                                                    <DoubleRightOutlined />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </a>
+                                        <LeftOutlined />
+                                    </div>
+                                    <div
+                                        className="swiper-button-next"
+                                        style={{ color: "black" }}
+                                    >
+                                        <RightOutlined />
+                                    </div>
+
+                                    {/* Swiper chính */}
+                                    <Swiper
+                                        modules={[Navigation]} // Sử dụng module Navigation cho Swiper
+                                        spaceBetween={20}
+                                        slidesPerView={4} // Hiển thị 4 sản phẩm mỗi lần
+                                        navigation={{
+                                            nextEl: ".swiper-button-next",
+                                            prevEl: ".swiper-button-prev",
+                                        }}
+                                        loop={true} // Cho phép slider chạy vòng lặp
+                                        className="swiper-container"
+                                    >
+                                        {combos.map((combo) => (
+                                            <SwiperSlide key={combo.id}>
+                                                <div className="card-product">
+                                                    <div className="card-product-wrapper">
+                                                        <div
+                                                            onClick={() =>
+                                                                handleAdClick(
+                                                                    combo.id,
+                                                                )
+                                                            }
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            className="product-img"
+                                                        >
+                                                            <img
+                                                                className="lazyload img-product"
+                                                                src={
+                                                                    combo.image ||
+                                                                    "https://via.placeholder.com/300"
+                                                                }
+                                                                alt={combo.name}
+                                                                style={{
+                                                                    width: "700px",
+                                                                    height: "300px",
+                                                                    objectFit:
+                                                                        "cover",
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="card-body">
+                                                        <div className="product-name">
+                                                            <p
+                                                                onClick={() =>
+                                                                    handleAdClick(
+                                                                        combo.id,
+                                                                    )
+                                                                }
+                                                                style={{
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                {combo.name}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </SwiperSlide>
+                                        ))}
+                                    </Swiper>
                                 </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

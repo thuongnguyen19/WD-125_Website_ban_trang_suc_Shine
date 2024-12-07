@@ -1,402 +1,549 @@
 import React, { useEffect, useState } from "react";
-import { Spin, message, Button } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { message, Spin, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import axiosInstance from "../../../configs/axios";
 
-// Định nghĩa kiểu cho các sản phẩm
+// Định nghĩa kiểu cho biến thể sản phẩm
 interface ProductVariant {
     id: number;
-    image_color: string; // Ảnh biến thể sản phẩm
-    colors: { id: number; name: string };
-    sizes: { id: number; name: string };
+    image_color: string; // Hình ảnh màu
+    colors: { id: number; name: string }; // Thông tin màu sắc
+    sizes: { id: number; name: string }; // Thông tin kích thước
 }
 
+// Định nghĩa kiểu cho sản phẩm
 interface Product {
     id: number;
     name: string;
-    selectedVariant: ProductVariant;
-    quantity: number;
+    thumbnail: string; // Ảnh sản phẩm
+    selectedVariant: ProductVariant | null; // Biến thể đã chọn
+    quantity: number; // Số lượng sản phẩm
 }
 
+// Định nghĩa kiểu cho combo
 interface Combo {
     id: number;
     name: string;
-    image: string;
-    price: number;
-    products: Product[];
+    image: string; // Ảnh combo
+    price: number; // Giá combo
+    description: string; // Mô tả combo
+    products: Product[]; // Danh sách sản phẩm trong combo
 }
 
+// Component PayCombo
 const PayCombo: React.FC = () => {
     const navigate = useNavigate();
-    const location = useLocation();
 
-    // State để chứa thông tin sản phẩm
     const [paymentProducts, setPaymentProducts] = useState<Product[]>([]);
     const [combo, setCombo] = useState<Combo | null>(null);
     const [totalAmount, setTotalAmount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-
-    // Thông tin người dùng
+    const [paymentRole, setPaymentRole] = useState<number | null>(null);
+    const [voucherId, setVoucherId] = useState<number | null>(1);
+    const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [address, setAddress] = useState<string>("");
-useEffect(() => {
-    const token = localStorage.getItem("authToken");
 
-    if (!token) {
-        message.error("Bạn chưa đăng nhập.");
-        navigate("/login");
-        return;
-    }
+    // Lấy dữ liệu đơn hàng khi component mounted
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            message.error("Bạn chưa đăng nhập.");
+            navigate("/login");
+            return;
+        }
 
-    const orderDataString = localStorage.getItem("orderData");
+        const orderDataString = localStorage.getItem("orderData");
+        if (!orderDataString) {
+            message.error("Không có sản phẩm nào để thanh toán.");
+            navigate("/");
+            return;
+        }
 
-    if (!orderDataString) {
-        message.error("Không có sản phẩm nào để thanh toán.");
-        navigate("/");
-        return;
-    }
+        const orderData = JSON.parse(orderDataString);
+        const { comboId, quantity, variantIds } = orderData;
 
-    const orderData = JSON.parse(orderDataString);
-    const { comboId, quantity, variantIds } = orderData;
+        const fetchInformationOrder = async () => {
+            try {
+                const response = await axiosInstance.get(
+                    "http://127.0.0.1:8000/api/listInformationOrderCombo", // Thay đổi URL nếu cần thiết
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                        params: { comboId, quantity, variantIds },
+                    },
+                );
 
-    const fetchInformationOrder = async () => {
+                if (response.data.status) {
+                    const { productpayment, user } = response.data.data;
+
+                    // Tự động điền thông tin người dùng
+                    if (user) {
+                        setName(user.name || "");
+                        setEmail(user.email || "");
+                        setPhoneNumber(user.phone_number || "");
+                        setAddress(user.address || "");
+                    }
+
+                    setCombo(productpayment);
+                    setPaymentProducts(productpayment.products || []);
+                    setTotalAmount(productpayment.price || 0);
+                } else {
+                    message.error(response.data.message);
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy thông tin sản phẩm:", error);
+                message.error("Có lỗi xảy ra khi lấy thông tin sản phẩm.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchInformationOrder();
+    }, [navigate]);
+
+    const validateForm = () => {
+        const phoneRegex = /^(0|\+84)[35789]\d{8}$/;
+        const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+
+        if (!name.trim()) {
+            message.error("Họ và tên không được để trống");
+            return false;
+        }
+
+        if (!emailRegex.test(email)) {
+            message.error("Email không hợp lệ");
+            return false;
+        }
+
+        if (!phoneRegex.test(phoneNumber)) {
+            message.error(
+                "Số điện thoại phải là số hợp lệ của Việt Nam (10 số)",
+            );
+            return false;
+        }
+
+        if (!address.trim()) {
+            message.error("Địa chỉ không được để trống");
+            return false;
+        }
+
+        if (paymentRole === null) {
+            message.error("Vui lòng chọn phương thức thanh toán.");
+            return false;
+        }
+
+        return true;
+    };
+
+    const handlePayment = async () => {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            message.error("Bạn chưa đăng nhập.");
+            navigate("/login");
+            return;
+        }
+
+        if (!validateForm()) {
+            setIsOrderLoading(false);
+            return;
+        }
+
+        const orderDataString = localStorage.getItem("orderData");
+        const orderData = JSON.parse(orderDataString || "{}");
+        const { comboId, quantity, variantIds } = orderData;
+
+        const paymentData = {
+            comboId,
+            quantity,
+            voucherId,
+            variantIds,
+            recipient_name: name,
+            email,
+            phone_number: phoneNumber,
+            recipient_address: address,
+            note:
+                (document.getElementById("note") as HTMLTextAreaElement)
+                    ?.value || "", // Lấy ghi chú từ textarea
+            total_payment: totalAmount,
+            payment_role: paymentRole,
+        };
+
+        setIsOrderLoading(true);
+
         try {
-            const response = await axiosInstance.get(
-                "/listInformationOrderCombo",
+            const response = await axiosInstance.post(
+                "/paymentCombo",
+                paymentData,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { comboId, quantity, variantIds },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 },
             );
 
             if (response.data.status) {
-                const { productpayment, user } = response.data.data;
-
-                // Tự động điền thông tin người dùng vào form
-                if (user) {
-                    setName(user.name || "");
-                    setEmail(user.email || "");
-                    setPhoneNumber(user.phone_number || "");
-                    setAddress(user.address || "");
+                message.success("Đặt hàng thành công!");
+                if (paymentRole === 1) {
+                    navigate("/success");
+                } else if (paymentRole === 2 && response.data.data) {
+                    window.location.href = response.data.data;
                 }
-
-                // Cập nhật thông tin combo và sản phẩm
-                setCombo(productpayment);
-                setPaymentProducts(productpayment.products || []);
-                setTotalAmount(productpayment.price || 0);
             } else {
                 message.error(response.data.message);
             }
         } catch (error) {
-            message.error("Có lỗi xảy ra khi lấy thông tin sản phẩm.");
+            console.error("Lỗi trong quá trình đặt hàng:", error);
+            message.error("Đã xảy ra lỗi trong quá trình đặt hàng.");
         } finally {
-            setLoading(false);
+            setIsOrderLoading(false);
         }
     };
 
-    fetchInformationOrder();
-}, [navigate]);
-const saveProductToLocalStorage = (product: any) => {
-    // Lấy sản phẩm đã lưu trước đó, nếu có
-    const existingProducts = JSON.parse(
-        localStorage.getItem("products") || "[]",
-    );
-
-    // Thêm sản phẩm mới vào danh sách
-    existingProducts.push(product);
-
-    // Lưu lại vào localStorage
-    localStorage.setItem("products", JSON.stringify(existingProducts));
-};
-
-
     if (loading) return <Spin size="large" />;
 
-  return (
-      <>
-          <Header />
-          <div style={{ position: "relative" }}>
-              {combo && (
-                  <div className="combo-info">
-                      <h2>{combo.name}</h2>
-                      <img
-                          src={combo.image}
-                          alt={combo.name}
-                          style={{
-                              width: "300px",
-                              height: "auto",
-                              borderRadius: "5px",
-                              marginBottom: "10px",
-                          }}
-                      />
-                      <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                          Giá combo: {totalAmount.toLocaleString("vi-VN")} VND
-                      </p>
-                  </div>
-              )}
-              <div className="tf-page-title">
-                  <div className="container-full">
-                      <div className="heading text-center">
-                          Thông tin thanh toán
-                      </div>
-                  </div>
-              </div>
-              <section className="flat-spacing-11">
-                  <div className="container">
-                      <div className="tf-page-cart-wrap layout-2">
-                          <div className="tf-page-cart-item">
-                              <h5 className="fw-5 mb_20">Chi tiết đơn hàng</h5>
-                              <form className="form-checkout">
-                                  <fieldset className="box fieldset">
-                                      <label htmlFor="first-name">
-                                          Họ Và Tên
-                                      </label>
-                                      <input
-                                          type="text"
-                                          id="first-name"
-                                          placeholder="Nguyễn Văn A"
-                                          value={name}
-                                          onChange={(e) =>
-                                              setName(e.target.value)
-                                          }
-                                      />
-                                  </fieldset>
-                                  <fieldset className="box fieldset">
-                                      <label htmlFor="email">Email</label>
-                                      <input
-                                          type="email"
-                                          id="email"
-                                          value={email}
-                                          onChange={(e) =>
-                                              setEmail(e.target.value)
-                                          }
-                                      />
-                                  </fieldset>
-                                  <fieldset className="box fieldset">
-                                      <label htmlFor="phonenumber">
-                                          Số điện thoại
-                                      </label>
-                                      <input
-                                          type="text"
-                                          id="phonenumber"
-                                          value={phoneNumber}
-                                          onChange={(e) =>
-                                              setPhoneNumber(e.target.value)
-                                          }
-                                      />
-                                  </fieldset>
-                                  <fieldset className="box fieldset">
-                                      <label htmlFor="address">Địa chỉ</label>
-                                      <input
-                                          type="text"
-                                          id="address"
-                                          value={address}
-                                          onChange={(e) =>
-                                              setAddress(e.target.value)
-                                          }
-                                      />
-                                  </fieldset>
-                              </form>
-                          </div>
+    return (
+        <>
+            <Header />
+            <div style={{ padding: "20px" }}>
+                {combo && (
+                    <div
+                        className="combo-info"
+                        style={{ marginBottom: "20px" }}
+                    >
+                        <h2>{combo.name}</h2>
+                        <img
+                            src={combo.image}
+                            alt={combo.name}
+                            style={{
+                                width: "100%",
+                                maxHeight: "300px",
+                                objectFit: "cover",
+                                borderRadius: "5px",
+                            }}
+                        />
+                        <p>{combo.description}</p>
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Tổng tiền: {totalAmount.toLocaleString("vi-VN")} VNĐ
+                        </p>
+                    </div>
+                )}
 
-                          <div className="tf-page-cart-footer">
-                              <div className="tf-cart-footer-inner">
-                                  <h5 className="fw-5 mb_20">
-                                      Sản phẩm trong combo
-                                  </h5>
-                                  <div className="pay-page">
-                                      <table
-                                          style={{
-                                              width: "100%",
-                                              borderCollapse: "collapse",
-                                          }}
-                                      >
-                                          <thead>
-                                              <tr>
-                                                  <th
-                                                      style={{
-                                                          padding: "10px",
-                                                          textAlign: "left",
-                                                          width: "20%",
-                                                      }}
-                                                  >
-                                                      Hình ảnh
-                                                  </th>
-                                                  <th
-                                                      style={{
-                                                          padding: "10px",
-                                                          textAlign: "left",
-                                                          width: "30%",
-                                                      }}
-                                                  >
-                                                      Tên sản phẩm
-                                                  </th>
-                                                  <th
-                                                      style={{
-                                                          padding: "10px",
-                                                          textAlign: "left",
-                                                          width: "15%",
-                                                      }}
-                                                  >
-                                                      Màu sắc
-                                                  </th>
-                                                  <th
-                                                      style={{
-                                                          padding: "10px",
-                                                          textAlign: "left",
-                                                          width: "15%",
-                                                      }}
-                                                  >
-                                                      Kích thước
-                                                  </th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                              {paymentProducts.length > 0 ? (
-                                                  paymentProducts.map(
-                                                      (item) => {
-                                                          // Kiểm tra và lấy thông tin màu sắc, kích thước, hình ảnh
-                                                          const selectedVariant =
-                                                              item.selectedVariant;
-                                                          const imageUrl =
-                                                              selectedVariant?.image_color ||
-                                                              "https://via.placeholder.com/100"; // Hình ảnh mặc định
+                <div className="tf-page-title">
+                    <div className="container-full">
+                        <div className="heading text-center">
+                            Thông tin thanh toán
+                        </div>
+                    </div>
+                </div>
 
-                                                          const colorName =
-                                                              selectedVariant
-                                                                  ?.colors
-                                                                  ?.name ||
-                                                              "Không xác định";
-                                                          const sizeName =
-                                                              selectedVariant
-                                                                  ?.sizes
-                                                                  ?.name ||
-                                                              "Không xác định";
+                <section className="flat-spacing-11">
+                    <div className="container">
+                        <div className="tf-page-cart-wrap layout-2">
+                            <div className="tf-page-cart-item">
+                                <h5 className="fw-5 mb_20">
+                                    Thông tin người dùng
+                                </h5>
+                                <form className="form-checkout">
+                                    <fieldset className="box fieldset">
+                                        <label htmlFor="first-name">
+                                            Họ và tên
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="first-name"
+                                            placeholder="Nguyễn Văn A"
+                                            value={name}
+                                            onChange={(e) =>
+                                                setName(e.target.value)
+                                            }
+                                        />
+                                    </fieldset>
+                                    <fieldset className="box fieldset">
+                                        <label htmlFor="email">Email</label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            value={email}
+                                            onChange={(e) =>
+                                                setEmail(e.target.value)
+                                            }
+                                        />
+                                    </fieldset>
+                                    <fieldset className="box fieldset">
+                                        <label htmlFor="phone-number">
+                                            Số điện thoại
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="phone-number"
+                                            value={phoneNumber}
+                                            onChange={(e) =>
+                                                setPhoneNumber(e.target.value)
+                                            }
+                                        />
+                                    </fieldset>
+                                    <fieldset className="box fieldset">
+                                        <label htmlFor="address">Địa chỉ</label>
+                                        <input
+                                            type="text"
+                                            id="address"
+                                            value={address}
+                                            onChange={(e) =>
+                                                setAddress(e.target.value)
+                                            }
+                                        />
+                                    </fieldset>
+                                    <fieldset className="box fieldset">
+                                        <label htmlFor="note">
+                                            Ghi chú đơn hàng (Tuỳ chọn)
+                                        </label>
+                                        <textarea name="note" id="note" />
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div className="tf-page-cart-footer">
+                                <div className="tf-cart-footer-inner">
+                                    <h5 className="fw-5 mb_20">
+                                        Sản phẩm trong combo
+                                    </h5>
+                                    <div className="pay-page">
+                                        <table
+                                            style={{
+                                                width: "100%",
+                                                borderCollapse: "collapse",
+                                            }}
+                                        >
+                                            <thead>
+                                                <tr>
+                                                    <th
+                                                        style={{
+                                                            padding: "10px",
+                                                            textAlign: "left",
+                                                            width: "20%",
+                                                        }}
+                                                    >
+                                                        Hình ảnh
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            padding: "10px",
+                                                            textAlign: "left",
+                                                            width: "30%",
+                                                        }}
+                                                    >
+                                                        Tên sản phẩm
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            padding: "10px",
+                                                            textAlign: "left",
+                                                            width: "15%",
+                                                        }}
+                                                    >
+                                                        Màu sắc
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            padding: "10px",
+                                                            textAlign: "left",
+                                                            width: "15%",
+                                                        }}
+                                                    >
+                                                        Kích thước
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {paymentProducts.length > 0 ? (
+                                                    paymentProducts.map(
+                                                        (item) => {
+                                                            const selectedVariant =
+                                                                item.selectedVariant;
+                                                            const imageUrl =
+                                                                selectedVariant?.image_color ||
+                                                                "https://via.placeholder.com/100";
 
-                                                          return (
-                                                              <tr key={item.id}>
-                                                                  <td
-                                                                      style={{
-                                                                          padding:
-                                                                              "10px",
-                                                                          verticalAlign:
-                                                                              "middle",
-                                                                      }}
-                                                                  >
-                                                                      <img
-                                                                          src={
-                                                                              imageUrl
-                                                                          }
-                                                                          alt={
-                                                                              item.name ||
-                                                                              "Sản phẩm"
-                                                                          }
-                                                                          style={{
-                                                                              width: "100px",
-                                                                              height: "100px",
-                                                                              objectFit:
-                                                                                  "cover",
-                                                                              borderRadius:
-                                                                                  "5px",
-                                                                          }}
-                                                                          crossOrigin="anonymous"
-                                                                      />
-                                                                  </td>
-                                                                  <td
-                                                                      style={{
-                                                                          padding:
-                                                                              "10px",
-                                                                          verticalAlign:
-                                                                              "middle",
-                                                                      }}
-                                                                  >
-                                                                      <p
-                                                                          style={{
-                                                                              margin: "0",
-                                                                          }}
-                                                                      >
-                                                                          {item.name ||
-                                                                              "Tên sản phẩm không xác định"}
-                                                                      </p>
-                                                                      <p
-                                                                          style={{
-                                                                              margin: "0",
-                                                                              fontSize:
-                                                                                  "12px",
-                                                                              color: "gray",
-                                                                          }}
-                                                                      >
-                                                                          Số
-                                                                          lượng:{" "}
-                                                                          {
-                                                                              item.quantity
-                                                                          }
-                                                                      </p>
-                                                                  </td>
-                                                                  <td
-                                                                      style={{
-                                                                          padding:
-                                                                              "10px",
-                                                                          verticalAlign:
-                                                                              "middle",
-                                                                      }}
-                                                                  >
-                                                                      {
-                                                                          colorName
-                                                                      }
-                                                                  </td>
-                                                                  <td
-                                                                      style={{
-                                                                          padding:
-                                                                              "10px",
-                                                                          verticalAlign:
-                                                                              "middle",
-                                                                      }}
-                                                                  >
-                                                                      {sizeName}
-                                                                  </td>
-                                                              </tr>
-                                                          );
-                                                      },
-                                                  )
-                                              ) : (
-                                                  <tr>
-                                                      <td
-                                                          colSpan={4}
-                                                          style={{
-                                                              textAlign:
-                                                                  "center",
-                                                              padding: "10px",
-                                                          }}
-                                                      >
-                                                          Không có sản phẩm nào
-                                                          trong đơn hàng.
-                                                      </td>
-                                                  </tr>
-                                              )}
-                                          </tbody>
-                                      </table>
+                                                            return (
+                                                                <tr
+                                                                    key={
+                                                                        item.id
+                                                                    }
+                                                                >
+                                                                    <td
+                                                                        style={{
+                                                                            padding:
+                                                                                "10px",
+                                                                            verticalAlign:
+                                                                                "middle",
+                                                                        }}
+                                                                    >
+                                                                        <img
+                                                                            src={
+                                                                                imageUrl
+                                                                            }
+                                                                            alt={
+                                                                                item.name ||
+                                                                                "Sản phẩm"
+                                                                            }
+                                                                            style={{
+                                                                                width: "100px",
+                                                                                height: "100px",
+                                                                                objectFit:
+                                                                                    "cover",
+                                                                                borderRadius:
+                                                                                    "5px",
+                                                                            }}
+                                                                        />
+                                                                    </td>
+                                                                    <td
+                                                                        style={{
+                                                                            padding:
+                                                                                "10px",
+                                                                            verticalAlign:
+                                                                                "middle",
+                                                                        }}
+                                                                    >
+                                                                        <p
+                                                                            style={{
+                                                                                margin: "0",
+                                                                            }}
+                                                                        >
+                                                                            {item.name ||
+                                                                                "Tên sản phẩm không xác định"}
+                                                                        </p>
+                                                                        <p
+                                                                            style={{
+                                                                                margin: "0",
+                                                                                fontSize:
+                                                                                    "12px",
+                                                                                color: "gray",
+                                                                            }}
+                                                                        >
+                                                                            Số
+                                                                            lượng:{" "}
+                                                                            {
+                                                                                item.quantity
+                                                                            }
+                                                                        </p>
+                                                                    </td>
+                                                                    <td
+                                                                        style={{
+                                                                            padding:
+                                                                                "10px",
+                                                                            verticalAlign:
+                                                                                "middle",
+                                                                        }}
+                                                                    >
+                                                                        {selectedVariant
+                                                                            ?.colors
+                                                                            ?.name ||
+                                                                            "Không xác định"}
+                                                                    </td>
+                                                                    <td
+                                                                        style={{
+                                                                            padding:
+                                                                                "10px",
+                                                                            verticalAlign:
+                                                                                "middle",
+                                                                        }}
+                                                                    >
+                                                                        {selectedVariant
+                                                                            ?.sizes
+                                                                            ?.name ||
+                                                                            "Không xác định"}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        },
+                                                    )
+                                                ) : (
+                                                    <tr>
+                                                        <td
+                                                            colSpan={4}
+                                                            style={{
+                                                                textAlign:
+                                                                    "center",
+                                                                padding: "10px",
+                                                            }}
+                                                        >
+                                                            Không có sản phẩm
+                                                            nào trong đơn hàng.
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
 
-                                      <h6>
-                                          Tổng giá combo:{" "}
-                                          {totalAmount.toLocaleString("vi-VN")}{" "}
-                                          VND
-                                      </h6>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </section>
-          </div>
-          <Footer />
-      </>
-  );
+                                        <h6>
+                                            Tổng giá combo:{" "}
+                                            {totalAmount.toLocaleString(
+                                                "vi-VN",
+                                            )}{" "}
+                                            VNĐ
+                                        </h6>
+                                        <div className="wd-check-payment">
+                                            <div className="fieldset-radio mb_20">
+                                                <input
+                                                    type="radio"
+                                                    name="payment"
+                                                    id="bank"
+                                                    className="tf-check"
+                                                    onChange={(e) =>
+                                                        setPaymentRole(
+                                                            Number(
+                                                                e.target.value,
+                                                            ),
+                                                        )
+                                                    }
+                                                    value="2"
+                                                />
+                                                <label htmlFor="bank">
+                                                    Thanh toán VNP
+                                                </label>
+                                            </div>
+                                            <div className="fieldset-radio mb_20">
+                                                <input
+                                                    type="radio"
+                                                    name="payment"
+                                                    id="delivery"
+                                                    className="tf-check"
+                                                    onChange={(e) =>
+                                                        setPaymentRole(
+                                                            Number(
+                                                                e.target.value,
+                                                            ),
+                                                        )
+                                                    }
+                                                    value="1"
+                                                />
+                                                <label htmlFor="delivery">
+                                                    Thanh toán khi nhận hàng
+                                                </label>
+                                            </div>
+                                        </div>
 
+                                        <button
+                                            onClick={handlePayment}
+                                            disabled={isOrderLoading}
+                                            className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center"
+                                        >
+                                            Đặt hàng
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <Footer />
+        </>
+    );
 };
 
 export default PayCombo;

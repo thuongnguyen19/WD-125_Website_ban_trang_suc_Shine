@@ -56,6 +56,7 @@ const ComboDetail: React.FC = () => {
     const [selectedSize, setSelectedSize] = useState<{
         [productId: string]: string;
     }>({});
+    const [availableQuantity, setAvailableQuantity] = useState<number>(0);
 
     useEffect(() => {
         const fetchComboDetails = async () => {
@@ -68,17 +69,19 @@ const ComboDetail: React.FC = () => {
                         headers: { Authorization: `Bearer ${token}` },
                     },
                 );
-
                 const comboData: Combo = response.data.data;
                 setCombo(comboData || null);
-                if (!comboData) setError("Thông tin combo không khả dụng.");
+                if (comboData) {
+                    setAvailableQuantity(comboData.available_quantity); // Thiết lập số lượng ban đầu
+                } else {
+                    setError("Thông tin combo không khả dụng.");
+                }
             } catch {
                 setError("Không tìm thấy sản phẩm.");
             } finally {
                 setLoading(false);
             }
         };
-
         fetchComboDetails();
     }, [id]);
 
@@ -96,6 +99,7 @@ const ComboDetail: React.FC = () => {
         const productId = product.id.toString();
         setSelectedColor((prev) => ({ ...prev, [productId]: color }));
         setSelectedSize((prev) => ({ ...prev, [productId]: "" })); // Reset size khi đổi màu
+        updateAvailableQuantity(product); // Cập nhật lại số lượng có sẵn
     };
 
     const handleSizeChange = (size: string, productId: string) => {
@@ -109,7 +113,32 @@ const ComboDetail: React.FC = () => {
             );
         if (isAvailable) {
             setSelectedSize((prev) => ({ ...prev, [productId]: size }));
+            updateAvailableQuantity(
+                combo?.products.find((p) => p.id === parseInt(productId)),
+            ); // Cập nhật lại số lượng khi thay đổi kích thước
         }
+    };
+
+    const updateAvailableQuantity = (product: RelatedProduct | undefined) => {
+        if (!product) return;
+
+        const selectedColorName = selectedColor[product.id.toString()];
+        const selectedSizeName = selectedSize[product.id.toString()];
+        const availableVariants = product.variants.filter(
+            (variant) =>
+                variant.colors.name === selectedColorName &&
+                variant.sizes.name === selectedSizeName,
+        );
+
+        const totalAvailable = availableVariants.reduce(
+            (acc, variant) => acc + variant.quantity,
+            0,
+        );
+        setAvailableQuantity(
+            totalAvailable < combo.available_quantity
+                ? totalAvailable
+                : combo.available_quantity,
+        ); // Cập nhật số lượng còn lại
     };
 
     const validateSelections = () => {
@@ -144,10 +173,8 @@ const ComboDetail: React.FC = () => {
                     const variant = product.variants.find(
                         (v) => v.colors.name === color && v.sizes.name === size,
                     );
-
                     return {
                         variantId: variant?.id || null,
-                        quantity,
                     };
                 })
                 .filter((item) => item.variantId);
@@ -155,10 +182,7 @@ const ComboDetail: React.FC = () => {
             const params = {
                 comboId: combo?.id,
                 quantity,
-                variantIds: orderData.reduce((acc, curr) => {
-                    acc[curr.variantId!] = curr.quantity;
-                    return acc;
-                }, {}),
+                variantIds: orderData.map((item) => item.variantId),
             };
 
             const response = await axiosInstance.get(
@@ -171,11 +195,15 @@ const ComboDetail: React.FC = () => {
 
             if (response.data.status) {
                 message.success("Lấy thông tin sản phẩm thành công.");
-                localStorage.setItem(
-                    "orderData",
-                    JSON.stringify({ comboId: combo?.id, orderData }),
-                );
-                navigate("/payCombo", { state: { orderData } });
+
+                const orderDetails = {
+                    comboId: combo?.id,
+                    quantity,
+                    variantIds: orderData.map((item) => item.variantId),
+                };
+                localStorage.setItem("orderData", JSON.stringify(orderDetails));
+
+                navigate("/payCombo", { state: orderDetails });
             } else {
                 message.error(response.data.message);
             }
@@ -421,7 +449,7 @@ const ComboDetail: React.FC = () => {
                                                                             product.id.toString()
                                                                         ]
                                                                             ? 1
-                                                                            : 0.5, // Giảm độ sáng cho kích thước không khả dụng
+                                                                            : 0.5,
                                                                 }}
                                                             >
                                                                 {
@@ -440,9 +468,7 @@ const ComboDetail: React.FC = () => {
                                     <div className="remaining-quantity mt-3">
                                         <p>
                                             Số lượng còn lại:{" "}
-                                            <strong>
-                                                {combo?.available_quantity}
-                                            </strong>
+                                            <strong>{availableQuantity}</strong>
                                         </p>
                                     </div>
 
