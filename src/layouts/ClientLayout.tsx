@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import Header2 from "../components/common/Header2";
 import Footer from "../components/common/Footer";
-import { Avatar, message } from "antd";
+import { Avatar, Input, message, Modal, Spin } from "antd";
 import {
     CaretDownOutlined,
     HeartOutlined,
+    MenuOutlined,
     SearchOutlined,
     ShoppingCartOutlined,
     UserOutlined,
@@ -14,6 +15,7 @@ import {
 import Home from "../pages/(website)/home/page";
 import { Category, fetchCategorys } from "../Interface/Category";
 import axiosInstance from "../configs/axios";
+import { fetchSearchs, Search } from "../Interface/Product";
 
 const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
@@ -24,9 +26,40 @@ const Layoutweb: React.FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra người dùng đăng nhập
     const [favorite, setFavorite] = useState<number>(0);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
     const [loading, setLoading] = useState<boolean>(true);
 
     const [cartCount, setCartCount] = useState<number>(0);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Search[]>([]);
+  const handleOpenModal = () => setIsModalVisible(true);
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setQuery(""); // Reset query
+    setResults([]); // Reset kết quả
+  };
+
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value.length < 3) {
+      setResults([]);
+      return;
+    }
+
+    
+    try {
+      const data = await fetchSearchs(value); // Gọi API tìm kiếm
+      setResults(data); // Lưu kết quả tìm kiếm
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm sản phẩm:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem("authToken");
@@ -57,51 +90,58 @@ const Layoutweb: React.FC = () => {
     console.log(user);
 
     useEffect(() => {
-        const loadCategorys = async () => {
-            try {
-                const data = await fetchCategorys();
-                setCategories(data);
-            } catch (error) {
-                console.error("Lỗi khi tải danh mục:", error);
-            }
-            setLoading(false);
-        };
+    // Hàm tải danh mục sản phẩm
+    const loadCategories = async () => {
+        try {
+            const data = await fetchCategorys(); // Gọi API để tải danh mục
+            setCategories(data);
+        } catch (error) {
+            console.error("Lỗi khi tải danh mục sản phẩm:", error);
+        }
+        setLoading(false);
+    };
 
-        const fetchCartCount = () => {
-            const cartData = localStorage.getItem("cartItems");
-            const favoriteData = localStorage.getItem("favorite");
-            if (favoriteData) {
-                const favoriteItems = JSON.parse(favoriteData);
-                setFavorite(favoriteItems.length);
-            }
-            if (cartData) {
-                const cartItems = JSON.parse(cartData);
+    // Hàm tính số sản phẩm trong giỏ hàng
+    const fetchCartCount = () => {
+        const cartData = localStorage.getItem("cartItems");
+        const favoriteData = localStorage.getItem("favorite");
 
-                const totalQuantity = cartItems.reduce(
-                    (total: number, item: { quantity: number }) =>
-                        total + item.quantity,
-                    0,
-                );
+        if (favoriteData) {
+            const favoriteItems = JSON.parse(favoriteData);
+            setFavorite(favoriteItems.length);
+        }
 
-                setCartCount(totalQuantity);
-            }
-        };
+        if (cartData) {
+            const cartItems = JSON.parse(cartData);
+            setCartCount(cartItems.length); // Đếm số sản phẩm thay vì tổng số lượng
+        } else {
+            setCartCount(0); // Nếu không có sản phẩm nào thì đặt về 0
+        }
+    };
 
-        loadCategorys();
-        fetchCartCount();
+    const token = localStorage.getItem("authToken");
+    if (token) {
+        setIsLoggedIn(true);
+    }
 
-        // Lắng nghe sự thay đổi của localStorage
-        window.addEventListener("storage", fetchCartCount);
+    loadCategories();
+    fetchCartCount();
 
-        return () => {
-            window.removeEventListener("storage", fetchCartCount);
-        };
-    }, []);
+    window.addEventListener("storage", fetchCartCount);
+
+    return () => {
+        window.removeEventListener("storage", fetchCartCount);
+    };
+}, []);
+
 
     if (loading) {
         return <p>Đang tải...</p>;
     }
 
+    const handleProductClick = (id: number) => {
+        navigate(`/detail/${id}`);
+    };
     const goToProfile = () => {
         navigate("/profile");
     };
@@ -128,23 +168,59 @@ const Layoutweb: React.FC = () => {
                                     <a
                                         href="#mobileMenu"
                                         data-bs-toggle="offcanvas"
-                                        aria-controls="offcanvasLeft"
-                                        className="btn-mobile"
+                                        aria-controls="mobileMenu"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="16"
-                                            viewBox="0 0 24 16"
-                                            fill="none"
-                                        >
-                                            <path
-                                                d="M2.00056 2.28571H16.8577C17.1608 2.28571 17.4515 2.16531 17.6658 1.95098C17.8802 1.73665 18.0006 1.44596 18.0006 1.14286C18.0006 0.839753 17.8802 0.549063 17.6658 0.334735C17.4515 0.120408 17.1608 0 16.8577 0H2.00056C1.69745 0 1.40676 0.120408 1.19244 0.334735C0.978109 0.549063 0.857702 0.839753 0.857702 1.14286C0.857702 1.44596 0.978109 1.73665 1.19244 1.95098C1.40676 2.16531 1.69745 2.28571 2.00056 2.28571ZM0.857702 8C0.857702 7.6969 0.978109 7.40621 1.19244 7.19188C1.40676 6.97755 1.69745 6.85714 2.00056 6.85714H22.572C22.8751 6.85714 23.1658 6.97755 23.3801 7.19188C23.5944 7.40621 23.7148 7.6969 23.7148 8C23.7148 8.30311 23.5944 8.59379 23.3801 8.80812C23.1658 9.02245 22.8751 9.14286 22.572 9.14286H2.00056C1.69745 9.14286 1.40676 9.02245 1.19244 8.80812C0.978109 8.59379 0.857702 8.30311 0.857702 8ZM0.857702 14.8571C0.857702 14.554 0.978109 14.2633 1.19244 14.049C1.40676 13.8347 1.69745 13.7143 2.00056 13.7143H12.2863C12.5894 13.7143 12.8801 13.8347 13.0944 14.049C13.3087 14.2633 13.4291 14.554 13.4291 14.8571C13.4291 15.1602 13.3087 15.4509 13.0944 15.6653C12.8801 15.8796 12.5894 16 12.2863 16H2.00056C1.69745 16 1.40676 15.8796 1.19244 15.6653C0.978109 15.4509 0.857702 15.1602 0.857702 14.8571Z"
-                                                fill="currentColor"
-                                            ></path>
-                                        </svg>
+                                        <MenuOutlined style={{ fontSize: "24px" }} />
                                     </a>
                                 </div>
+                                <div
+                                    className="offcanvas offcanvas-start"
+                                    tabIndex={-1}
+                                    id="mobileMenu"
+                                    aria-labelledby="offcanvasLabel"
+                                >
+                                    <div className="offcanvas-header">
+                                        <button
+                                            type="button"
+                                            className="btn-close"
+                                            data-bs-dismiss="offcanvas"
+                                            aria-label="Close"
+                                        ></button>
+                                    </div>
+                                    <div className="offcanvas-body">
+                                        <ul className="list-group">
+                                            <li className="list-group-item">
+                                                <Link to="/">Trang chủ</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <div>Danh mục</div>
+                                                <ul>
+                                                    {categories.map((category) => (
+                                                        <li key={category.id}>
+                                                            <a href={`/products?category=${category.id}`}>
+                                                                {category.name}
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/products">Sản phẩm</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/ser">Dịch vụ</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/about-us">Về chúng tôi</Link>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <Link to="/contact">Liên hệ</Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+
                                 <div className="col-xl-3 col-md-4 col-6">
                                     <a
                                         href="index.html"
@@ -248,9 +324,63 @@ const Layoutweb: React.FC = () => {
                                             >
                                                 <SearchOutlined
                                                     style={{ fontSize: "24px" }}
+                                                    onClick={handleOpenModal}
                                                 />
                                             </a>
                                         </li>
+                                        <Modal
+                                open={isModalVisible}
+                                onCancel={handleCloseModal}
+                                footer={null}
+                                centered
+                                width={500}
+                            >
+                                {/* Input tìm kiếm */}
+                                <div className="modal-header">
+                                <Input
+                                    placeholder="Nhập tên sản phẩm..."
+                                    value={query}
+                                    onChange={handleSearch}
+                                    
+                                />
+                                </div>
+
+                                {/* Kết quả tìm kiếm */}
+                                <div className="search-results">
+                                {loading ? (
+                                    <Spin tip="Đang tìm kiếm..." />
+                                ) : results.length > 0 ? (
+                                    <ul>
+                                    {results.map((product) => (
+                                        <li key={product.id} className="result-item">
+                                        <img
+                                            onClick={() =>
+                                                handleProductClick(
+                                                    product.id
+                                                )
+                                            }
+                                            src={product.thumbnail}
+                                            alt={product.name}
+                                            className="result-thumbnail"
+                                        />
+                                        <div
+                                            className="result-details"
+                                            onClick={() =>
+                                                handleProductClick(
+                                                    product.id
+                                                )
+                                            }
+                                        >
+                                            <span className="result-name">{product.name}</span>
+                                        </div>
+                                        </li>
+                                    ))}
+                                    </ul>
+                                ) : query.length >= 3 ? (
+                                    <p style={{ textAlign: "center" }}>Không tìm thấy sản phẩm</p>
+                                ) : null}
+                                </div>
+                            </Modal>
                                         <li className="nav-cart">
                                             <Link
                                                 to="/favorite"
