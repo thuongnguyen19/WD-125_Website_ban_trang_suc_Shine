@@ -593,7 +593,7 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
-            <section className="flat-spacing-9">
+            {/* <section className="flat-spacing-9">
                 <div className="container">
                     <div className="flat-tab-store flat-animate-tab overflow-unset">
                         <ul
@@ -697,7 +697,7 @@ const Home: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <section className="flat-spacing-1 flat-iconbox">
                 <div className="container">
