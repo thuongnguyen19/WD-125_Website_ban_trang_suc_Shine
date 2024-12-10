@@ -69,7 +69,11 @@ const Header2 = () => {
     }, []);
 
     const handleAdClick = (id: number) => {
-        navigate(`/combo_detail/${id}`); // Điều hướng đến trang combo_detail với id của combo
+          try {
+              axiosInstance.get<ApiResponse>(`/visits/${id}`); // Điều hướng đến trang combo_detail với id của combo
+          } catch (error) {
+              console.error("Lỗi khi gọi API combo:", error);
+          }
     };
 
     return (
@@ -235,7 +239,7 @@ const Header2 = () => {
                                         </div>
 
                                         {/* Nút "Xem ngay tại đây" ở giữa */}
-                                        <Button
+                                        {/* <Button
                                             type="primary"
                                             style={{
                                                 position: "absolute",
@@ -250,7 +254,7 @@ const Header2 = () => {
                                             className="banner-button"
                                         >
                                             Xem ngay tại đây
-                                        </Button>
+                                        </Button> */}
 
                                         {/* Dòng chữ highlight chạy ở góc dưới */}
                                         <div
@@ -276,7 +280,7 @@ const Header2 = () => {
                             }
                             style={{ maxWidth: 1000, margin: "0 auto" }}
                         />
->>>>>>> 4f4b3798c554a2a6eaff3982629d5f690d1236cf
+
                     )
                 ) : (
                     <div

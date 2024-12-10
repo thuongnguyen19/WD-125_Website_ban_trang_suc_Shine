@@ -210,7 +210,7 @@ const PayCombo: React.FC = () => {
         <>
             <Header />
             <div style={{ padding: "20px" }}>
-                {combo && (
+                {/* {combo && (
                     <div
                         className="combo-info"
                         style={{ marginBottom: "20px" }}
@@ -231,7 +231,7 @@ const PayCombo: React.FC = () => {
                             Tổng tiền: {totalAmount.toLocaleString("vi-VN")} VNĐ
                         </p>
                     </div>
-                )}
+                )} */}
 
                 <div className="tf-page-title">
                     <div className="container-full">
