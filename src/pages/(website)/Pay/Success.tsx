@@ -23,21 +23,13 @@ const Success: React.FC = () => {
         const vnp_TxnRef = params.get("vnp_TxnRef");
         const vnp_ResponseCode = params.get("vnp_ResponseCode");
         const vnp_OrderInfo = params.get("vnp_OrderInfo");
-console.log(vnp_OrderInfo);
+        console.log(vnp_OrderInfo);
 
         const fetchPaymentResult = async () => {
             if (vnp_TxnRef && vnp_ResponseCode) {
                 try {
-                       const token = localStorage.getItem("authToken");
-                       console.log(token);
-               
-            
-        
-
-
-
-
-                    const response = await axios.get(
+                    // Call first API (paymentResult)
+                    const responsePaymentResult = await axios.get(
                         "http://localhost:8000/api/paymentResult",
                         {
                             params: {
@@ -51,18 +43,46 @@ console.log(vnp_OrderInfo);
                         },
                     );
 
-                    if (response.data.status) {
+                    if (responsePaymentResult.data.status) {
                         setStatus(true);
                         setMessageText(
-                            response.data.message || "Đặt hàng thành công!",
+                            responsePaymentResult.data.message ||
+                                "Đặt hàng thành công!",
                         );
 
-                    
-                      
+                        // Call second API (paymentComboResult)
+                        const responsePaymentComboResult = await axios.get(
+                            "http://localhost:8000/api/paymentComboResult",
+                            {
+                                params: {
+                                    vnp_TxnRef,
+                                    vnp_ResponseCode,
+                                    vnp_OrderInfo,
+                                },
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            },
+                        );
+
+                        if (responsePaymentComboResult.data.status) {
+                            // Process the response if successful
+                            setMessageText(
+                                responsePaymentComboResult.data.message ||
+                                    "Đơn hàng combo thanh toán thành công!",
+                            );
+                        } else {
+                            setStatus(false);
+                            setMessageText(
+                                responsePaymentComboResult.data.message ||
+                                    "Thanh toán combo thất bại.",
+                            );
+                        }
                     } else {
                         setStatus(false);
                         setMessageText(
-                            response.data.message || "Đặt hàng thất bại.",
+                            responsePaymentResult.data.message ||
+                                "Đặt hàng thất bại.",
                         );
                     }
                 } catch (error) {
@@ -153,4 +173,3 @@ console.log(vnp_OrderInfo);
 };
 
 export default Success;
-    
