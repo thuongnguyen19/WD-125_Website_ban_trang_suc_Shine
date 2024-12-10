@@ -619,7 +619,9 @@ const handleComboClick = (id: number) => {
                             <a href="/" className="text">
                                 Trang chủ
                             </a>
-                            <i><RightOutlined /></i>
+                            <i>
+                                <RightOutlined />
+                            </i>
                             <span className="text">{product?.name}</span>
                         </div>
                     </div>
@@ -654,9 +656,7 @@ const handleComboClick = (id: number) => {
                                                 (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
-                                                            src={
-                                                                image
-                                                            }
+                                                            src={image}
                                                             alt={`Image ${index + 1}`}
                                                             style={{
                                                                 width: "100%",
@@ -686,9 +686,7 @@ const handleComboClick = (id: number) => {
                                                 (image: any, index: any) => (
                                                     <SwiperSlide key={index}>
                                                         <img
-                                                            src={
-                                                                image
-                                                            }
+                                                            src={image}
                                                             alt={`Thumbnail ${index + 1}`}
                                                             onClick={() =>
                                                                 handleThumbnailClick(
@@ -729,11 +727,28 @@ const handleComboClick = (id: number) => {
                                     <div className="tf-product-info-title">
                                         <h5>{product?.name}</h5>
                                     </div>
-                                    <div className="average-rating" style={{display: 'flex', marginBottom: '20px'}}>
-                                        <div className="stars" style={{ transform: "scale(0.9)"}}>
-                                            <Rate allowHalf defaultValue={ratingValue} disabled />
+                                    <div
+                                        className="average-rating"
+                                        style={{
+                                            display: "flex",
+                                            marginBottom: "20px",
+                                        }}
+                                    >
+                                        <div
+                                            className="stars"
+                                            style={{ transform: "scale(0.9)" }}
+                                        >
+                                            <Rate
+                                                allowHalf
+                                                defaultValue={ratingValue}
+                                                disabled
+                                            />
                                         </div>
-                                        <div style={{marginLeft: '5px'}}>{averageRating !== null ? averageRating.toFixed(1) : "Chưa có đánh giá"}</div>
+                                        <div style={{ marginLeft: "5px" }}>
+                                            {averageRating !== null
+                                                ? averageRating.toFixed(1)
+                                                : "Chưa có đánh giá"}
+                                        </div>
                                     </div>
                                     {selectedColor && selectedSize ? (
                                         <div className="tf-product-info-price">
@@ -745,10 +760,25 @@ const handleComboClick = (id: number) => {
                                                         alignItems: "center",
                                                     }}
                                                 >
+                                                    <div className="price-on-sale">
+                                                        <span
+                                                            style={{
+                                                                fontWeight:
+                                                                    "bold",
+                                                                color: "#f00",
+                                                            }}
+                                                        >
+                                                            {totalPrice?.toLocaleString(
+                                                                "vi-VN",
+                                                            )}{" "}
+                                                            đ
+                                                        </span>
+                                                    </div>
                                                     <div
                                                         className="price-list"
                                                         style={{
                                                             marginRight: "10px",
+                                                            paddingLeft: "10px",
                                                         }}
                                                     >
                                                         <span
@@ -759,20 +789,6 @@ const handleComboClick = (id: number) => {
                                                             }}
                                                         >
                                                             {listPrice?.toLocaleString(
-                                                                "vi-VN",
-                                                            )}{" "}
-                                                            đ
-                                                        </span>
-                                                    </div>
-                                                    <div className="price-on-sale">
-                                                        <span
-                                                            style={{
-                                                                fontWeight:
-                                                                    "bold",
-                                                                color: "#f00",
-                                                            }}
-                                                        >
-                                                            {totalPrice?.toLocaleString(
                                                                 "vi-VN",
                                                             )}{" "}
                                                             đ
@@ -793,9 +809,12 @@ const handleComboClick = (id: number) => {
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <div className="price-on-sale" style={{
+                                                <div
+                                                    className="price-on-sale"
+                                                    style={{
                                                         marginRight: "10px",
-                                                    }}>
+                                                    }}
+                                                >
                                                     <span
                                                         style={{
                                                             fontWeight: "bold",
@@ -808,10 +827,7 @@ const handleComboClick = (id: number) => {
                                                         đ
                                                     </span>
                                                 </div>
-                                                <div
-                                                    className="price-list"
-                                                    
-                                                >
+                                                <div className="price-list">
                                                     <span
                                                         style={{
                                                             textDecoration:
@@ -825,12 +841,9 @@ const handleComboClick = (id: number) => {
                                                         đ
                                                     </span>
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                     )}
-
-                                    
 
                                     <br />
                                     <div className="tf-color-selection d-flex align-items-center">
@@ -866,10 +879,7 @@ const handleComboClick = (id: number) => {
                                                         height: "30px",
                                                         borderRadius: "50%",
                                                         backgroundColor:
-                                                            (
-                                                               variant.colors
-                                                                    .code
-                                                            ),
+                                                            variant.colors.code,
                                                         border:
                                                             selectedColor ===
                                                             variant.colors.name
@@ -948,18 +958,23 @@ const handleComboClick = (id: number) => {
                                             ))}
                                         </div>
                                     </div>
-
-                                    <div className="remaining-quantity mt-3">
-                                        <p>
-                                            Số lượng còn lại:{" "}
-                                            <strong>
-                                                {selectedSize &&
-                                                remainingQuantity !== null
-                                                    ? remainingQuantity
-                                                    : "Vui lòng chọn kích thước và màu "}
-                                            </strong>
-                                        </p>
-                                    </div>
+                                    {selectedColor && selectedSize ? (
+                                        <div className="remaining-quantity mt-3">
+                                            <p>
+                                                Số lượng còn lại:{" "}
+                                                <strong>
+                                                    {remainingQuantity}
+                                                </strong>
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="remaining-quantity mt-3">
+                                            <p style={{ visibility: "hidden" }}>
+                                                Số lượng còn lại:{" "}
+                                                <strong>0</strong>
+                                            </p>
+                                        </div>
+                                    )}
 
                                     <div className="tf-product-info-quantity mt-4">
                                         <div className="wg-quantity">
@@ -1011,7 +1026,11 @@ const handleComboClick = (id: number) => {
                                         </button>
                                         {isFavorite ? (
                                             <HeartFilled
-                                                onClick={() => handleAddProductToFavorite(product.id)}
+                                                onClick={() =>
+                                                    handleAddProductToFavorite(
+                                                        product.id,
+                                                    )
+                                                }
                                                 style={{
                                                     fontSize: "35px",
                                                     color: "red",
@@ -1020,7 +1039,11 @@ const handleComboClick = (id: number) => {
                                             />
                                         ) : (
                                             <HeartOutlined
-                                                onClick={() => handleAddProductToFavorite(product.id)}
+                                                onClick={() =>
+                                                    handleAddProductToFavorite(
+                                                        product.id,
+                                                    )
+                                                }
                                                 style={{
                                                     fontSize: "35px",
                                                     color: "",
@@ -1028,8 +1051,6 @@ const handleComboClick = (id: number) => {
                                                 }}
                                             />
                                         )}
-
-
                                     </div>
                                     <div className="tf-product-info-buy-now-button mt-3">
                                         <button
@@ -1063,34 +1084,50 @@ const handleComboClick = (id: number) => {
                             <div className="products">
                                 {/* Lặp qua mảng combo để hiển thị thông tin từng combo */}
                                 {combo.map((currentCombo) => (
-                                    <div key={currentCombo.id} className="product-item">
+                                    <div
+                                        key={currentCombo.id}
+                                        className="product-item"
+                                    >
                                         <div className="product-img">
                                             <img
-                                                onClick={() => handleComboClick(currentCombo.id)} 
-                                                                        src={currentCombo.image} 
+                                                onClick={() =>
+                                                    handleComboClick(
+                                                        currentCombo.id,
+                                                    )
+                                                }
+                                                src={currentCombo.image}
                                             />
                                             <p
                                                 className="product-name"
-                                                onClick={() => handleComboClick(currentCombo.id)}
+                                                onClick={() =>
+                                                    handleComboClick(
+                                                        currentCombo.id,
+                                                    )
+                                                }
                                             >
                                                 {currentCombo.name}
                                             </p>
                                         </div>
                                         <div className="product-price">
-                                            <span style={{ fontWeight: "bold", color: "#f00" }}>
-                                                {new Intl.NumberFormat("vi-VN", {
-                                                    style: "currency",
-                                                    currency: "VND",
-                                                }).format(currentCombo.price)}
+                                            <span
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    color: "#f00",
+                                                }}
+                                            >
+                                                {new Intl.NumberFormat(
+                                                    "vi-VN",
+                                                    {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    },
+                                                ).format(currentCombo.price)}
                                             </span>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
-
-
-
 
                         <div
                             className="tf-product-description mt-4"
@@ -1280,34 +1317,61 @@ const handleComboClick = (id: number) => {
                                                                             </a>
                                                                         </div>
                                                                         <div className="card-product-info text-center">
-                                                                            <a href={`/detail/${relatedProduct.id}`}>
-                                                                                {relatedProduct.name}
+                                                                            <a
+                                                                                href={`/detail/${relatedProduct.id}`}
+                                                                            >
+                                                                                {
+                                                                                    relatedProduct.name
+                                                                                }
                                                                             </a>
-                                                                            {relatedProduct.variant.length > 0 && (
+                                                                            {relatedProduct
+                                                                                .variant
+                                                                                .length >
+                                                                                0 && (
                                                                                 <div>
                                                                                     <span className="price">
                                                                                         <span
                                                                                             style={{
-                                                                                                textDecoration: "line-through",
+                                                                                                textDecoration:
+                                                                                                    "line-through",
                                                                                                 color: "#999",
-                                                                                                marginRight: "10px",
+                                                                                                marginRight:
+                                                                                                    "10px",
                                                                                             }}
                                                                                         >
-                                                                                            {Math.round(Number(relatedProduct.variant[0].list_price)).toLocaleString("vi-VN")} đ
+                                                                                            {Math.round(
+                                                                                                Number(
+                                                                                                    relatedProduct
+                                                                                                        .variant[0]
+                                                                                                        .list_price,
+                                                                                                ),
+                                                                                            ).toLocaleString(
+                                                                                                "vi-VN",
+                                                                                            )}{" "}
+                                                                                            đ
                                                                                         </span>
                                                                                         <span
                                                                                             style={{
                                                                                                 color: "#f00",
-                                                                                                fontWeight: "bold",
+                                                                                                fontWeight:
+                                                                                                    "bold",
                                                                                             }}
                                                                                         >
-                                                                                            {Math.round(Number(relatedProduct.variant[0].selling_price)).toLocaleString("vi-VN")} đ
+                                                                                            {Math.round(
+                                                                                                Number(
+                                                                                                    relatedProduct
+                                                                                                        .variant[0]
+                                                                                                        .selling_price,
+                                                                                                ),
+                                                                                            ).toLocaleString(
+                                                                                                "vi-VN",
+                                                                                            )}{" "}
+                                                                                            đ
                                                                                         </span>
                                                                                     </span>
                                                                                 </div>
                                                                             )}
                                                                         </div>
-
                                                                     </div>
                                                                 </SwiperSlide>
                                                             ),

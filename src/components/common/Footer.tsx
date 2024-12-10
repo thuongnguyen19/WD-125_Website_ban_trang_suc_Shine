@@ -91,7 +91,7 @@ const Footer = () => {
                                                 <p>
                                                     Email:{" "}
                                                     <a href="#">
-                                                        info@fashionshop.com
+                                                        shinejewelryshpop@gmail.com
                                                     </a>
                                                 </p>
                                             </li>
@@ -150,7 +150,7 @@ const Footer = () => {
                                     <ul className="footer-menu-list tf-collapse-content">
                                         <li>
                                             <a
-                                                href="privacy-policy.html"
+                                                href="ac"
                                                 className="footer-menu_item"
                                             >
                                                 Chính sách bảo mật
@@ -159,7 +159,7 @@ const Footer = () => {
 
                                         <li>
                                             <a
-                                                href="shipping-delivery.html"
+                                                href="shipping"
                                                 className="footer-menu_item"
                                             >
                                                 Vận chuyển
@@ -193,7 +193,7 @@ const Footer = () => {
                                     <ul className="footer-menu-list tf-collapse-content">
                                         <li>
                                             <a
-                                                href="about-us.html"
+                                                href="about"
                                                 className="footer-menu_item"
                                             >
                                                 Câu chuyện của chúng tôi
@@ -202,7 +202,7 @@ const Footer = () => {
 
                                         <li>
                                             <a
-                                                href="contact-1.html"
+                                                href="lienhe"
                                                 className="footer-menu_item"
                                             >
                                                 liên hệ
@@ -210,7 +210,7 @@ const Footer = () => {
                                         </li>
                                         <li>
                                             <a
-                                                href="login.html"
+                                                href="/login"
                                                 className="footer-menu_item"
                                             >
                                                 Tài khoản
@@ -218,7 +218,7 @@ const Footer = () => {
                                         </li>
                                     </ul>
                                 </div>
-                                <div className="col-xl-3 col-md-6 col-12">
+                                {/* <div className="col-xl-3 col-md-6 col-12">
                                     <div className="footer-newsletter footer-col-block">
                                         <div className="footer-heading footer-heading-desktop">
                                             <h6>Đăng ký nhận Email</h6>
@@ -297,7 +297,7 @@ const Footer = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -310,7 +310,7 @@ const Footer = () => {
                                             © 2024 Ecomus Store. All Rights
                                             Reserved
                                         </div>
-                                        <div className="tf-payment">
+                                        {/* <div className="tf-payment">
                                             <img
                                                 src="images/payments/visa.png"
                                                 alt=""
@@ -331,7 +331,7 @@ const Footer = () => {
                                                 src="images/payments/img-4.png"
                                                 alt=""
                                             />
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
