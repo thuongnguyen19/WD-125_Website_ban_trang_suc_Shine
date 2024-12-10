@@ -58,7 +58,10 @@ const ListProducts: React.FC = () => {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const categoryId = params.get("category");
+        const query = params.get("query");
         const selectedCategory = categoryId == 'all'? '':categoryId??'';
+        const search = query ? query : '';
+        // setSearch(query);
         setSelectedCategory(selectedCategory);
         const loadProducts = async () => {
             try {
@@ -141,6 +144,7 @@ const ListProducts: React.FC = () => {
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
+        navigate(`/products?query=${e.target.value}`)
         setPage(1);
     };
 

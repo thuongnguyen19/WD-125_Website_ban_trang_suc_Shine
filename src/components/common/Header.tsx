@@ -29,13 +29,13 @@ const Header: React.FC = () => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Search[]>([]);
-  const handleOpenModal = () => setIsModalVisible(true);
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setQuery(""); // Reset query
-    setResults([]); // Reset kết quả
-  };
+    const [results, setResults] = useState<Search[]>([]);
+    const handleOpenModal = () => setIsModalVisible(true);
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        setQuery(""); // Reset query
+        setResults([]); // Reset kết quả
+    };
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -58,7 +58,7 @@ const Header: React.FC = () => {
     if (e.key === "Enter" && query.trim()) {
       // Chuyển sang trang sản phẩm đã lọc theo từ khóa
       navigate(`/products?query=${encodeURIComponent(query)}`);
-      handleCloseModal(); // Đóng modal sau khi chuyển trang
+      window.location.reload();
     }
   };
 
