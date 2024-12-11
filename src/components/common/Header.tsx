@@ -161,7 +161,6 @@ const Header: React.FC = () => {
                         aria-labelledby="offcanvasLabel"
                     >
                         <div className="offcanvas-header">
-                            
                             <button
                                 type="button"
                                 className="btn-close"
@@ -179,7 +178,9 @@ const Header: React.FC = () => {
                                     <ul>
                                         {categories.map((category) => (
                                             <li key={category.id}>
-                                                <a href={`/products?category=${category.id}`}>
+                                                <a
+                                                    href={`/products?category=${category.id}`}
+                                                >
                                                     {category.name}
                                                 </a>
                                             </li>
@@ -193,20 +194,20 @@ const Header: React.FC = () => {
                                     <Link to="/ser">Dịch vụ</Link>
                                 </li>
                                 <li className="list-group-item">
-                                    <Link to="/about-us">Về chúng tôi</Link>
+                                    <Link to="/about">Về chúng tôi</Link>
                                 </li>
                                 <li className="list-group-item">
-                                    <Link to="/contact">Liên hệ</Link>
+                                    <Link to="/lienhe">Liên hệ</Link>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
-
                     <div className="col-xl-3 col-md-4 col-6">
                         <Link to="/" className="logo-header">
                             <img
-                                src="/public/duan/Logo. shine.2.png" style={{height : "60px" , width:"60px"}}
+                                src="/public/duan/Logo. shine.2.png"
+                                style={{ height: "60px", width: "60px" }}
                                 alt="logo"
                                 className="logo"
                             />
@@ -248,12 +249,12 @@ const Header: React.FC = () => {
                                     </Link>
                                 </li> */}
                                 <li className="menu-item">
-                                    <Link to="/about-us" className="item-link">
+                                    <Link to="/about" className="item-link">
                                         Về chúng tôi
                                     </Link>
                                 </li>
                                 <li className="menu-item">
-                                    <Link to="/contact" className="item-link">
+                                    <Link to="/lienhe" className="item-link">
                                         Liên hệ
                                     </Link>
                                 </li>
@@ -277,51 +278,58 @@ const Header: React.FC = () => {
                                 </a>
                             </li>
                             <Modal
-                            open={isModalVisible}
-                            onCancel={handleCloseModal}
-                            footer={null}
-                            centered
-                            width={500}
+                                open={isModalVisible}
+                                onCancel={handleCloseModal}
+                                footer={null}
+                                centered
+                                width={500}
                             >
-                            {/* Input tìm kiếm */}
-                            <div className="modal-header">
-                                <Input
-                                placeholder="Nhập tên sản phẩm..."
-                                value={query}
-                                onChange={handleSearch}
-                                onKeyPress={handleKeyPress} 
-                                prefix={<SearchOutlined />}
-                                />
-                            </div>
+                                {/* Input tìm kiếm */}
+                                <div className="modal-header">
+                                    <Input
+                                        placeholder="Nhập tên sản phẩm..."
+                                        value={query}
+                                        onChange={handleSearch}
+                                        onKeyPress={handleKeyPress}
+                                        prefix={<SearchOutlined />}
+                                    />
+                                </div>
 
-                            {/* Kết quả tìm kiếm */}
-                            <div className="search-results">
-                                {loading ? (
-                                <Spin tip="Đang tìm kiếm..." />
-                                ) : results.length > 0 ? (
-                                <ul>
-                                    {results.map((product) => (
-                                    <li key={product.id} className="result-item" onClick={() =>
-                                                handleProductClick(
-                                                    product.id
-                                                )
-                                            }>
-                                        <img
-                                        src={product.thumbnail}
-                                        alt={product.name}
-                                        className="result-thumbnail"
-                                        />
-                                        <div className="result-details">
-                                        <span className="result-name">{product.name}</span>
-                                        
-                                        </div>
-                                    </li>
-                                    ))}
-                                </ul>
-                                ) : query.length >= 3 ? (
-                                <p style={{ textAlign: "center" }}>Không tìm thấy sản phẩm</p>
-                                ) : null}
-                            </div>
+                                {/* Kết quả tìm kiếm */}
+                                <div className="search-results">
+                                    {loading ? (
+                                        <Spin tip="Đang tìm kiếm..." />
+                                    ) : results.length > 0 ? (
+                                        <ul>
+                                            {results.map((product) => (
+                                                <li
+                                                    key={product.id}
+                                                    className="result-item"
+                                                    onClick={() =>
+                                                        handleProductClick(
+                                                            product.id,
+                                                        )
+                                                    }
+                                                >
+                                                    <img
+                                                        src={product.thumbnail}
+                                                        alt={product.name}
+                                                        className="result-thumbnail"
+                                                    />
+                                                    <div className="result-details">
+                                                        <span className="result-name">
+                                                            {product.name}
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : query.length >= 3 ? (
+                                        <p style={{ textAlign: "center" }}>
+                                            Không tìm thấy sản phẩm
+                                        </p>
+                                    ) : null}
+                                </div>
                             </Modal>
 
                             <li className="nav-cart">

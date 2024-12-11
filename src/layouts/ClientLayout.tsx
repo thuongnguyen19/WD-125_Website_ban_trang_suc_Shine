@@ -175,7 +175,9 @@ const Layoutweb: React.FC = () => {
                                         data-bs-toggle="offcanvas"
                                         aria-controls="mobileMenu"
                                     >
-                                        <MenuOutlined style={{ fontSize: "24px" }} />
+                                        <MenuOutlined
+                                            style={{ fontSize: "24px" }}
+                                        />
                                     </a>
                                 </div>
                                 <div
@@ -200,31 +202,46 @@ const Layoutweb: React.FC = () => {
                                             <li className="list-group-item">
                                                 <div>Danh mục</div>
                                                 <ul>
-                                                    {categories.map((category) => (
-                                                        <li key={category.id}>
-                                                            <a href={`/products?category=${category.id}`}>
-                                                                {category.name}
-                                                            </a>
-                                                        </li>
-                                                    ))}
+                                                    {categories.map(
+                                                        (category) => (
+                                                            <li
+                                                                key={
+                                                                    category.id
+                                                                }
+                                                            >
+                                                                <a
+                                                                    href={`/products?category=${category.id}`}
+                                                                >
+                                                                    {
+                                                                        category.name
+                                                                    }
+                                                                </a>
+                                                            </li>
+                                                        ),
+                                                    )}
                                                 </ul>
                                             </li>
                                             <li className="list-group-item">
-                                                <Link to="/products">Sản phẩm</Link>
+                                                <Link to="/products">
+                                                    Sản phẩm
+                                                </Link>
                                             </li>
                                             <li className="list-group-item">
                                                 <Link to="/ser">Dịch vụ</Link>
                                             </li>
                                             <li className="list-group-item">
-                                                <Link to="/about-us">Về chúng tôi</Link>
+                                                <Link to="/about">
+                                                    Về chúng tôi
+                                                </Link>
                                             </li>
                                             <li className="list-group-item">
-                                                <Link to="/contact">Liên hệ</Link>
+                                                <Link to="/lienhe">
+                                                    Liên hệ
+                                                </Link>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
-
 
                                 <div className="col-xl-3 col-md-4 col-6">
                                     <a
@@ -301,7 +318,7 @@ const Layoutweb: React.FC = () => {
                                             </li> */}
                                             <li className="menu-item">
                                                 <Link
-                                                    to="/about-us"
+                                                    to="/about"
                                                     className="item-link"
                                                 >
                                                     Về chúng tôi
@@ -309,7 +326,7 @@ const Layoutweb: React.FC = () => {
                                             </li>
                                             <li className="menu-item">
                                                 <Link
-                                                    to="/contact"
+                                                    to="/lienhe"
                                                     className="item-link"
                                                 >
                                                     Liên hệ
