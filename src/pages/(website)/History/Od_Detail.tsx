@@ -418,12 +418,7 @@ const handleCancel = () => {
                                                                         item.id_product
                                                                     )
                                                                 }
-                                                                style={{
-                                                                    marginRight:
-                                                                        "15px",
-                                                                        width: "100px",
-                                                                        height: "100px",
-                                                                }}
+                                                                
                                                             >
                                                                 <img
                                                                     src={
@@ -501,7 +496,7 @@ const handleCancel = () => {
                                                                 style={{
                                                                     textAlign:
                                                                         "right",
-                                                                    width: "600px",
+                                                                    width: "400px",
                                                                 }}
                                                             >
                                                                 <span
@@ -578,9 +573,9 @@ const handleCancel = () => {
                                                     </div>
                                                 </div>
                                                 <div className="row">
-                                                    <div className="label">Điểm tiêu dùng:</div>
+                                                    <div className="label">Giảm giá:</div>
                                                     <div className="value">
-                                                        -{new Intl.NumberFormat("vi-VN", {
+                                                        {new Intl.NumberFormat("vi-VN", {
                                                             style: "currency",
                                                             currency: "VND",
                                                         }).format(order.discount_value)}

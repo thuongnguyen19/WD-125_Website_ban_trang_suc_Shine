@@ -14,3 +14,17 @@ export const fetchProductsNew = async (): Promise<ProductsNew[]> => {
   const response = await axiosInstance.get<ProductsNew[]>("/products/new");
   return response.data;
 };
+
+export interface Combo {
+    id: number;
+    name: string;
+    price: number;
+    description: string;
+    quantity: number;
+    image: string;
+}
+
+export const fetchCombos = async (): Promise<Combo[]> => {
+  const response = await axiosInstance.get<Combo[]>("/combo");
+  return response.data;
+};

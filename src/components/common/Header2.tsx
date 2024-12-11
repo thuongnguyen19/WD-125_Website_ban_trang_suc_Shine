@@ -6,10 +6,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../configs/axios";
 import {
-    DoubleRightOutlined,
     LeftOutlined,
     RightOutlined,
 } from "@ant-design/icons";
+import { Combo, fetchCombos } from "../../Interface/ProductsNew";
 
 // Định nghĩa các interface
 interface AdConfig {
@@ -27,14 +27,7 @@ interface ApiResponse {
         [key: string]: string | AdConfig;
     };
 }
-interface Combo {
-    id: number;
-    name: string;
-    price: string;
-    description: string;
-    quantity: number;
-    image: string;
-}
+
 
 const Header2 = () => {
     const [adConfig, setAdConfig] = useState<ApiResponse | null>(null);
@@ -56,25 +49,29 @@ const Header2 = () => {
     }, []);
 
     useEffect(() => {
-        const fetchCombos = async () => {
+        const fetchCombosData = async () => { // Đổi tên hàm để tránh xung đột
             try {
-                const response = await axiosInstance.get<Combo[]>("/combo"); // Gọi API combo
-                setCombos(response.data);
+                const response = await fetchCombos(); // Gọi hàm fetchCombos toàn cục
+                setCombos(response); // Gán kết quả vào state
             } catch (error) {
                 console.error("Lỗi khi gọi API combo:", error);
             }
         };
 
-        fetchCombos();
+        fetchCombosData(); // Gọi hàm bên trong useEffect
     }, []);
+        const handleAdClick = (id: number) => {
+            try {
+                axiosInstance.get<ApiResponse>(`/visits/${id}`); // Điều hướng đến trang combo_detail với id của combo
+            } catch (error) {
+                console.error("Lỗi khi gọi API combo:", error);
+            }
+        };
 
-    const handleAdClick = (id: number) => {
-          try {
-              axiosInstance.get<ApiResponse>(`/visits/${id}`); // Điều hướng đến trang combo_detail với id của combo
-          } catch (error) {
-              console.error("Lỗi khi gọi API combo:", error);
-          }
+    const handleProductClick = (id: number) => {
+        navigate(`/combo_detail/${id}`);
     };
+
 
     return (
         <div>
@@ -141,65 +138,7 @@ const Header2 = () => {
                             </Button>
                         </div>
                     ) : (
-// <<<<<<< HEAD
-//                         <div
-//                             style={{
-//                                 position: "relative",
-//                                 maxWidth: "1000px",
-//                                 margin: "0 auto",
-//                             }}
-//                         >
-//                             <a
-//                                 href={adConfig.data?.url}
-//                                 target="_blank"
-//                                 rel="noopener noreferrer"
-//                             >
-//                                 <img
-//                                     alt="Banner"
-//                                     src={adConfig.data?.image}
-//                                     style={{
-//                                         width: "1000px", // Giữ nguyên kích thước ảnh
-//                                         height: "300px", // Giữ nguyên kích thước ảnh
-//                                         objectFit: "cover", // Đảm bảo ảnh không bị méo
-//                                     }}
-//                                     className="banner-image"
-//                                 />
-//                                 {/* Tiêu đề */}
-//                                 <div
-//                                     style={{
-//                                         position: "absolute",
-//                                         bottom: "60px", // Đặt vị trí của tiêu đề
-//                                         left: "20px",
-//                                         color: "white",
-//                                         fontSize: "24px",
-//                                         fontWeight: "bold",
-//                                         zIndex: 1, // Đảm bảo tiêu đề nằm trên ảnh
-//                                     }}
-//                                 >
-//                                     {adConfig.data?.title}
-//                                 </div>
 
-//                                 {/* Mô tả hoặc phần highlight */}
-//                                 <div
-//                                     style={{
-//                                         position: "absolute",
-//                                         bottom: "20px", // Đặt vị trí cho phần mô tả
-//                                         left: "20px",
-//                                         color: "white",
-//                                         fontSize: "18px",
-//                                         whiteSpace: "nowrap",
-//                                         overflow: "hidden",
-//                                         width: "100%",
-//                                         animation:
-//                                             "scroll-text 10s linear infinite",
-//                                         zIndex: 1, // Đảm bảo văn bản nằm trên ảnh
-//                                     }}
-//                                 >
-//                                     {adConfig.data?.highlight}
-//                                 </div>
-//                             </a>
-//                         </div>
-// =======
                         <Card
                             hoverable
                             cover={
@@ -308,19 +247,20 @@ const Header2 = () => {
                 >
                     <li className="nav-tab-item" role="presentation">
                         <a
-                            href="#essentials"
+                            href="#combo"
                             className="active"
                             data-bs-toggle="tab"
                         >
-                            COMBO KHUYẾN MÃI
+                            Combo khuyến mãi
                         </a>
                     </li>
                 </ul>
                 <div className="tab-content">
                     <div
                         className="tab-pane active show"
-                        id="essentials"
+                        id="combo"
                         role="tabpanel"
+                        style={{margin: "50px"}}
                     >
                         <div className="wrap-carousel">
                             <div
@@ -349,11 +289,10 @@ const Header2 = () => {
                                         <RightOutlined />
                                     </div>
 
-                                    {/* Swiper chính */}
                                     <Swiper
                                         modules={[Navigation]} // Sử dụng module Navigation cho Swiper
                                         spaceBetween={20}
-                                        slidesPerView={4} // Hiển thị 4 sản phẩm mỗi lần
+                                        slidesPerView={4} 
                                         navigation={{
                                             nextEl: ".swiper-button-next",
                                             prevEl: ".swiper-button-prev",
@@ -362,12 +301,14 @@ const Header2 = () => {
                                         className="swiper-container"
                                     >
                                         {combos.map((combo) => (
-                                            <SwiperSlide key={combo.id}>
+                                            <SwiperSlide
+                                                key={combo.id}
+                                            >
                                                 <div className="card-product">
                                                     <div className="card-product-wrapper">
                                                         <div
                                                             onClick={() =>
-                                                                handleAdClick(
+                                                                handleProductClick(
                                                                     combo.id,
                                                                 )
                                                             }
@@ -379,34 +320,70 @@ const Header2 = () => {
                                                             <img
                                                                 className="lazyload img-product"
                                                                 src={
-                                                                    combo.image ||
-                                                                    "https://via.placeholder.com/300"
+                                                                    combo.image
                                                                 }
-                                                                alt={combo.name}
+                                                                alt={
+                                                                    combo.name
+                                                                }
                                                                 style={{
                                                                     width: "700px",
-                                                                    height: "300px",
-                                                                    objectFit:
-                                                                        "cover",
+                                                                    height: "400px",
                                                                 }}
                                                             />
                                                         </div>
+                                                        
                                                     </div>
-                                                    <div className="card-body">
-                                                        <div className="product-name">
-                                                            <p
-                                                                onClick={() =>
-                                                                    handleAdClick(
-                                                                        combo.id,
-                                                                    )
-                                                                }
-                                                                style={{
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            >
-                                                                {combo.name}
-                                                            </p>
-                                                        </div>
+                                                    <div className="card-product-info text-center">
+                                                        <h3
+                                                            onClick={() =>
+                                                                handleProductClick(
+                                                                    combo.id,
+                                                                )
+                                                            }
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            className="title link"
+                                                        >
+                                                            {
+                                                                combo.name
+                                                            }
+                                                        </h3>
+
+                                                        
+
+                                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: 'center'
+                                            }}
+                                        >
+                                            <div className="price-on-sale">
+                                                <span
+                                                    style={{
+                                                        fontWeight:
+                                                            "bold",
+                                                        color: "#f00",
+                                                    }}
+                                                >
+                                                    {new Intl.NumberFormat(
+                                                        "vi-VN",
+                                                        {
+                                                            style: "currency",
+                                                            currency:
+                                                                "VND",
+                                                        },
+                                                    ).format(
+                                                        combo.price
+                                                    )}
+                                                </span>
+                                            </div>
+                                            
+                                            
+                                        </div>
+
+                                                        {/* <span className="price">Giá cũ: {product.variants[0]?.list_price.toLocaleString()} VND</span> */}
                                                     </div>
                                                 </div>
                                             </SwiperSlide>
@@ -414,10 +391,13 @@ const Header2 = () => {
                                     </Swiper>
                                 </div>
                             </div>
+
+                            <div className="sw-dots style-2 sw-pagination-sell-1 justify-content-center"></div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };
