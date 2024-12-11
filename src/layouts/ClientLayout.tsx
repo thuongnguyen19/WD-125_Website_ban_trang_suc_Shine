@@ -386,7 +386,7 @@ const Layoutweb: React.FC = () => {
                                                     className="result-thumbnail"
                                                     />
                                                     <div className="result-details">
-                                                    <span className="result-name">{product.name}</span>
+                                                    <p className="result-name">{product.name}</p>
                                                     
                                                     </div>
                                                 </li>

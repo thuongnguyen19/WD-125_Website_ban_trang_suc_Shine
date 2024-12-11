@@ -317,9 +317,9 @@ const Header: React.FC = () => {
                                                         className="result-thumbnail"
                                                     />
                                                     <div className="result-details">
-                                                        <span className="result-name">
+                                                        <p className="result-name">
                                                             {product.name}
-                                                        </span>
+                                                        </p>
                                                     </div>
                                                 </li>
                                             ))}

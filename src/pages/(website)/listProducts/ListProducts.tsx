@@ -3,15 +3,15 @@ import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
-    AlignCenterOutlined,
+    CloseOutlined,
     DoubleLeftOutlined,
     DoubleRightOutlined,
+    FilterOutlined,
     HeartFilled,
     HeartOutlined, // Thêm biểu tượng trái tim
 } from "@ant-design/icons";
 import { fetchProducts, Product } from "../../../Interface/Product";
 import { Category, fetchCategorys } from "../../../Interface/Category";
-import axios from "axios"; // Đảm bảo import axios
 import { message } from "antd"; // Đảm bảo import message từ antd
 import axiosInstance from "../../../configs/axios";
 
@@ -136,9 +136,15 @@ const ListProducts: React.FC = () => {
         }
     };
 
-    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCategory(e.target.value);
-        navigate(`/products?category=${e.target.value}`)
+    // const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    //     setSelectedCategory(e.target.value);
+    //     navigate(`/products?category=${e.target.value}`)
+    //     setPage(1);
+    // };
+
+    const handleCategoryClick = (categoryId: string) => {
+        setSelectedCategory(categoryId);
+        navigate(`/products?category=${categoryId}`);
         setPage(1);
     };
 
@@ -238,7 +244,7 @@ const ListProducts: React.FC = () => {
             <section className="flat-spacing-2">
                 <div className="container">
                     <div className="tf-shop-control grid-3 align-items-center">
-                        <div className="tf-control-filter">
+                        {/* <div className="tf-control-filter">
                             <select
                                 value={selectedCategory}
                                 onChange={handleCategoryChange}
@@ -253,6 +259,134 @@ const ListProducts: React.FC = () => {
                                     </option>
                                 ))}
                             </select>
+                        </div> */}
+                        <div className="tf-control-filter">
+                            <a href="#filterShop" data-bs-toggle="offcanvas" aria-controls="offcanvasLeft" className="tf-btn-filter"><span><FilterOutlined /></span><span className="text">Lọc</span></a>
+                        </div>
+                        <div className="offcanvas offcanvas-start canvas-filter" id="filterShop">
+                            <div className="canvas-wrapper">
+                                <header className="canvas-header">
+                                    <div className="filter-icon">
+                                        <span><FilterOutlined /></span>
+                                        <span>Lọc</span>
+                                    </div>
+                                    <span data-bs-dismiss="offcanvas" aria-label="Close"><CloseOutlined /></span>
+                                </header>
+                                <div className="canvas-body">
+                                    <div className="widget-facet wd-categories">
+                                        <div
+                                            className="facet-title"
+                                            data-bs-target="#categories"
+                                            data-bs-toggle="collapse"
+                                            aria-expanded="true"
+                                            aria-controls="categories"
+                                        >
+                                            <span>Danh mục</span>
+                                        </div>
+                                        <div id="categories">
+                                            <ul className="list-categoris current-scrollbar mb_36">
+                                                <li
+                                                    className={`cate-item ${selectedCategory === "all" ? "current" : ""}`}
+                                                    onClick={() => handleCategoryClick("all")}
+                                                >
+                                                    <a>Tất cả</a>
+                                                </li>
+                                                {categories.map((category) => (
+                                                    <li
+                                                        key={category.id}
+                                                        className={`cate-item ${selectedCategory === String(category.id) ? "current" : ""}`}
+                                                        onClick={() => handleCategoryClick(String(category.id))}
+                                                    >
+                                                        <a>{category.name}</a>
+                                                    </li>
+
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <form action="#" id="facet-filter-form" className="facet-filter-form">
+                                        
+                                        <div className="widget-facet">
+                                            <div className="facet-title" data-bs-target="#price" data-bs-toggle="collapse" aria-expanded="true" aria-controls="price">
+                                                <span>Giá</span>
+                                            </div>
+                                            <div id="price">
+                                                <div className="widget-price filter-price">
+                                                    <div className="tow-bar-block">
+                                                        <div className="progress-price"></div>
+                                                    </div>
+                                                    <div className="range-input">
+                                                        <input className="range-min" type="range" min="0" max="300" value="0"/>
+                                                        <input className="range-max" type="range" min="0" max="300" value="300"/>
+                                                    </div>
+                                                    <div className="box-title-price">
+                                                        <span className="title-price">Giá :</span>
+                                                        <div className="caption-price">
+                                                            <div>
+                                                                <span className="min-price">1.000.000</span>
+                                                                <span>đ</span>
+                                                            </div>
+                                                            <span>-</span>
+                                                            <div>
+                                                                <span className="max-price">10.000.000</span>
+                                                                <span>đ</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                        {/* <div className="widget-facet">
+                                            <div className="facet-title" data-bs-target="#color" data-bs-toggle="collapse" aria-expanded="true" aria-controls="color">
+                                                <span>Color</span>
+                                            </div>
+                                            <div id="color">
+                                                <ul className="tf-filter-group filter-color current-scrollbar mb_36">
+                                                
+                                                    <li className="list-item d-flex gap-12 align-items-center">
+                                                        <input type="checkbox" name="color" className="tf-check-color bg_taupe" id="taupe" value="taupe"/>
+                                                        <label htmlFor="taupe" className="label"><span>Taupe</span>&nbsp;<span>(1)</span></label>
+                                                    </li>
+                                                    <li className="list-item d-flex gap-12 align-items-center">
+                                                        <input type="checkbox" name="color" className="tf-check-color bg_white" id="white" value="white"/>
+                                                        <label htmlFor="white" className="label"><span>White</span>&nbsp;<span>(14)</span></label>
+                                                    </li>
+                                                    <li className="list-item d-flex gap-12 align-items-center">
+                                                        <input type="checkbox" name="color" className="tf-check-color bg_yellow" id="yellow" value="yellow"/>
+                                                        <label htmlFor="yellow" className="label"><span>Yellow</span>&nbsp;<span>(1)</span></label>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div className="widget-facet">
+                                            <div className="facet-title" data-bs-target="#size" data-bs-toggle="collapse" aria-expanded="true" aria-controls="size">
+                                                <span>Size</span>
+                                            </div>
+                                            <div id="size">
+                                                <ul className="tf-filter-group current-scrollbar">
+                                                    <li className="list-item d-flex gap-12 align-items-center">
+                                                        <input type="radio" name="size" className="tf-check tf-check-size" value="s" id="s"/>
+                                                        <label htmlFor="s" className="label"><span>S</span>&nbsp;<span>(7)</span></label>
+                                                    </li>
+                                                    <li className="list-item d-flex gap-12 align-items-center">
+                                                        <input type="radio" name="size" className="tf-check tf-check-size" value="m" id="m"/>
+                                                        <label htmlFor="m" className="label"><span>M</span>&nbsp;<span>(8)</span></label>
+                                                    </li>
+                                                    <li className="list-item d-flex gap-12 align-items-center">
+                                                        <input type="radio" name="size" className="tf-check tf-check-size" value="l" id="l"/>
+                                                        <label htmlFor="l" className="label"><span>L</span>&nbsp;<span>(8)</span></label>
+                                                    </li>
+                                                
+                                                </ul>
+                                            </div>
+                                        </div> */}
+                                    </form>    
+                                </div>
+                                
+                            </div>       
                         </div>
                         <div className="tf-control-layout d-flex justify-content-center">
                             <div className="search">
