@@ -47,11 +47,14 @@ const ListCart: React.FC = () => {
 
         const fetchCartItems = async () => {
             try {
-                const response = await axiosInstance.get("/listCart", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+                const response = await axiosInstance.get(
+                    "/listCart",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
                     },
-                });
+                );
 
                 if (response.data.status) {
                     const items = mergeCartItems(response.data.data);
@@ -68,28 +71,7 @@ const ListCart: React.FC = () => {
         };
 
         fetchCartItems();
-
-        // Kết nối WebSocket
-        const socket = new WebSocket("ws://your-websocket-url");
-
-        socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.action === "delete_product") {
-                // Xử lý xóa sản phẩm khi nhận thông báo từ WebSocket
-                setCartItems((prevItems) =>
-                    prevItems.filter((item) => item.id !== data.productId),
-                );
-                updateLocalStorageCart(cartItems);
-                message.success("Sản phẩm đã bị xóa khỏi giỏ hàng.");
-            }
-        };
-
-        // Hủy WebSocket khi component unmount
-        return () => {
-            socket.close();
-        };
     }, [navigate]);
-
 
     const updateLocalStorageCart = (cartItems: CartItem[]) => {
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -167,12 +149,6 @@ const ListCart: React.FC = () => {
                             data: { cart_ids: selectedItems, id_user: user.id },
                         },
                     );
-                     const remainingCartItems = cartItems.filter(
-                         (item) => !selectedItems.includes(item.id),
-                     );
-                     setCartItems(remainingCartItems);
-                     setSelectedItems([]);
-                     setTotalPrice(0);
 
                     const remainingItems = cartItems.filter(
                         (item) => !selectedItems.includes(item.id),
@@ -191,27 +167,26 @@ const ListCart: React.FC = () => {
         });
     };
 
- const handleIncreaseQuantity = (itemId: number) => {
-    const updatedCartItems = cartItems.map((item) => {
-        if (item.id === itemId) {
-            // Kiểm tra nếu số lượng hiện tại đã đạt giới hạn tồn kho
-            if (item.quantity >= (item.variant?.quantity || 0)) {
-                message.warning(
-                    `Sản phẩm "${item.variant?.product.name}" đã đạt số lượng tối đa trong kho (${item.variant?.quantity}).`
-                );
-                return item; // Không tăng thêm số lượng
+    const handleIncreaseQuantity = (itemId: number) => {
+        const updatedCartItems = cartItems.map((item) => {
+            if (item.id === itemId) {
+                // Kiểm tra xem số lượng hiện tại có nhỏ hơn số lượng tồn kho không
+                if (item.quantity < (item.variant?.quantity || 0)) {
+                    const updatedQuantity = Number(item.quantity) + 1;
+                    item.quantity = updatedQuantity;
+                } else {
+                    message.warning(
+                        `Sản phẩm "${item.variant?.product.name}" chỉ còn ${item.variant?.quantity} trong kho.`,
+                    );
+                }
+                return item;
             }
-            // Tăng số lượng nếu còn trong giới hạn
-            item.quantity += 1;
-        }
-        return item;
-    });
-
-    setCartItems(updatedCartItems);
-    updateLocalStorageCart(updatedCartItems);
-    calculateTotalPrice(selectedItems);
-};
-
+            return item;
+        });
+        setCartItems(updatedCartItems);
+        updateLocalStorageCart(updatedCartItems);
+        calculateTotalPrice(selectedItems);
+    };
 
     const handleDecreaseQuantity = (itemId: number) => {
         const updatedCartItems = cartItems.map((item) => {
@@ -302,50 +277,42 @@ const ListCart: React.FC = () => {
     };
 
     // Xử lý xóa sản phẩm khi nhấn nút "x"
-const handleDeleteItem = async (itemId: number) => {
-    
-    Modal.confirm({
-        title: "Xác nhận",
-        content: "Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?",
-        okText: "Xóa",
-        cancelText: "Hủy",
-        onOk: async () => {
-            try {
-                const token = localStorage.getItem("authToken");
-                if (!token) {
-                    message.error("Bạn chưa đăng nhập.");
-                    return;
+    const handleDeleteItem = async (itemId: number) => {
+        Modal.confirm({
+            title: "Xác nhận",
+            content: "Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?",
+            okText: "Xóa",
+            cancelText: "Hủy",
+            onOk: async () => {
+                try {
+                    const token = localStorage.getItem("authToken");
+                    if (!token) {
+                        message.error("Bạn chưa đăng nhập.");
+                        return;
+                    }
+
+                    await axiosInstance.delete("/deleteCart", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        data: { id: itemId },
+                    });
+
+                    const remainingItems = cartItems.filter(
+                        (item) => item.id !== itemId,
+                    );
+                    setCartItems(remainingItems);
+                    updateLocalStorageCart(remainingItems);
+                    calculateTotalPrice(selectedItems);
+                    message.success("Sản phẩm đã được xóa khỏi giỏ hàng!");
+                } catch (error) {
+                    message.error(
+                        "Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng.",
+                    );
                 }
-
-                await axiosInstance.delete("/deleteCart", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    data: { id: itemId },
-                });
-
-                const remainingItems = cartItems.filter(
-                    (item) => item.id !== itemId,
-                );
-                setCartItems(remainingItems);
-                updateLocalStorageCart(remainingItems);
-
-                // Cập nhật selectedItems và tính lại tổng giá
-                const updatedSelectedItems = selectedItems.filter(
-                    (id) => id !== itemId,
-                );
-                
-                setSelectedItems(updatedSelectedItems);
-                calculateTotalPrice(updatedSelectedItems);
-
-                message.success("Sản phẩm đã được xóa khỏi giỏ hàng!");
-            } catch (error) {
-                message.error("Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng.");
-            }
-        },
-    });
-};
-
+            },
+        });
+    };
 
     if (loading) {
         return (
@@ -647,27 +614,10 @@ const handleDeleteItem = async (itemId: number) => {
                                                 marginLeft: "10px",
                                             }}
                                         >
-                                            {selectedItems.length > 0
-                                                ? selectedItems
-                                                      .reduce((sum, id) => {
-                                                          const selectedItem =
-                                                              cartItems.find(
-                                                                  (item) =>
-                                                                      item.id ===
-                                                                      id,
-                                                              );
-                                                          return (
-                                                              sum +
-                                                              (selectedItem
-                                                                  ?.variant
-                                                                  ?.selling_price ||
-                                                                  0) *
-                                                                  (selectedItem?.quantity ||
-                                                                      0)
-                                                          );
-                                                      }, 0)
-                                                      .toLocaleString("vi-VN") +
-                                                  " VND"
+                                            {totalPrice > 0
+                                                ? totalPrice.toLocaleString(
+                                                      "vi-VN",
+                                                  ) + " VND"
                                                 : "0 VND"}
                                         </span>
                                     </div>
