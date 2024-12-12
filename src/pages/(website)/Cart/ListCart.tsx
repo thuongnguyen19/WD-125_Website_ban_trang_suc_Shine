@@ -37,41 +37,47 @@ const ListCart: React.FC = () => {
     const navigate = useNavigate();
 
     // Fetch cart items from API
-    useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-            message.error("Bạn chưa đăng nhập.");
-            navigate("/login");
-            return;
-        }
+useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        message.error("Bạn chưa đăng nhập.");
+        navigate("/login");
+        return;
+    }
 
-        const fetchCartItems = async () => {
-            try {
-                const response = await axiosInstance.get(
-                    "/listCart",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
-                );
+    const fetchCartItems = async () => {
+        try {
+            const response = await axiosInstance.get("/listCart", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-                if (response.data.status) {
-                    const items = mergeCartItems(response.data.data);
-                    setCartItems(items);
-                    updateLocalStorageCart(items);
-                } else {
-                    message.error(response.data.message);
-                }
-            } catch (error) {
-                message.error("Có lỗi xảy ra khi lấy giỏ hàng.");
-            } finally {
-                setLoading(false);
+            if (response.data.status) {
+                const items = mergeCartItems(response.data.data);
+                setCartItems(items);
+                updateLocalStorageCart(items);
+            } else {
+                message.error(response.data.message);
             }
-        };
+        } catch (error) {
+            message.error("Có lỗi xảy ra khi lấy giỏ hàng.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    // Gọi API lần đầu tiên
+    fetchCartItems();
+
+    // Thiết lập polling để gọi API liên tục mỗi 5 giây
+    const intervalId = setInterval(() => {
         fetchCartItems();
-    }, [navigate]);
+    }, 5000);
+
+    // Hủy polling khi component unmount
+    return () => clearInterval(intervalId);
+}, [navigate]);
 
     const updateLocalStorageCart = (cartItems: CartItem[]) => {
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -149,6 +155,12 @@ const ListCart: React.FC = () => {
                             data: { cart_ids: selectedItems, id_user: user.id },
                         },
                     );
+                     const remainingCartItems = cartItems.filter(
+                         (item) => !selectedItems.includes(item.id),
+                     );
+                     setCartItems(remainingCartItems);
+                     setSelectedItems([]);
+                     setTotalPrice(0);
 
                     const remainingItems = cartItems.filter(
                         (item) => !selectedItems.includes(item.id),
@@ -277,42 +289,50 @@ const ListCart: React.FC = () => {
     };
 
     // Xử lý xóa sản phẩm khi nhấn nút "x"
-    const handleDeleteItem = async (itemId: number) => {
-        Modal.confirm({
-            title: "Xác nhận",
-            content: "Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?",
-            okText: "Xóa",
-            cancelText: "Hủy",
-            onOk: async () => {
-                try {
-                    const token = localStorage.getItem("authToken");
-                    if (!token) {
-                        message.error("Bạn chưa đăng nhập.");
-                        return;
-                    }
-
-                    await axiosInstance.delete("/deleteCart", {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                        data: { id: itemId },
-                    });
-
-                    const remainingItems = cartItems.filter(
-                        (item) => item.id !== itemId,
-                    );
-                    setCartItems(remainingItems);
-                    updateLocalStorageCart(remainingItems);
-                    calculateTotalPrice(selectedItems);
-                    message.success("Sản phẩm đã được xóa khỏi giỏ hàng!");
-                } catch (error) {
-                    message.error(
-                        "Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng.",
-                    );
+const handleDeleteItem = async (itemId: number) => {
+    
+    Modal.confirm({
+        title: "Xác nhận",
+        content: "Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?",
+        okText: "Xóa",
+        cancelText: "Hủy",
+        onOk: async () => {
+            try {
+                const token = localStorage.getItem("authToken");
+                if (!token) {
+                    message.error("Bạn chưa đăng nhập.");
+                    return;
                 }
-            },
-        });
-    };
+
+                await axiosInstance.delete("/deleteCart", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    data: { id: itemId },
+                });
+
+                const remainingItems = cartItems.filter(
+                    (item) => item.id !== itemId,
+                );
+                setCartItems(remainingItems);
+                updateLocalStorageCart(remainingItems);
+
+                // Cập nhật selectedItems và tính lại tổng giá
+                const updatedSelectedItems = selectedItems.filter(
+                    (id) => id !== itemId,
+                );
+                
+                setSelectedItems(updatedSelectedItems);
+                calculateTotalPrice(updatedSelectedItems);
+
+                message.success("Sản phẩm đã được xóa khỏi giỏ hàng!");
+            } catch (error) {
+                message.error("Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng.");
+            }
+        },
+    });
+};
+
 
     if (loading) {
         return (
@@ -614,10 +634,27 @@ const ListCart: React.FC = () => {
                                                 marginLeft: "10px",
                                             }}
                                         >
-                                            {totalPrice > 0
-                                                ? totalPrice.toLocaleString(
-                                                      "vi-VN",
-                                                  ) + " VND"
+                                            {selectedItems.length > 0
+                                                ? selectedItems
+                                                      .reduce((sum, id) => {
+                                                          const selectedItem =
+                                                              cartItems.find(
+                                                                  (item) =>
+                                                                      item.id ===
+                                                                      id,
+                                                              );
+                                                          return (
+                                                              sum +
+                                                              (selectedItem
+                                                                  ?.variant
+                                                                  ?.selling_price ||
+                                                                  0) *
+                                                                  (selectedItem?.quantity ||
+                                                                      0)
+                                                          );
+                                                      }, 0)
+                                                      .toLocaleString("vi-VN") +
+                                                  " VND"
                                                 : "0 VND"}
                                         </span>
                                     </div>

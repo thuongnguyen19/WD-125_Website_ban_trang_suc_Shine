@@ -198,7 +198,7 @@ const Pay: React.FC = () => {
 
     // Xóa các phần liên quan đến mã giảm giá và chỉ giữ lại logic áp dụng điểm
     const handlePointsApply = () => {
-        const pointsDiscount = pointsToUse * 1000; // Quy đổi điểm thành VND
+        const pointsDiscount = pointsToUse * 10000; // Quy đổi điểm thành VND
 
         const discountedTotal = originalTotalAmount - discount - pointsDiscount;
 
@@ -715,13 +715,14 @@ const Pay: React.FC = () => {
                                                 )}
                                             </Button>
                                             <Button
+                                                className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center"
                                                 onClick={() =>
                                                     setIsModalVisible(true)
                                                 }
                                                 style={{
                                                     marginTop: "10px",
                                                     padding: "8px",
-                                                    backgroundColor: "#996699",
+                                                    backgroundColor: "black",
                                                     borderRadius: "5px",
                                                 }}
                                             >
@@ -733,7 +734,7 @@ const Pay: React.FC = () => {
                                         <div style={{ marginTop: "20px" }}>
                                             <input
                                                 type="number"
-                                                placeholder="Nhập điểm tích lũy 1 điểm = 50.000 VNĐ"
+                                                placeholder="Nhập điểm tích lũy 1 điểm = 10.000 VNĐ"
                                                 style={{
                                                     marginRight: "10px",
                                                     padding: "8px",
@@ -767,7 +768,10 @@ const Pay: React.FC = () => {
                                         <div className="d-flex justify-content-between line pb_20">
                                             <h6
                                                 className="fw-5"
-                                                style={{ marginBottom: "20px" , paddingTop:"10px"}}
+                                                style={{
+                                                    marginBottom: "20px",
+                                                    paddingTop: "10px",
+                                                }}
                                             >
                                                 Tổng tiền gốc:
                                             </h6>
@@ -816,7 +820,7 @@ const Pay: React.FC = () => {
                                                             -{" "}
                                                             {(
                                                                 pointsToUse *
-                                                                50000
+                                                                10000
                                                             ).toLocaleString(
                                                                 "vi-VN",
                                                             )}{" "}

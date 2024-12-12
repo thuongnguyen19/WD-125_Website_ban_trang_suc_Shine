@@ -894,7 +894,10 @@ const handleComboClick = (id: number) => {
                                     </div>
 
                                     <div className="tf-size-selection mt-3">
-                                        <h6>Kích thước:</h6>
+                                        <h6>
+                                            Kích thước{" "}
+                                            <div style={{  }}></div>
+                                        </h6>
                                         <br />
                                         <div className="tf-variant-sizes d-flex flex-wrap">
                                             {allSizes.map((sizeName, index) => (
