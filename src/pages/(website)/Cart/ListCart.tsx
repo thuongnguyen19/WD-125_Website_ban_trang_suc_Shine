@@ -37,47 +37,59 @@ const ListCart: React.FC = () => {
     const navigate = useNavigate();
 
     // Fetch cart items from API
-useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-        message.error("Bạn chưa đăng nhập.");
-        navigate("/login");
-        return;
-    }
-
-    const fetchCartItems = async () => {
-        try {
-            const response = await axiosInstance.get("/listCart", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (response.data.status) {
-                const items = mergeCartItems(response.data.data);
-                setCartItems(items);
-                updateLocalStorageCart(items);
-            } else {
-                message.error(response.data.message);
-            }
-        } catch (error) {
-            message.error("Có lỗi xảy ra khi lấy giỏ hàng.");
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            message.error("Bạn chưa đăng nhập.");
+            navigate("/login");
+            return;
         }
-    };
 
-    // Gọi API lần đầu tiên
-    fetchCartItems();
+        const fetchCartItems = async () => {
+            try {
+                const response = await axiosInstance.get("/listCart", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-    // Thiết lập polling để gọi API liên tục mỗi 5 giây
-    const intervalId = setInterval(() => {
+                if (response.data.status) {
+                    const items = mergeCartItems(response.data.data);
+                    setCartItems(items);
+                    updateLocalStorageCart(items);
+                } else {
+                    message.error(response.data.message);
+                }
+            } catch (error) {
+                message.error("Có lỗi xảy ra khi lấy giỏ hàng.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchCartItems();
-    }, 5000);
 
-    // Hủy polling khi component unmount
-    return () => clearInterval(intervalId);
-}, [navigate]);
+        // Kết nối WebSocket
+        const socket = new WebSocket("ws://your-websocket-url");
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.action === "delete_product") {
+                // Xử lý xóa sản phẩm khi nhận thông báo từ WebSocket
+                setCartItems((prevItems) =>
+                    prevItems.filter((item) => item.id !== data.productId),
+                );
+                updateLocalStorageCart(cartItems);
+                message.success("Sản phẩm đã bị xóa khỏi giỏ hàng.");
+            }
+        };
+
+        // Hủy WebSocket khi component unmount
+        return () => {
+            socket.close();
+        };
+    }, [navigate]);
+
 
     const updateLocalStorageCart = (cartItems: CartItem[]) => {
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -179,26 +191,27 @@ useEffect(() => {
         });
     };
 
-    const handleIncreaseQuantity = (itemId: number) => {
-        const updatedCartItems = cartItems.map((item) => {
-            if (item.id === itemId) {
-                // Kiểm tra xem số lượng hiện tại có nhỏ hơn số lượng tồn kho không
-                if (item.quantity < (item.variant?.quantity || 0)) {
-                    const updatedQuantity = Number(item.quantity) + 1;
-                    item.quantity = updatedQuantity;
-                } else {
-                    message.warning(
-                        `Sản phẩm "${item.variant?.product.name}" chỉ còn ${item.variant?.quantity} trong kho.`,
-                    );
-                }
-                return item;
+ const handleIncreaseQuantity = (itemId: number) => {
+    const updatedCartItems = cartItems.map((item) => {
+        if (item.id === itemId) {
+            // Kiểm tra nếu số lượng hiện tại đã đạt giới hạn tồn kho
+            if (item.quantity >= (item.variant?.quantity || 0)) {
+                message.warning(
+                    `Sản phẩm "${item.variant?.product.name}" đã đạt số lượng tối đa trong kho (${item.variant?.quantity}).`
+                );
+                return item; // Không tăng thêm số lượng
             }
-            return item;
-        });
-        setCartItems(updatedCartItems);
-        updateLocalStorageCart(updatedCartItems);
-        calculateTotalPrice(selectedItems);
-    };
+            // Tăng số lượng nếu còn trong giới hạn
+            item.quantity += 1;
+        }
+        return item;
+    });
+
+    setCartItems(updatedCartItems);
+    updateLocalStorageCart(updatedCartItems);
+    calculateTotalPrice(selectedItems);
+};
+
 
     const handleDecreaseQuantity = (itemId: number) => {
         const updatedCartItems = cartItems.map((item) => {
