@@ -13,8 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
-import { fetchProductsNew, ProductsNew } from "../../../Interface/ProductsNew";
-import axios from "axios";
+import {fetchProductsNew, ProductsNew } from "../../../Interface/ProductsNew";
 import { message } from "antd";
 import axiosInstance from "../../../configs/axios";
 
@@ -25,13 +24,16 @@ const Home: React.FC = () => {
     const [favorites, setFavorites] = useState<number[]>([]);
     const navigate = useNavigate();
 
+    
+
+
     useEffect(() => {
         const loadProductsNew = async () => {
             try {
                 const data = await fetchProductsNew();
                 setProductsNew(data);
             } catch (error) {
-                console.error("Error fetching productsnew:", error);
+                console.error("Lỗi khi lấy sản phẩm mới nhất:", error);
             }
             setLoading(false);
         };
@@ -205,7 +207,7 @@ const Home: React.FC = () => {
                                             <Swiper
                                                 modules={[Navigation]} // Sử dụng module Navigation cho Swiper
                                                 spaceBetween={20}
-                                                slidesPerView={4} // Hiển thị 3 sản phẩm mỗi lần
+                                                slidesPerView={4}
                                                 navigation={{
                                                     nextEl: ".swiper-button-next",
                                                     prevEl: ".swiper-button-prev",
@@ -271,7 +273,7 @@ const Home: React.FC = () => {
                                                                             )}
 
                                                                         </span>
-                                                                        <span className="tooltip">Add to Wishlist</span>
+                                                                        <span className="tooltip">Thêm vào yêu thích</span>
                                                                         
                                                                     </a>
                                                                     
@@ -297,65 +299,64 @@ const Home: React.FC = () => {
                                                                 
 
                                                                 <div
-                                                    style={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: 'center'
-                                                    }}
-                                                >
-                                                    <div className="price-on-sale">
-                                                        <span
-                                                            style={{
-                                                                fontWeight:
-                                                                    "bold",
-                                                                color: "#f00",
-                                                            }}
-                                                        >
-                                                            {new Intl.NumberFormat(
-                                                                "vi-VN",
-                                                                {
-                                                                    style: "currency",
-                                                                    currency:
-                                                                        "VND",
-                                                                },
-                                                            ).format(
-                                                                product
-                                                                    .variants[0]
-                                                                    ?.selling_price,
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                    <div
-                                                        className="price-list"
-                                                        style={{
-                                                            marginLeft: "10px",
-                                                        }}
-                                                    >
-                                                        <span
-                                                            style={{
-                                                                textDecoration:
-                                                                    "line-through",
-                                                                color: "#999",
-                                                            }}
-                                                        >
-                                                            {new Intl.NumberFormat(
-                                                                "vi-VN",
-                                                                {
-                                                                    style: "currency",
-                                                                    currency:
-                                                                        "VND",
-                                                                },
-                                                            ).format(
-                                                                product
-                                                                    .variants[0]
-                                                                    ?.list_price,
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                    
-                                                </div>
+                                                                    style={{
+                                                                        display: "flex",
+                                                                        alignItems: "center",
+                                                                        justifyContent: 'center'
+                                                                    }}
+                                                                >
+                                                                    <div className="price-on-sale">
+                                                                        <span
+                                                                            style={{
+                                                                                fontWeight:
+                                                                                    "bold",
+                                                                                color: "#f00",
+                                                                            }}
+                                                                        >
+                                                                            {new Intl.NumberFormat(
+                                                                                "vi-VN",
+                                                                                {
+                                                                                    style: "currency",
+                                                                                    currency:
+                                                                                        "VND",
+                                                                                },
+                                                                            ).format(
+                                                                                product
+                                                                                    .variants[0]
+                                                                                    ?.selling_price,
+                                                                            )}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div
+                                                                        className="price-list"
+                                                                        style={{
+                                                                            marginLeft: "10px",
+                                                                        }}
+                                                                    >
+                                                                        <span
+                                                                            style={{
+                                                                                textDecoration:
+                                                                                    "line-through",
+                                                                                color: "#999",
+                                                                            }}
+                                                                        >
+                                                                            {new Intl.NumberFormat(
+                                                                                "vi-VN",
+                                                                                {
+                                                                                    style: "currency",
+                                                                                    currency:
+                                                                                        "VND",
+                                                                                },
+                                                                            ).format(
+                                                                                product
+                                                                                    .variants[0]
+                                                                                    ?.list_price,
+                                                                            )}
+                                                                        </span>
+                                                                    </div>
+                                                                    
+                                                                </div>
 
-                                                                {/* <span className="price">Giá cũ: {product.variants[0]?.list_price.toLocaleString()} VND</span> */}
                                                             </div>
                                                         </div>
                                                     </SwiperSlide>

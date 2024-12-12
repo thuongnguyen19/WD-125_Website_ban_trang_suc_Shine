@@ -33,15 +33,15 @@ const Layoutweb: React.FC = () => {
     const [cartCount, setCartCount] = useState<number>(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Search[]>([]);
-  const handleOpenModal = () => setIsModalVisible(true);
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setQuery(""); // Reset query
-    setResults([]); // Reset kết quả
-  };
+    const [results, setResults] = useState<Search[]>([]);
+    const handleOpenModal = () => setIsModalVisible(true);
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        setQuery(""); // Reset query
+        setResults([]); // Reset kết quả
+    };
 
-  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
 
@@ -50,14 +50,19 @@ const Layoutweb: React.FC = () => {
       return;
     }
 
-    
     try {
       const data = await fetchSearchs(value); // Gọi API tìm kiếm
       setResults(data); // Lưu kết quả tìm kiếm
     } catch (error) {
       console.error("Lỗi khi tìm kiếm sản phẩm:", error);
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && query.trim()) {
+      // Chuyển sang trang sản phẩm đã lọc theo từ khóa
+      navigate(`/products?query=${encodeURIComponent(query)}`);
+      window.location.reload();
     }
   };
     useEffect(() => {
@@ -346,77 +351,51 @@ const Layoutweb: React.FC = () => {
                                             </a>
                                         </li>
                                         <Modal
-                                            open={isModalVisible}
-                                            onCancel={handleCloseModal}
-                                            footer={null}
-                                            centered
-                                            width={500}
+                                        open={isModalVisible}
+                                        onCancel={handleCloseModal}
+                                        footer={null}
+                                        centered
+                                        width={500}
                                         >
-                                            {/* Input tìm kiếm */}
-                                            <div className="modal-header">
-                                                <Input
-                                                    placeholder="Nhập tên sản phẩm..."
-                                                    value={query}
-                                                    onChange={handleSearch}
-                                                />
-                                            </div>
+                                        {/* Input tìm kiếm */}
+                                        <div className="modal-header">
+                                            <Input
+                                            placeholder="Nhập tên sản phẩm..."
+                                            value={query}
+                                            onChange={handleSearch}
+                                            onKeyPress={handleKeyPress} 
+                                            prefix={<SearchOutlined />}
+                                            />
+                                        </div>
 
-                                            {/* Kết quả tìm kiếm */}
-                                            <div className="search-results">
-                                                {loading ? (
-                                                    <Spin tip="Đang tìm kiếm..." />
-                                                ) : results.length > 0 ? (
-                                                    <ul>
-                                                        {results.map(
-                                                            (product) => (
-                                                                <li
-                                                                    key={
-                                                                        product.id
-                                                                    }
-                                                                    className="result-item"
-                                                                >
-                                                                    <img
-                                                                        onClick={() =>
-                                                                            handleProductClick(
-                                                                                product.id,
-                                                                            )
-                                                                        }
-                                                                        src={
-                                                                            product.thumbnail
-                                                                        }
-                                                                        alt={
-                                                                            product.name
-                                                                        }
-                                                                        className="result-thumbnail"
-                                                                    />
-                                                                    <div
-                                                                        className="result-details"
-                                                                        onClick={() =>
-                                                                            handleProductClick(
-                                                                                product.id,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <span className="result-name">
-                                                                            {
-                                                                                product.name
-                                                                            }
-                                                                        </span>
-                                                                    </div>
-                                                                </li>
-                                                            ),
-                                                        )}
-                                                    </ul>
-                                                ) : query.length >= 3 ? (
-                                                    <p
-                                                        style={{
-                                                            textAlign: "center",
-                                                        }}
-                                                    >
-                                                        Không tìm thấy sản phẩm
-                                                    </p>
-                                                ) : null}
-                                            </div>
+                                        {/* Kết quả tìm kiếm */}
+                                        <div className="search-results">
+                                            {loading ? (
+                                            <Spin tip="Đang tìm kiếm..." />
+                                            ) : results.length > 0 ? (
+                                            <ul>
+                                                {results.map((product) => (
+                                                <li key={product.id} className="result-item" onClick={() =>
+                                                            handleProductClick(
+                                                                product.id
+                                                            )
+                                                        }>
+                                                    <img
+                                                    src={product.thumbnail}
+                                                    alt={product.name}
+                                                    className="result-thumbnail"
+                                                    />
+                                                    <div className="result-details">
+                                                    <p className="result-name">{product.name}</p>
+                                                    
+                                                    </div>
+                                                </li>
+                                                ))}
+                                            </ul>
+                                            ) : query.length >= 3 ? (
+                                            <p style={{ textAlign: "center" }}>Không tìm thấy sản phẩm</p>
+                                            ) : null}
+                                        </div>
                                         </Modal>
                                         <li className="nav-cart">
                                             <Link
