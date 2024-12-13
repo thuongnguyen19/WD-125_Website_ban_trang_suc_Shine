@@ -583,7 +583,7 @@ const handleComboClick = (id: number) => {
                 ...product!.slideImages.map((image: Image) => image.link_image),
             ];
         }
-        return product!.slideImages.map((image: Image) => image.link_image);
+        return [product?.thumbnail,...product!.slideImages.map((image: Image) => image.link_image)];
     };
 
     const handleSlideChange = (swiper: any) => {
@@ -883,7 +883,7 @@ const handleComboClick = (id: number) => {
                                                         border:
                                                             selectedColor ===
                                                             variant.colors.name
-                                                                ? "2px solid #000"
+                                                                ? "2px solid gray"
                                                                 : "1px solid #ccc",
                                                         margin: "0 10px",
                                                         cursor: "pointer",
@@ -925,21 +925,17 @@ const handleComboClick = (id: number) => {
                                                         border:
                                                             selectedSize ===
                                                             sizeName
-                                                                ? "3px solid #000"
+                                                                ? "2px solid lightgray"
                                                                 : "1px solid #ccc",
                                                         borderRadius: "5px",
                                                         textAlign: "center",
                                                         backgroundColor:
                                                             selectedSize ===
                                                             sizeName
-                                                                ? "#ff6600"
+                                                                ? "lightgray"
                                                                 : "#f9f9f9",
                                                         fontWeight: "bold",
-                                                        color:
-                                                            selectedSize ===
-                                                            sizeName
-                                                                ? "#fff"
-                                                                : "#000",
+                                                        
                                                         opacity:
                                                             isSizeAvailable(
                                                                 sizeName,
@@ -1010,50 +1006,54 @@ const handleComboClick = (id: number) => {
                                         style={{
                                             textAlign: "center",
                                             display: "flex",
-                                            justifyContent: "center",
                                         }}
                                     >
                                         <button
                                             className="tf-btn btn-fill"
                                             style={{
-                                                width: "60%",
+                                                width: "90%",
                                                 display: "flex",
                                                 justifyContent: "center",
                                                 alignItems: "center",
+                                                fontSize: "15px",
+                                                textTransform: "uppercase",
                                                 height: "50px",
-                                                marginRight: "20px",
+                                                marginRight: "10px",
                                             }}
                                             onClick={handleAddToCart}
                                         >
                                             Thêm vào giỏ hàng
                                         </button>
-                                        {isFavorite ? (
-                                            <HeartFilled
-                                                onClick={() =>
-                                                    handleAddProductToFavorite(
-                                                        product.id,
-                                                    )
-                                                }
-                                                style={{
+                                        <div className="heart">
+                                            {isFavorite ? (
+                                                <div
+                                                className="heart-container"
+                                                onClick={() => handleAddProductToFavorite(product.id)}
+                                                >
+                                                <HeartFilled
+                                                    style={{
                                                     fontSize: "35px",
                                                     color: "red",
                                                     cursor: "pointer",
-                                                }}
-                                            />
-                                        ) : (
-                                            <HeartOutlined
-                                                onClick={() =>
-                                                    handleAddProductToFavorite(
-                                                        product.id,
-                                                    )
-                                                }
-                                                style={{
+                                                    }}
+                                                />
+                                                </div>
+                                            ) : (
+                                                <div
+                                                className="heart-container"
+                                                onClick={() => handleAddProductToFavorite(product.id)}
+                                                >
+                                                <HeartOutlined
+                                                    style={{
                                                     fontSize: "35px",
                                                     color: "",
                                                     cursor: "pointer",
-                                                }}
-                                            />
-                                        )}
+                                                    }}
+                                                />
+                                                </div>
+                                            )}
+                                            </div>
+
                                     </div>
                                     <div className="tf-product-info-buy-now-button mt-3">
                                         <button
@@ -1066,7 +1066,7 @@ const handleComboClick = (id: number) => {
                                                 width: "100%",
                                                 textAlign: "center",
                                                 display: "block",
-                                                fontSize: "18px",
+                                                fontSize: "15px",
                                                 borderRadius: "5px",
                                                 marginTop: "20px",
                                             }}
