@@ -22,6 +22,8 @@ export interface Search {
 export const fetchProducts = async (
   sortBy: string,
   sortOrder: string,
+  minPrice: number,
+  maxPrice: number,
   id_category: string | number, // thêm id_category để lọc theo danh mục
   search: string, // thêm tìm kiếm theo tên sản phẩm
   page: number,
@@ -31,6 +33,8 @@ export const fetchProducts = async (
     params: {
       sort_by: sortBy,      // Sắp xếp theo tên hoặc giá
       sort: sortOrder,      // Thứ tự tăng dần hoặc giảm dần
+      min_price: minPrice,
+      max_price: maxPrice,
       id_category: id_category, // Lọc theo danh mục
       search: search,       // Tìm kiếm sản phẩm theo tên
       page: page,           // Trang hiện tại
