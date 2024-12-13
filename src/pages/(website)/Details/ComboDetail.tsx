@@ -189,7 +189,9 @@ const ComboDetail: React.FC = () => {
             return unique;
         }, []);
     };
-
+  const handleProductClick = (id: number) => {
+      navigate(`/detail/${id}`);
+  };
     if (loading) return <div>Đang tải...</div>;
     if (error) return <div>{error}</div>;
     if (!combo) return <div>Không tìm thấy combo!</div>;
@@ -245,7 +247,9 @@ const ComboDetail: React.FC = () => {
                             <div className="col-md-6">
                                 <div className="tf-product-info-wrap position-relative">
                                     <div className="tf-product-info-title">
-                                        <h5>{combo?.name}</h5>
+                                        <h5 className="product-name">
+                                            {combo?.name}
+                                        </h5>
                                     </div>
 
                                     <div className="tf-product-info-price">
@@ -307,6 +311,11 @@ const ComboDetail: React.FC = () => {
                                                 }}
                                             >
                                                 <img
+                                                    onClick={() =>
+                                                        handleProductClick(
+                                                            product.id,
+                                                        )
+                                                    }
                                                     src={product.thumbnail}
                                                     alt={product.name}
                                                     style={{
@@ -316,9 +325,15 @@ const ComboDetail: React.FC = () => {
                                                     }}
                                                 />
                                                 <div>
-                                                    <h5 className="product-name">
+                                                    <h6
+                                                        onClick={() =>
+                                                            handleProductClick(
+                                                                product.id,
+                                                            )
+                                                        }
+                                                    >
                                                         {product.name}
-                                                    </h5>
+                                                    </h6>
                                                     <div
                                                         className="tf-variant-colors d-flex align-items-center"
                                                         style={{
