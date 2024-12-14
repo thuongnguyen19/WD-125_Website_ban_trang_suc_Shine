@@ -87,8 +87,8 @@ const Profile = () => {
           ? "Tất cả mã giảm giá"
           : location.pathname.includes("view")
             ? "Sản phẩm xem gần đây"
-            : location.pathname.includes("dv")
-              ? "Thông tin dịch vụ"
+            // : location.pathname.includes("dv")
+            //   ? "Thông tin dịch vụ"
               : location.pathname.includes("personal")
                 ? "Thông tin cá nhân"
                 : `Bảng điều khiển của ${user?.name || "người dùng"}`;
@@ -162,15 +162,15 @@ const Profile = () => {
                                         Sản phẩm xem gần đây
                                     </Link>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <Link
-                                        to="dv" // Thêm mục menu Dịch vụ
+                                        to="dv" 
                                         className={`my-account-nav-item ${location.pathname.includes("dv") ? "active" : ""}`}
                                         style={{ cursor: "pointer" }}
                                     >
                                         Dịch vụ
                                     </Link>
-                                </li>
+                                </li> */}
                                 <li>
                                     <a
                                         onClick={handleLogout}
