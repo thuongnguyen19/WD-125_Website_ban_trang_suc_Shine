@@ -477,7 +477,13 @@ const Pay: React.FC = () => {
                                     </fieldset>
                                 </form>
                                 <fieldset className="box fieldset">
-                                    <label htmlFor="note" style={{paddingTop:20, paddingBottom:10}}>
+                                    <label
+                                        htmlFor="note"
+                                        style={{
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        }}
+                                    >
                                         Ghi chú đơn hàng (Tuỳ chọn)
                                     </label>
                                     <textarea name="note" id="note" />
@@ -946,10 +952,10 @@ const Pay: React.FC = () => {
                                 >
                                     <p>
                                         <strong>
-                                            {voucher.title ||
-                                                "Mã giảm giá"}
+                                            {voucher.title || "Mã giảm giá"}
                                         </strong>
                                     </p>
+                                    <p>{voucher.description}</p>
                                     <p>Có hiệu lực từ: {voucher.start_date}</p>
                                     <p>Hết hạn: {voucher.end_date}</p>
                                     <div
