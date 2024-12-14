@@ -895,9 +895,12 @@ const handleComboClick = (id: number) => {
 
                                     <div className="tf-size-selection mt-3">
                                         <h6>
-                                            Kích thước{" "}
-                                            <div style={{  }}></div>
+                                            kích thước{" "}:
+                                            <span style={{ color: "Gray" }}>
+                                                (bán kính cm)
+                                            </span>
                                         </h6>
+
                                         <br />
                                         <div className="tf-variant-sizes d-flex flex-wrap">
                                             {allSizes.map((sizeName, index) => (
@@ -935,7 +938,7 @@ const handleComboClick = (id: number) => {
                                                                 ? "lightgray"
                                                                 : "#f9f9f9",
                                                         fontWeight: "bold",
-                                                        
+
                                                         opacity:
                                                             isSizeAvailable(
                                                                 sizeName,
@@ -1027,33 +1030,40 @@ const handleComboClick = (id: number) => {
                                         <div className="heart">
                                             {isFavorite ? (
                                                 <div
-                                                className="heart-container"
-                                                onClick={() => handleAddProductToFavorite(product.id)}
+                                                    className="heart-container"
+                                                    onClick={() =>
+                                                        handleAddProductToFavorite(
+                                                            product.id,
+                                                        )
+                                                    }
                                                 >
-                                                <HeartFilled
-                                                    style={{
-                                                    fontSize: "35px",
-                                                    color: "red",
-                                                    cursor: "pointer",
-                                                    }}
-                                                />
+                                                    <HeartFilled
+                                                        style={{
+                                                            fontSize: "35px",
+                                                            color: "red",
+                                                            cursor: "pointer",
+                                                        }}
+                                                    />
                                                 </div>
                                             ) : (
                                                 <div
-                                                className="heart-container"
-                                                onClick={() => handleAddProductToFavorite(product.id)}
+                                                    className="heart-container"
+                                                    onClick={() =>
+                                                        handleAddProductToFavorite(
+                                                            product.id,
+                                                        )
+                                                    }
                                                 >
-                                                <HeartOutlined
-                                                    style={{
-                                                    fontSize: "35px",
-                                                    color: "",
-                                                    cursor: "pointer",
-                                                    }}
-                                                />
+                                                    <HeartOutlined
+                                                        style={{
+                                                            fontSize: "35px",
+                                                            color: "",
+                                                            cursor: "pointer",
+                                                        }}
+                                                    />
                                                 </div>
                                             )}
-                                            </div>
-
+                                        </div>
                                     </div>
                                     <div className="tf-product-info-buy-now-button mt-3">
                                         <button
