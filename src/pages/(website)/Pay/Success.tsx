@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { message, Spin } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import axios from "axios";
@@ -10,6 +10,7 @@ const Success: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [messageText, setMessageText] = useState<string>("");
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -23,12 +24,10 @@ const Success: React.FC = () => {
         const vnp_TxnRef = params.get("vnp_TxnRef");
         const vnp_ResponseCode = params.get("vnp_ResponseCode");
         const vnp_OrderInfo = params.get("vnp_OrderInfo");
-        console.log(vnp_OrderInfo);
 
         const fetchPaymentResult = async () => {
             if (vnp_TxnRef && vnp_ResponseCode) {
                 try {
-                    // Call first API (paymentResult)
                     const responsePaymentResult = await axios.get(
                         "http://localhost:8000/api/paymentResult",
                         {
@@ -50,6 +49,8 @@ const Success: React.FC = () => {
                                 "Đặt hàng thành công!",
                         );
 
+                        navigate("/success", { replace: true });
+
                         // Call second API (paymentComboResult)
                         const responsePaymentComboResult = await axios.get(
                             "http://localhost:8000/api/paymentComboResult",
@@ -66,7 +67,8 @@ const Success: React.FC = () => {
                         );
 
                         if (responsePaymentComboResult.data.status) {
-                            // Process the response if successful
+                            navigate("/success", { replace: true });
+
                             setMessageText(
                                 responsePaymentComboResult.data.message ||
                                     "Đơn hàng combo thanh toán thành công!",
@@ -101,7 +103,7 @@ const Success: React.FC = () => {
         };
 
         fetchPaymentResult();
-    }, [location]);
+    }, [location, navigate]);
 
     if (loading) {
         return (
