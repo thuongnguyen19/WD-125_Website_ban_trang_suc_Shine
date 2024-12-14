@@ -4006,11 +4006,10 @@ header.header-bg {
   color: var(--main);
   border: solid 1px var(--line-2);
   border-radius: 3px;
-  text-transform: uppercase;
   line-height: 22px;
   padding: 6px 8px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 400;
   max-width: 100%;
   text-wrap: nowrap;
   overflow: hidden;
@@ -18604,6 +18603,8 @@ blockquote .text {
   font-size: 14px;
 }
 
+
+
 .price-summary {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -18637,19 +18638,14 @@ blockquote .text {
   /* Màu chữ nổi bật */
 }
 
+
 /* Tùy chỉnh chiều rộng và giao diện của Offcanvas */
 .offcanvas {
   max-width: 400px;
-  /* Chiều rộng */
   background-color: #f9f9f9;
-  /* Màu nền */
   border-right: 1px solid #e0e0e0;
-  /* Đường viền */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  /* Đổ bóng */
 }
-
-
 
 .offcanvas-header h5 {
   margin: 0;
@@ -18659,7 +18655,6 @@ blockquote .text {
 
 .offcanvas-header .btn-close {
   color: white;
-  /* Nút close màu trắng */
   background: transparent;
   font-size: 16px;
   opacity: 1;
@@ -18722,10 +18717,10 @@ blockquote .text {
 /* Responsive chỉnh chiều cao */
 .offcanvas-body {
   max-height: calc(100vh - 56px);
-  /* Điều chỉnh chiều cao body */
   overflow-y: auto;
   /* Cuộn nếu quá dài */
 }
+
 
 /* Nút tìm kiếm */
 .search-icon {
@@ -18744,7 +18739,6 @@ blockquote .text {
 
 .modal-header .ant-input {
   border-radius: 25px;
-  /* Bo góc cho ô input */
   border: 1px solid #ddd;
   padding: 10px 15px;
   font-size: 16px;
@@ -18754,7 +18748,6 @@ blockquote .text {
 /* Kết quả tìm kiếm */
 .search-results {
   max-height: 300px;
-  /* Giới hạn chiều cao cho kết quả */
   overflow-y: auto;
   padding: 10px;
   background-color: #f9f9f9;
@@ -18793,7 +18786,6 @@ blockquote .text {
   height: 50px;
   margin-right: 15px;
   border-radius: 8px;
-  /* Bo góc ảnh */
   object-fit: cover;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -18820,4 +18812,19 @@ blockquote .text {
   margin: 20px auto;
   display: block;
 }
+
+/*icon yêu thích */
+.heart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
 

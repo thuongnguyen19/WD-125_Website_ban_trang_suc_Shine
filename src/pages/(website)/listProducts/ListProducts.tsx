@@ -14,6 +14,7 @@ import { fetchProducts, Product } from "../../../Interface/Product";
 import { Category, fetchCategorys } from "../../../Interface/Category";
 import { message } from "antd"; // Đảm bảo import message từ antd
 import axiosInstance from "../../../configs/axios";
+import { debounce } from "lodash";
 
 const ListProducts: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -23,9 +24,7 @@ const ListProducts: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<string | number>(
-        "",
-    );
+    const [selectedCategory, setSelectedCategory] = useState<string | number>("");
     const [search, setSearch] = useState("");
     const perPage = 12;
     const navigate = useNavigate();
@@ -33,6 +32,25 @@ const ListProducts: React.FC = () => {
     const keyword = searchParams.get("keyword") || ""; // Lấy từ khóa từ URL
     const [error, setError] = useState<string | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]); // Danh sách sản phẩm yêu thích
+    const [minPrice, setMinPrice] = useState<number>(1000000); // Giá trị tối thiểu
+    const [maxPrice, setMaxPrice] = useState<number>(20000000); // Giá trị tối đa
+
+    // Hàm cập nhật giá trị bộ lọc
+    const handlePriceFilterChange = debounce((min: number, max: number) => {
+        setMinPrice(min);
+        setMaxPrice(max);
+        setPage(1); // Reset về trang đầu tiên
+    }, 300); // Chỉ thực thi sau 300ms dừng tương tác
+
+    const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newMinPrice = Number(e.target.value);
+        handlePriceFilterChange(newMinPrice, maxPrice);
+    };
+
+    const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newMaxPrice = Number(e.target.value);
+        handlePriceFilterChange(minPrice, newMaxPrice);
+    };
 
     useEffect(() => {
     const fetchFilteredProducts = async () => {
@@ -56,18 +74,13 @@ const ListProducts: React.FC = () => {
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const categoryId = params.get("category");
-        const query = params.get("query");
-        const selectedCategory = categoryId == 'all'? '':categoryId??'';
-        const search = query ? query : '';
-        // setSearch(query);
-        setSelectedCategory(selectedCategory);
         const loadProducts = async () => {
             try {
                 const { data, total_pages } = await fetchProducts(
                     sortBy,
                     sortOrder,
+                    minPrice,
+                    maxPrice,
                     selectedCategory,
                     search,
                     page,
@@ -75,13 +88,17 @@ const ListProducts: React.FC = () => {
                 );
                 setProducts(data);
                 setTotalPages(total_pages);
-                setLoading(false)
+                setLoading(false);
             } catch (err) {
-                console.error("Error fetching products:", err);
                 setError("Không thể tải sản phẩm.");
             }
         };
 
+        loadProducts();
+    }, [sortBy, sortOrder, minPrice, maxPrice, selectedCategory, search, page, perPage]);
+
+
+    useEffect(() => {
         const loadFavorites = async () => {
             const token = localStorage.getItem("authToken");
             if (!token) return;
@@ -99,13 +116,11 @@ const ListProducts: React.FC = () => {
                     ),
                 );
             } catch (error) {
-                console.error("Error fetching favorites:", error);
+                console.error("Lỗi khi tải yêu thích:", error);
             }
         };
-
-        loadProducts();
         loadFavorites();
-    }, [sortBy, sortOrder, selectedCategory, search, page, perPage]);
+    }, []);
 
     // Lấy dữ liệu danh mục khi component được load
     useEffect(() => {
@@ -114,7 +129,7 @@ const ListProducts: React.FC = () => {
                 const categoriesData = await fetchCategorys();
                 setCategories(categoriesData);
             } catch (error) {
-                console.error("Error fetching categories:", error);
+                console.error("Lỗi khi tải giỏ hàng:", error);
             }
         };
         loadCategories();
@@ -277,7 +292,7 @@ const ListProducts: React.FC = () => {
                                         <div
                                             className="facet-title"
                                             data-bs-target="#categories"
-                                            data-bs-toggle="collapse"
+                                            
                                             aria-expanded="true"
                                             aria-controls="categories"
                                         >
@@ -308,7 +323,7 @@ const ListProducts: React.FC = () => {
                                     <form action="#" id="facet-filter-form" className="facet-filter-form">
                                         
                                         <div className="widget-facet">
-                                            <div className="facet-title" data-bs-target="#price" data-bs-toggle="collapse" aria-expanded="true" aria-controls="price">
+                                            <div className="facet-title" data-bs-target="#price"  aria-expanded="true" aria-controls="price">
                                                 <span>Giá</span>
                                             </div>
                                             <div id="price">
@@ -317,20 +332,57 @@ const ListProducts: React.FC = () => {
                                                         <div className="progress-price"></div>
                                                     </div>
                                                     <div className="range-input">
-                                                        <input className="range-min" type="range" min="0" max="300" value="0"/>
-                                                        <input className="range-max" type="range" min="0" max="300" value="300"/>
+                                                        <input
+                                                            className="range-min"
+                                                            type="range"
+                                                            min="1000000"
+                                                            max="20000000"
+                                                            value={minPrice}
+                                                            onChange={handleMinPriceChange}
+                                                        />
+                                                        <input
+                                                            className="range-max"
+                                                            type="range"
+                                                            min="1000000"
+                                                            max="20000000"
+                                                            value={maxPrice}
+                                                            onChange={handleMaxPriceChange}
+                                                        />
+
                                                     </div>
                                                     <div className="box-title-price">
                                                         <span className="title-price">Giá :</span>
                                                         <div className="caption-price">
                                                             <div>
-                                                                <span className="min-price">1.000.000</span>
-                                                                <span>đ</span>
+                                                                <span className="min-price">
+                                                                    {new Intl.NumberFormat(
+                                                                        "vi-VN",
+                                                                        {
+                                                                            style: "currency",
+                                                                            currency:
+                                                                                "VND",
+                                                                        },
+                                                                    ).format(
+                                                                        minPrice
+                                                                    )}
+                                                                </span>
+                                                                
                                                             </div>
                                                             <span>-</span>
                                                             <div>
-                                                                <span className="max-price">10.000.000</span>
-                                                                <span>đ</span>
+                                                                <span className="max-price">
+                                                                    {new Intl.NumberFormat(
+                                                                        "vi-VN",
+                                                                        {
+                                                                            style: "currency",
+                                                                            currency:
+                                                                                "VND",
+                                                                        },
+                                                                    ).format(
+                                                                        maxPrice
+                                                                    )}
+                                                                </span>
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
@@ -339,50 +391,6 @@ const ListProducts: React.FC = () => {
                                             </div>
                                         </div>
                                         
-                                        {/* <div className="widget-facet">
-                                            <div className="facet-title" data-bs-target="#color" data-bs-toggle="collapse" aria-expanded="true" aria-controls="color">
-                                                <span>Color</span>
-                                            </div>
-                                            <div id="color">
-                                                <ul className="tf-filter-group filter-color current-scrollbar mb_36">
-                                                
-                                                    <li className="list-item d-flex gap-12 align-items-center">
-                                                        <input type="checkbox" name="color" className="tf-check-color bg_taupe" id="taupe" value="taupe"/>
-                                                        <label htmlFor="taupe" className="label"><span>Taupe</span>&nbsp;<span>(1)</span></label>
-                                                    </li>
-                                                    <li className="list-item d-flex gap-12 align-items-center">
-                                                        <input type="checkbox" name="color" className="tf-check-color bg_white" id="white" value="white"/>
-                                                        <label htmlFor="white" className="label"><span>White</span>&nbsp;<span>(14)</span></label>
-                                                    </li>
-                                                    <li className="list-item d-flex gap-12 align-items-center">
-                                                        <input type="checkbox" name="color" className="tf-check-color bg_yellow" id="yellow" value="yellow"/>
-                                                        <label htmlFor="yellow" className="label"><span>Yellow</span>&nbsp;<span>(1)</span></label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="widget-facet">
-                                            <div className="facet-title" data-bs-target="#size" data-bs-toggle="collapse" aria-expanded="true" aria-controls="size">
-                                                <span>Size</span>
-                                            </div>
-                                            <div id="size">
-                                                <ul className="tf-filter-group current-scrollbar">
-                                                    <li className="list-item d-flex gap-12 align-items-center">
-                                                        <input type="radio" name="size" className="tf-check tf-check-size" value="s" id="s"/>
-                                                        <label htmlFor="s" className="label"><span>S</span>&nbsp;<span>(7)</span></label>
-                                                    </li>
-                                                    <li className="list-item d-flex gap-12 align-items-center">
-                                                        <input type="radio" name="size" className="tf-check tf-check-size" value="m" id="m"/>
-                                                        <label htmlFor="m" className="label"><span>M</span>&nbsp;<span>(8)</span></label>
-                                                    </li>
-                                                    <li className="list-item d-flex gap-12 align-items-center">
-                                                        <input type="radio" name="size" className="tf-check tf-check-size" value="l" id="l"/>
-                                                        <label htmlFor="l" className="label"><span>L</span>&nbsp;<span>(8)</span></label>
-                                                    </li>
-                                                
-                                                </ul>
-                                            </div>
-                                        </div> */}
                                     </form>    
                                 </div>
                                 

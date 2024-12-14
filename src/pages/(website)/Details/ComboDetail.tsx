@@ -394,7 +394,7 @@ const ComboDetail: React.FC = () => {
                                                                             variant
                                                                                 .colors
                                                                                 .name
-                                                                                ? "2px solid #000"
+                                                                                ? "2px solid gray"
                                                                                 : "1px solid #ccc",
                                                                         margin: "0 5px",
                                                                         cursor: "pointer",
@@ -437,8 +437,8 @@ const ComboDetail: React.FC = () => {
                                                                                 "center",
                                                                             alignItems:
                                                                                 "center",
-                                                                            width: "40px",
-                                                                            height: "40px",
+                                                                            width: "30px",
+                                                                            height: "30px",
                                                                             margin: "5px",
                                                                             cursor:
                                                                                 variant
@@ -462,10 +462,25 @@ const ComboDetail: React.FC = () => {
                                                                                     selectedColor[
                                                                                         product.id.toString()
                                                                                     ]
-                                                                                    ? "3px solid #000"
+                                                                                    ? "2px solid lightgray"
                                                                                     : "1px solid #ccc",
                                                                             borderRadius:
                                                                                 "5px",
+                                                                            backgroundColor:
+                                                                                selectedSize[
+                                                                                    product.id.toString()
+                                                                                ] ===
+                                                                                    variant
+                                                                                        .sizes
+                                                                                        .name &&
+                                                                                variant
+                                                                                    .colors
+                                                                                    .name ===
+                                                                                    selectedColor[
+                                                                                        product.id.toString()
+                                                                                    ]
+                                                                                    ? "lightgray"
+                                                                                    : "#f9f9f9",
                                                                             opacity:
                                                                                 variant
                                                                                     .colors
