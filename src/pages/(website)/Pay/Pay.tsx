@@ -8,9 +8,7 @@ import {
     Modal,
     message,
     Spin,
-    Input,
-    Form,
-    Radio,
+  
 } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/Header";
@@ -50,6 +48,7 @@ interface Voucher {
     start_date: string;
     end_date: string;
     usage_count: number | null;
+    title: string;
 }
 
 const Pay: React.FC = () => {
@@ -197,20 +196,36 @@ const Pay: React.FC = () => {
     };
 
     // Xóa các phần liên quan đến mã giảm giá và chỉ giữ lại logic áp dụng điểm
-    const handlePointsApply = () => {
-        const pointsDiscount = pointsToUse * 10000; // Quy đổi điểm thành VND
+ const handlePointsApply = () => {
+     const availablePoints = parseInt(Point, 10); // Chuyển đổi số điểm hiện có từ chuỗi sang số nguyên
 
-        const discountedTotal = originalTotalAmount - discount - pointsDiscount;
+     if (!availablePoints || availablePoints <= 0) {
+         message.error("Bạn không có điểm tích lũy để áp dụng.");
+         return;
+     }
 
-        if (discountedTotal >= 0) {
-            setTotalAmount(discountedTotal); // Cập nhật tổng số tiền sau khi áp dụng điểm tích lũy
-            setIsPoint(true);
-            setPointsToUse(pointsToUse);
-            message.success("Điểm tích lũy đã được áp dụng.");
-        } else {
-            message.error("Số điểm nhập vượt quá số tiền cần thanh toán.");
-        }
-    };
+     if (pointsToUse < 0) {
+         message.error("Số điểm không được là số âm.");
+         return;
+     }
+
+     if (pointsToUse > availablePoints) {
+         message.error("Số điểm nhập vượt quá số điểm hiện có.");
+         return;
+     }
+
+     const pointsDiscount = pointsToUse * 1000; // Quy đổi điểm thành VND
+     const discountedTotal = originalTotalAmount - discount - pointsDiscount;
+
+     if (discountedTotal >= 0) {
+         setTotalAmount(discountedTotal); // Cập nhật tổng số tiền sau khi áp dụng điểm tích lũy
+         setIsPoint(true);
+         setPointsToUse(pointsToUse);
+         message.success("Điểm tích lũy đã được áp dụng.");
+     } else {
+         message.error("Số điểm nhập vượt quá số tiền cần thanh toán.");
+     }
+ };
 
     const handleDiscountCodeChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -358,10 +373,7 @@ const Pay: React.FC = () => {
     };
 
     const selectCoupon = (voucherCode: string) => {
-        // const selectedVoucher = availableVouchers.find(
-        //     (v) => v.code === voucherCode,
-        // );
-        // if (selectedVoucher) {
+       
         setDiscountCode(voucherCode); // Cập nhật discountCode
         setVoucherId(voucherId); // Cập nhật voucherId
         applyDiscount(voucherCode);
@@ -463,13 +475,19 @@ const Pay: React.FC = () => {
                                             }
                                         />
                                     </fieldset>
-                                    <fieldset className="box fieldset">
-                                        <label htmlFor="note">
-                                            Ghi chú đơn hàng (Tuỳ chọn)
-                                        </label>
-                                        <textarea name="note" id="note" />
-                                    </fieldset>
                                 </form>
+                                <fieldset className="box fieldset">
+                                    <label
+                                        htmlFor="note"
+                                        style={{
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        }}
+                                    >
+                                        Ghi chú đơn hàng (Tuỳ chọn)
+                                    </label>
+                                    <textarea name="note" id="note" />
+                                </fieldset>
                             </div>
 
                             <div className="tf-page-cart-footer">
@@ -750,7 +768,14 @@ const Pay: React.FC = () => {
                                                     )
                                                 }
                                             />
-                                            <p>điểm tiêu dùng : {Point}</p>
+                                            <p>
+                                                Điểm tiêu dùng:{" "}
+                                                {Point &&
+                                                parseInt(Point, 10) > 0
+                                                    ? Point
+                                                    : 0}
+                                            </p>
+
                                             <Button
                                                 className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center"
                                                 onClick={handlePointsApply}
@@ -927,10 +952,10 @@ const Pay: React.FC = () => {
                                 >
                                     <p>
                                         <strong>
-                                            {voucher.description ||
-                                                "Mã giảm giá"}
+                                            {voucher.title || "Mã giảm giá"}
                                         </strong>
                                     </p>
+                                    <p>{voucher.description}</p>
                                     <p>Có hiệu lực từ: {voucher.start_date}</p>
                                     <p>Hết hạn: {voucher.end_date}</p>
                                     <div

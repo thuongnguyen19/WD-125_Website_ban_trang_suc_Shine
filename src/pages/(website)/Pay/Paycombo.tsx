@@ -210,29 +210,6 @@ const PayCombo: React.FC = () => {
         <>
             <Header />
             <div style={{ padding: "20px" }}>
-                {/* {combo && (
-                    <div
-                        className="combo-info"
-                        style={{ marginBottom: "20px" }}
-                    >
-                        <h2>{combo.name}</h2>
-                        <img
-                            src={combo.image}
-                            alt={combo.name}
-                            style={{
-                                width: "100%",
-                                maxHeight: "300px",
-                                objectFit: "cover",
-                                borderRadius: "5px",
-                            }}
-                        />
-                        <p>{combo.description}</p>
-                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                            Tổng tiền: {totalAmount.toLocaleString("vi-VN")} VNĐ
-                        </p>
-                    </div>
-                )} */}
-
                 <div className="tf-page-title">
                     <div className="container-full">
                         <div className="heading text-center">
@@ -298,13 +275,19 @@ const PayCombo: React.FC = () => {
                                             }
                                         />
                                     </fieldset>
-                                    <fieldset className="box fieldset">
-                                        <label htmlFor="note">
-                                            Ghi chú đơn hàng (Tuỳ chọn)
-                                        </label>
-                                        <textarea name="note" id="note" />
-                                    </fieldset>
                                 </form>
+                                <fieldset className="box fieldset">
+                                    <label
+                                        htmlFor="note"
+                                        style={{
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        }}
+                                    >
+                                        Ghi chú đơn hàng (Tuỳ chọn)
+                                    </label>
+                                    <textarea name="note" id="note" />
+                                </fieldset>
                             </div>
                             <div className="tf-page-cart-footer">
                                 <div className="tf-cart-footer-inner">
@@ -356,8 +339,31 @@ const PayCombo: React.FC = () => {
                                                     >
                                                         Kích thước
                                                     </th>
+                                                   
                                                 </tr>
                                             </thead>
+                                            {/* {combo && (
+                    <div
+                        className="combo-info"
+                        style={{ marginBottom: "20px" }}
+                    >
+                        <h2>{combo.name}</h2>
+                        <img
+                            src={combo.image}
+                            alt={combo.name}
+                            style={{
+                                width: "100%",
+                                maxHeight: "300px",
+                                objectFit: "cover",
+                                borderRadius: "5px",
+                            }}
+                        />
+                        <p>{combo.description}</p>
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Tổng tiền: {totalAmount.toLocaleString("vi-VN")} VNĐ
+                        </p>
+                    </div>
+                )} */}
                                             <tbody>
                                                 {paymentProducts.length > 0 ? (
                                                     paymentProducts.map(
@@ -479,13 +485,24 @@ const PayCombo: React.FC = () => {
                                             </tbody>
                                         </table>
 
-                                        <h6>
-                                            Tổng giá combo:{" "}
-                                            {totalAmount.toLocaleString(
-                                                "vi-VN",
-                                            )}{" "}
-                                            VNĐ
-                                        </h6>
+                                        <div className="d-flex justify-content-between line pb_20">
+                                            <h6
+                                                className="fw-5"
+                                                style={{
+                                                    marginBottom: "20px",
+                                                    paddingTop: "10px",
+                                                }}
+                                            >
+                                                Tổng giá combo:{" "}
+                                            </h6>
+                                            <h6 className="fw-5">
+                                                {totalAmount.toLocaleString(
+                                                    "vi-VN",
+                                                )}{" "}
+                                                VNĐ
+                                            </h6>
+                                        </div>
+
                                         <div className="wd-check-payment">
                                             <div className="fieldset-radio mb_20">
                                                 <input
