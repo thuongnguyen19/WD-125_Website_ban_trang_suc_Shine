@@ -27,6 +27,7 @@ interface Combo {
     id: number;
     name: string;
     image: string; // Ảnh combo
+    quantity: number;
     price: number; // Giá combo
     description: string; // Mô tả combo
     products: Product[]; // Danh sách sản phẩm trong combo
@@ -78,7 +79,7 @@ const PayCombo: React.FC = () => {
                 );
 
                 if (response.data.status) {
-                    const { productpayment, user } = response.data.data;
+                    const { productpayment, totalAmount, user } = response.data.data;
 
                     // Tự động điền thông tin người dùng
                     if (user) {
@@ -90,7 +91,7 @@ const PayCombo: React.FC = () => {
 
                     setCombo(productpayment);
                     setPaymentProducts(productpayment.products || []);
-                    setTotalAmount(productpayment.price || 0);
+                    setTotalAmount(totalAmount || 0);
                 } else {
                     message.error(response.data.message);
                 }
@@ -433,7 +434,7 @@ const PayCombo: React.FC = () => {
                                                                             Số
                                                                             lượng:{" "}
                                                                             {
-                                                                                item.quantity
+                                                                                combo.quantity
                                                                             }
                                                                         </p>
                                                                     </td>
