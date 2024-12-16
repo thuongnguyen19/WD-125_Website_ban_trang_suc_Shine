@@ -404,14 +404,12 @@ const ComboDetail: React.FC = () => {
                                                         )}
                                                     </div>
                                                     <div className="tf-size-selection d-flex align-items-center">
-                                                        <span
-                                                            style={{
-                                                                marginRight:
-                                                                    "10px",
-                                                            }}
-                                                        >
-                                                            Kích thước:
-                                                        </span>
+                                                           <span>
+                                            kích thước{" "}:
+                                            <span style={{ color: "Gray" }}>
+                                                (bán kính cm)
+                                            </span>
+                                        </span>
                                                         <div className="tf-variant-sizes d-flex flex-wrap">
                                                             {product.variants.map(
                                                                 (variant) => (
