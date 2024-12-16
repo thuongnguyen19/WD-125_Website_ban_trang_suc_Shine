@@ -142,9 +142,24 @@ const handleCancel = () => {
 };
 
 
-    const showCancelModal = (orderId: number) => {
-        setCancelOrderId(orderId);
-        setIsModalVisible(true);
+    const showCancelModal = (orderId: number,order: Order) => {
+        if (order.payment_role === 2) {
+            // Nếu phương thức thanh toán là VNPay
+            Modal.confirm({
+                title: "Cảnh báo",
+                content: "Hủy đơn hàng sẽ không hoàn tiền. Bạn có chắc chắn muốn tiếp tục?",
+                okText: "Đồng ý",
+                cancelText: "Hủy",
+                 onOk: () => {
+                    setCancelOrderId(orderId); // Đặt ID của đơn hàng cần hủy
+                    setIsModalVisible(true);  // Hiển thị modal nhập lý do hủy đơn
+                },
+            });
+        } else {
+            setCancelOrderId(orderId);
+            setIsModalVisible(true);
+        }
+        
     };
 
     const handleCancelOrder = async () => {
@@ -186,11 +201,26 @@ const handleCancel = () => {
             content: "Đơn hàng đã được xác nhận và không thể hủy.",
             okText: "Tôi đã hiểu",
             onOk() {
-                window.location.reload(); // Tải lại trang khi người dùng nhấn nút "Tôi đã hiểu"
+                window.location.reload();
             },
         });
     }
     };
+
+    const showCancelWarning = (order: Order ) => {
+    if (order.payment_role === 2) {
+        // Nếu phương thức thanh toán là VNPay
+        Modal.confirm({
+            title: "Cảnh báo",
+            content: "Hủy đơn hàng sẽ không hoàn tiền. Bạn có chắc chắn muốn tiếp tục?",
+            okText: "Đồng ý",
+            cancelText: "Hủy",
+            onOk: () => setIsModalVisible(true), // Hiển thị modal nhập lý do hủy đơn
+        });
+    } else {
+        setIsModalVisible(true); // Hiển thị modal trực tiếp nếu không phải VNPay
+    }
+};
 
     const handleReasonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCancelReason(e.target.value);
@@ -297,6 +327,7 @@ const handleCancel = () => {
                                                 onClick={() =>
                                                     showCancelModal(
                                                         order.id,
+                                                        order
                                                     )
                                                 }
                                             >
@@ -739,6 +770,7 @@ const handleCancel = () => {
                                                             rows={4}
                                                         />
                                                     </Modal>
+                                                    
                                                 </div>
                                             </div>
                                         </div>

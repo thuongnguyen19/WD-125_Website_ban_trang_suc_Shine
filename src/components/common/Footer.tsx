@@ -301,42 +301,6 @@ const Footer = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="footer-bottom">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-12">
-                                    <div className="footer-bottom-wrap d-flex gap-20 flex-wrap justify-content-between align-items-center">
-                                        <div className="footer-menu_item">
-                                            © 2024 Ecomus Store. All Rights
-                                            Reserved
-                                        </div>
-                                        {/* <div className="tf-payment">
-                                            <img
-                                                src="images/payments/visa.png"
-                                                alt=""
-                                            />
-                                            <img
-                                                src="images/payments/img-1.png"
-                                                alt=""
-                                            />
-                                            <img
-                                                src="images/payments/img-2.png"
-                                                alt=""
-                                            />
-                                            <img
-                                                src="images/payments/img-3.png"
-                                                alt=""
-                                            />
-                                            <img
-                                                src="images/payments/img-4.png"
-                                                alt=""
-                                            />
-                                        </div> */}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </footer>
         </div>

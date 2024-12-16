@@ -5,12 +5,9 @@ import {
     UserOutlined,
     ShoppingCartOutlined,
     MenuOutlined,
-    CaretDownOutlined,
     HeartOutlined,
 } from "@ant-design/icons";
 import { Category, fetchCategorys } from "../../Interface/Category";
-import { number } from "joi";
-import axios from "axios";
 import { Avatar, Button, Input, message, Modal, Spin } from "antd";
 import axiosInstance from "../../configs/axios";
 import { fetchSearchs, Search } from "../../Interface/Product";
@@ -37,7 +34,7 @@ const Header: React.FC = () => {
         setResults([]); // Reset kết quả
     };
 
-  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
 
@@ -61,6 +58,8 @@ const Header: React.FC = () => {
       window.location.reload();
     }
   };
+
+
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -173,7 +172,7 @@ const Header: React.FC = () => {
                                 <li className="list-group-item">
                                     <Link to="/">Trang chủ</Link>
                                 </li>
-                                <li className="list-group-item">
+                                 <li className="list-group-item">
                                     <div>Danh mục</div>
                                     <ul>
                                         {categories.map((category) => (
