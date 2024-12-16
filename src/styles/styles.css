@@ -18820,11 +18820,99 @@ blockquote .text {
   align-items: center;
   width: 50px;
   height: 50px;
-  border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
+.tf-dropdown-sort {
+    position: relative;
+    display: inline-block;
+    width: 200px; /* Chiều rộng dropdown */
+}
+
+.tf-dropdown-sort select {
+    width: 100%;
+    font-size: 14px;
+    color: #000;
+    background-color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.tf-dropdown-sort select option {
+    font-weight: normal;
+}
+
+.tf-dropdown-sort select:focus {
+    outline: none;
+    border-color: #aaa; /* Màu viền khi focus */
+}
+
+.footer-body .row {
+  display: flex;
+  flex-wrap: wrap;
+  /* Đảm bảo phần tử xuống dòng khi không đủ chỗ */
+  justify-content: space-between;
+  /* Khoảng cách đều giữa các cột */
+}
+
+.footer-infor {
+  text-align: left;
+  /* Căn trái nội dung của phần thông tin */
+}
+
+
+.tf-social-icon {
+  justify-content: center;
+  /* Căn giữa các icon mạng xã hội */
+  gap: 15px;
+  /* Khoảng cách giữa các icon */
+}
+
+.footer {
+  font-size: 16px;
+  /* Tăng cỡ chữ mặc định */
+  line-height: 1.5;
+  /* Tăng khoảng cách giữa các dòng */
+}
+
+.footer h6 {
+  font-size: 18px;
+  /* Cỡ chữ cho tiêu đề */
+  font-weight: bold;
+  margin-bottom: 15px;
+  /* Khoảng cách bên dưới tiêu đề */
+}
+
+.footer ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  /* Loại bỏ ký hiệu gạch đầu dòng */
+}
+
+.footer ul li {
+  margin-bottom: 10px;
+  /* Tăng khoảng cách giữa các mục trong danh sách */
+}
+
+.footer a {
+  font-size: 16px;
+  /* Tăng cỡ chữ cho các liên kết */
+  color: #333;
+  /* Màu sắc của liên kết */
+  text-decoration: none;
+  /* Loại bỏ gạch chân */
+}
+
+.footer a:hover {
+  color: #007bff;
+  /* Màu khi hover */
+  text-decoration: underline;
+}
+
 
 
