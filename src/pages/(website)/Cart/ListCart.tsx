@@ -313,7 +313,9 @@ const ListCart: React.FC = () => {
             },
         });
     };
-
+  const handleProductClick = (id: number) => {
+      navigate(`/detail/${id}`);
+  };
     if (loading) {
         return (
             <div className="loading-spinner">
@@ -440,10 +442,15 @@ const ListCart: React.FC = () => {
                                                     </td>
                                                     <td className="tf-cart-item_product">
                                                         <a
-                                                            href="product-detail.html"
+                                                            
                                                             className="img-box"
                                                         >
                                                             <img
+                                                             onClick={() =>
+                                                        handleProductClick(
+                                                            item.id,
+                                                        )
+                                                    }
                                                                 src={
                                                                     item.variant
                                                                         ?.image_color
@@ -461,7 +468,7 @@ const ListCart: React.FC = () => {
                                                         </a>
                                                         <div className="cart-info">
                                                             <a
-                                                                href="product-detail.html"
+                                                                
                                                                 className="cart-title link"
                                                             >
                                                                 {

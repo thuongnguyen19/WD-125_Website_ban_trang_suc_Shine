@@ -81,7 +81,11 @@ const OrderHistory = () => {
                         orders.map(order => (
                             <tr key={order.id} className="tf-order-item">
                                 <td>#{order.id}</td>
-                                <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                                <td>{new Intl.DateTimeFormat('en-GB', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                }).format(new Date(order.created_at))}</td>
                                 <td>{orderStatusMap[Number(order.status)]}</td>
                                 <td>
                                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_payment)}
