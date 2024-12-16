@@ -205,7 +205,7 @@ const Footer = () => {
                                                 href="lienhe"
                                                 className="footer-menu_item"
                                             >
-                                                liên hệ
+                                                Liên hệ
                                             </a>
                                         </li>
                                         <li>
@@ -264,37 +264,7 @@ const Footer = () => {
                                                 </div>
                                                 <div id="subscribe-msg"></div>
                                             </form>
-                                            <div className="tf-cur">
-                                                <div className="tf-currencies">
-                                                    <select className="image-select center style-default type-currencies">
-                                                        <option data-thumbnail="images/country/fr.svg">
-                                                            EUR € | Pháp
-                                                        </option>
-                                                        <option data-thumbnail="images/country/de.svg">
-                                                            EUR € | Đức
-                                                        </option>
-                                                        <option
-                                                            selected
-                                                            data-thumbnail="images/country/us.svg"
-                                                        >
-                                                            USD $ | Mỹ
-                                                        </option>
-                                                        <option data-thumbnail="images/country/vn.svg">
-                                                            VND ₫ | Việt Nam
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div className="tf-languages">
-                                                    <select className="image-select center style-default type-languages">
-                                                        <option>English</option>
-                                                        <option>العربية</option>
-                                                        <option>
-                                                            简体中文
-                                                        </option>
-                                                        <option>اردو</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div> */}

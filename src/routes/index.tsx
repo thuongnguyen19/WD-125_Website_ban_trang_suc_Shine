@@ -29,10 +29,10 @@ import Dv from "../layouts/Dv";
 import Service_details from "../layouts/Service_details";
 import ComboDetail from "../pages/(website)/Details/ComboDetail";
 import Paycombo from "../pages/(website)/Pay/Paycombo";
-import Pripaci from "../pages/hard/pripaci";
 import About_us from "../pages/hard/About_us";
 import Ac from "../pages/hard/Ac";
 import Shipping from "../pages/hard/Shipping-delivery";
+import Pripaci from "../pages/hard/Pripaci";
 
 
 const Router = () => {

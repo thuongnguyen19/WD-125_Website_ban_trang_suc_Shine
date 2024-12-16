@@ -595,14 +595,14 @@ const ListProducts: React.FC = () => {
                     {/* Phân trang */}
                         <div className="phantrang">
                             <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
+                                {/* Nút chuyển đến trang trước */}
                                 <li className={page === 1 ? "disabled" : ""}>
                                     <a
                                         href="#"
                                         className="pagination-link"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            if (page > 1)
-                                                handlePageChange(page - 1);
+                                            if (page > 1) handlePageChange(page - 1);
                                         }}
                                     >
                                         <span>
@@ -610,40 +610,45 @@ const ListProducts: React.FC = () => {
                                         </span>
                                     </a>
                                 </li>
-                                {Array.from(
-                                    { length: totalPages },
-                                    (_, i) => i + 1,
-                                ).map((pageNumber) => (
-                                    <li
-                                        key={pageNumber}
-                                        className={
-                                            page === pageNumber ? "active" : ""
-                                        }
-                                    >
-                                        <a
-                                            href="#"
-                                            className="pagination-link animate-hover-btn"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                handlePageChange(pageNumber);
-                                            }}
-                                        >
-                                            {pageNumber}
-                                        </a>
+
+                                {/* Logic hiển thị các trang */}
+                                
+                                {page > 2 && (
+                                    <li>
+                                        <span className="pagination-ellipsis">...</span>
                                     </li>
-                                ))}
-                                <li
-                                    className={
-                                        page === totalPages ? "disabled" : ""
-                                    }
-                                >
+                                )}
+
+                                {/* Hiển thị trang hiện tại và các trang xung quanh */}
+                                {Array.from({ length: 3 }, (_, i) => page - 1 + i)
+                                    .filter((pageNumber) => pageNumber > 0 && pageNumber <= totalPages)
+                                    .map((pageNumber) => (
+                                        <li
+                                            key={pageNumber}
+                                            className={page === pageNumber ? "active" : ""}
+                                        >
+                                            <a
+                                                href="#"
+                                                className="pagination-link animate-hover-btn"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handlePageChange(pageNumber);
+                                                }}
+                                            >
+                                                {pageNumber}
+                                            </a>
+                                        </li>
+                                    ))}
+
+                            
+                                {/* Nút chuyển đến trang sau */}
+                                <li className={page === totalPages ? "disabled" : ""}>
                                     <a
                                         href="#"
                                         className="pagination-link"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            if (page < totalPages)
-                                                handlePageChange(page + 1);
+                                            if (page < totalPages) handlePageChange(page + 1);
                                         }}
                                     >
                                         <span>
