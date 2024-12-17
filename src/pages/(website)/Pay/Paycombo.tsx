@@ -9,6 +9,7 @@ import axiosInstance from "../../../configs/axios";
 interface ProductVariant {
     id: number;
     image_color: string; // Hình ảnh màu
+    selling_price: number;
     colors: { id: number; name: string }; // Thông tin màu sắc
     sizes: { id: number; name: string }; // Thông tin kích thước
 }
@@ -293,7 +294,7 @@ const PayCombo: React.FC = () => {
                             <div className="tf-page-cart-footer">
                                 <div className="tf-cart-footer-inner">
                                     <h5 className="fw-5 mb_20">
-                                        Sản phẩm trong combo
+                                        Sản phẩm trong bộ trang sức
                                     </h5>
                                     <div className="pay-page">
                                         <table
@@ -437,6 +438,22 @@ const PayCombo: React.FC = () => {
                                                                                 combo.quantity
                                                                             }
                                                                         </p>
+                                                                        <p
+                                                                            style={{
+                                                                                margin: "0",
+                                                                                fontSize:
+                                                                                    "12px",
+                                                                                color: "gray",
+                                                                            }}
+                                                                        >
+                                                                            Giá bán:{" "}
+                                                                            {
+                                                                                Number(selectedVariant?.selling_price).toLocaleString(
+                                                                                    "vi-VN",
+                                                                                )
+                                                                            }{" "}
+                                                                                VNĐ
+                                                                        </p>
                                                                     </td>
                                                                     <td
                                                                         style={{
@@ -486,15 +503,12 @@ const PayCombo: React.FC = () => {
                                             </tbody>
                                         </table>
 
-                                        <div className="d-flex justify-content-between line pb_20">
+                                        <div className="d-flex justify-content-between line pb_20 mb_10">
                                             <h6
                                                 className="fw-5"
-                                                style={{
-                                                    marginBottom: "20px",
-                                                    paddingTop: "10px",
-                                                }}
+                                              
                                             >
-                                                Tổng giá combo:{" "}
+                                                Tổng tiền bộ trang sức:{" "}
                                             </h6>
                                             <h6 className="fw-5">
                                                 {totalAmount.toLocaleString(
@@ -503,14 +517,27 @@ const PayCombo: React.FC = () => {
                                                 VNĐ
                                             </h6>
                                         </div>
-
+                                        <div className="d-flex justify-content-between line pb_20 mb_10">
+                                            <h6
+                                                className="fw-5"
+                                              
+                                            >
+                                                Thành tiền:{" "}
+                                            </h6>
+                                            <h6 className="fw-5">
+                                                {totalAmount.toLocaleString(
+                                                    "vi-VN",
+                                                )}{" "}
+                                                VNĐ
+                                            </h6>
+                                        </div>
                                         <div className="wd-check-payment">
-                                            <div className="fieldset-radio mb_20">
+                                            <div className="fieldset-radio mb_10">
                                                 <input
                                                     type="radio"
                                                     name="payment"
                                                     id="bank"
-                                                    className="tf-check"
+                                                    className="mr-2 form-check-input"
                                                     onChange={(e) =>
                                                         setPaymentRole(
                                                             Number(
@@ -521,7 +548,7 @@ const PayCombo: React.FC = () => {
                                                     value="2"
                                                 />
                                                 <label htmlFor="bank">
-                                                    Thanh toán VNP
+                                                    Thanh toán VNPay
                                                 </label>
                                             </div>
                                             <div className="fieldset-radio mb_20">
@@ -529,7 +556,8 @@ const PayCombo: React.FC = () => {
                                                     type="radio"
                                                     name="payment"
                                                     id="delivery"
-                                                    className="tf-check"
+                                                    className=" mr-2 form-check-input"
+                                                    checked
                                                     onChange={(e) =>
                                                         setPaymentRole(
                                                             Number(
