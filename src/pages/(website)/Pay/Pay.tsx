@@ -8,6 +8,7 @@ import {
     Modal,
     message,
     Spin,
+    Radio,
   
 } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -770,7 +771,7 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <p>
-                                                Điểm tiêu dùng:{" "}
+                                                Điểm tích lũy :{" "}
                                                 {Point &&
                                                 parseInt(Point, 10) > 0
                                                     ? Point
@@ -864,12 +865,12 @@ const Pay: React.FC = () => {
                                     </div>
 
                                     <div className="wd-check-payment">
-                                        <div className="fieldset-radio mb_10 ">
+                                        <div className="fieldset-radio mb_20">
                                             <input
                                                 type="radio"
                                                 name="payment"
                                                 id="bank"
-                                                className="mr-2 form-check-input"
+                                                className="tf-check"
                                                 value="2"
                                                 onChange={(e) =>
                                                     setPaymentRole(
@@ -878,17 +879,16 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <label htmlFor="bank">
-                                                 Thanh toán VNPay
+                                                Thanh toán VNPay
                                             </label>
                                         </div>
-                                        <div className="fieldset-radio mb_20 ">
+                                        <div className="fieldset-radio mb_20">
                                             <input
                                                 type="radio"
                                                 name="payment"
                                                 id="delivery"
-                                                className="mr-2 form-check-input"
+                                                className="tf-check"
                                                 value="1"
-                                           
                                                 onChange={(e) =>
                                                     setPaymentRole(
                                                         Number(e.target.value),
@@ -896,7 +896,7 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <label htmlFor="delivery">
-                                                 Thanh toán khi nhận hàng
+                                                Thanh toán khi nhận hàng
                                             </label>
                                         </div>
                                     </div>
