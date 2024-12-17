@@ -557,7 +557,7 @@ const PayCombo: React.FC = () => {
                                                     name="payment"
                                                     id="delivery"
                                                     className=" mr-2 form-check-input"
-                                                    checked
+                                                
                                                     onChange={(e) =>
                                                         setPaymentRole(
                                                             Number(
