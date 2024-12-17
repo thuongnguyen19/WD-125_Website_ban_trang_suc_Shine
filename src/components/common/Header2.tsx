@@ -89,6 +89,7 @@ const Header2 = () => {
                             alt="Slide 1"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
                         />
                     </div>
                     <div className="wrap-slider">
@@ -97,6 +98,7 @@ const Header2 = () => {
                             alt="Slide 2"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
                         />
                     </div>
                     <div className="wrap-slider">
@@ -105,6 +107,8 @@ const Header2 = () => {
                             alt="Slide 4"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
+                            
                         />
                     </div>
                 </Carousel>
@@ -149,6 +153,7 @@ const Header2 = () => {
                                             {adConfig.data?.title}
                                         </div>
 
+
                                         {/* Nút "Xem ngay tại đây" ở giữa */}
                                         {/* <Button
                                             type="primary"
@@ -168,6 +173,7 @@ const Header2 = () => {
                                         </Button> */}
 
                                         {/* Dòng chữ highlight chạy ở góc dưới */}
+
                                         <div
                                             style={{
                                                 position: "absolute",

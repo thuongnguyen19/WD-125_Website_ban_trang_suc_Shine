@@ -99,7 +99,7 @@ const Footer = () => {
                                                 <p>
                                                     Số điện thoại:{" "}
                                                     <a href="#">
-                                                        (212) 555-1234
+                                                        0339219385
                                                     </a>
                                                 </p>
                                             </li>
@@ -218,56 +218,7 @@ const Footer = () => {
                                         </li>
                                     </ul>
                                 </div>
-                                {/* <div className="col-xl-3 col-md-6 col-12">
-                                    <div className="footer-newsletter footer-col-block">
-                                        <div className="footer-heading footer-heading-desktop">
-                                            <h6>Đăng ký nhận Email</h6>
-                                        </div>
-                                        <div className="footer-heading footer-heading-moblie">
-                                            <h6>Đăng ký nhận Email</h6>
-                                        </div>
-                                        <div className="tf-collapse-content">
-                                            <div className="footer-menu_item">
-                                                Đăng ký để được ưu tiên nhận
-                                                thông tin về hàng mới về, chương
-                                                trình khuyến mại, nội dung độc
-                                                quyền, sự kiện và nhiều hơn nữa!
-                                            </div>
-                                            <form
-                                                className="form-newsletter"
-                                                id="subscribe-form"
-                                                action="#"
-                                                method="post"
-                                                acceptCharset="utf-8"
-                                                data-mailchimp="true"
-                                            >
-                                                <div id="subscribe-content">
-                                                    <fieldset className="email">
-                                                        <input
-                                                            type="email"
-                                                            name="email-form"
-                                                            id="subscribe-email"
-                                                            placeholder="Nhập email của bạn...."
-                                                            aria-required="true"
-                                                        />
-                                                    </fieldset>
-                                                    <div className="button-submit">
-                                                        <button
-                                                            id="subscribe-button"
-                                                            className="tf-btn btn-sm radius-3 btn-fill btn-icon animate-hover-btn"
-                                                            type="button"
-                                                        >
-                                                            Đăng ký
-                                                            <i className="icon icon-arrow1-top-left"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div id="subscribe-msg"></div>
-                                            </form>
-                                            
-                                        </div>
-                                    </div>
-                                </div> */}
+
                             </div>
                         </div>
                     </div>
@@ -280,131 +231,3 @@ const Footer = () => {
 export default Footer
 
 
-//  <div style={{ padding: 20 }}>
-//                 {adConfig ? (
-//                     adConfig.data[2] === "Vị trí này còn trống" ? (
-//                         <div
-//                             style={{
-//                                 textAlign: "center",
-//                                 fontSize: "16px",
-//                                 color: "gray",
-//                                 padding: "20px",
-//                                 border: "1px dashed gray",
-//                                 margin: "0 auto",
-//                                 maxWidth: "1000px",
-//                             }}
-//                         >
-//                             Vị trí này còn trống
-//                             <Button
-//                                 type="primary"
-//                                 style={{
-//                                     marginTop: "10px",
-//                                     backgroundColor: "#007bff",
-//                                     borderColor: "#007bff",
-//                                 }}
-//                                 onClick={handleNavigate} // Gọi hàm điều hướng khi bấm nút
-//                             >
-//                                 đăng kí ngay tại đây
-//                             </Button>
-//                         </div>
-//                     ) : (
-//                         <Card
-//                             hoverable
-//                             cover={
-//                                 <a
-//                                     href={adConfig.data[2]?.url}
-//                                     target="_blank"
-//                                     rel="noopener noreferrer"
-//                                     onClick={() =>
-//                                         handleAdClick(adConfig.data[2]?.id_ads!)
-                                        
-//                                     }
-                                    
-//                                 >
-                                    
-//                                     <div style={{ position: "relative" }}>
-//                                         <img
-//                                             alt="Banner"
-//                                             src={adConfig.data[2]?.image}
-//                                             style={{
-//                                                 width: "1000px",
-//                                                 height: "300px",
-//                                             }}
-//                                             className="banner-image"
-//                                         />
-//                                         {/* Tiêu đề trên nút */}
-//                                         <div
-//                                             style={{
-//                                                 position: "absolute",
-//                                                 bottom: "40px",
-//                                                 left: "20px",
-//                                                 color: "white",
-//                                                 fontSize: "24px",
-//                                                 fontWeight: "bold",
-//                                                 paddingBottom: "140px",
-//                                                 paddingLeft: "190px",
-//                                             }}
-//                                             className="banner-title"
-//                                         >
-//                                             {adConfig.data[1]?.title}
-//                                         </div>
-
-//                                         {/* Nút "Xem ngay tại đây" ở giữa */}
-//                                         <Button
-//                                             type="primary"
-//                                             style={{
-//                                                 position: "absolute",
-//                                                 bottom: "100px",
-//                                                 left: "50%",
-//                                                 transform: "translateX(-50%)",
-//                                                 backgroundColor: "#ff5722",
-//                                                 borderColor: "#ff5722",
-//                                                 padding: "10px 10px",
-//                                                 width: "120px",
-//                                             }}
-//                                             className="banner-button"
-//                                         >
-//                                             Xem ngay tại đây
-//                                         </Button>
-
-//                                         {/* Dòng chữ highlight chạy ở góc dưới */}
-//                                         <div
-//                                             style={{
-//                                                 position: "absolute",
-//                                                 bottom: "5px",
-//                                                 left: "20px",
-//                                                 color: "white",
-//                                                 fontSize: "18px",
-//                                                 fontWeight: "normal",
-//                                                 whiteSpace: "nowrap",
-//                                                 overflow: "hidden",
-//                                                 width: "100%",
-//                                                 animation:
-//                                                     "scroll-text 10s linear infinite",
-//                                             }}
-//                                             className="banner-highlight"
-//                                         >
-//                                             {adConfig.data[1]?.highlight}
-//                                         </div>
-//                                     </div>
-//                                 </a>
-//                             }
-//                             style={{ maxWidth: 1000, margin: "0 auto" }}
-//                         />
-//                     )
-//                 ) : (
-//                     <div
-//                         style={{
-//                             textAlign: "center",
-//                             fontSize: "16px",
-//                             color: "gray",
-//                             padding: "20px",
-//                             border: "1px dashed gray",
-//                             margin: "0 auto",
-//                             maxWidth: "1000px",
-//                         }}
-//                     >
-//                         Đang tải dữ liệu...
-//                     </div>
-//                 )}
-//             </div>
