@@ -547,11 +547,9 @@ const PayCombo: React.FC = () => {
                                                     value="2"
                                                 />
                                                 <label htmlFor="bank">
-<<<<<<< HEAD
+
                                                     Thanh toán ngân hàng
-=======
-                                                    Thanh toán VNPay
->>>>>>> 83014aad9d723054e5fe5c0e57deeeba0856df0f
+
                                                 </label>
                                             </div>
                                             <div className="fieldset-radio mb_20">
