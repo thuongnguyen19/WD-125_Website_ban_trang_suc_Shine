@@ -219,7 +219,7 @@ const Pay: React.FC = () => {
      const discountedTotal = originalTotalAmount - discount - pointsDiscount;
 
      if (discountedTotal >= 0) {
-         setTotalAmount(discountedTotal); // Cập nhật tổng số tiền sau khi áp dụng điểm tích lũy
+         setTotalAmount(discountedTotal); 
          setIsPoint(true);
          setPointsToUse(pointsToUse);
          message.success("Điểm tích lũy đã được áp dụng.");
