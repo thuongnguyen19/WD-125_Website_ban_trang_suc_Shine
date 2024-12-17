@@ -530,15 +530,24 @@ const handleComboClick = (id: number) => {
                 },
             );
             if (response.data.status) {
-                const cartItems = JSON.parse(
-                    localStorage.getItem("cartItems") || "[]",
-                );
-                cartItems.push(cartData);
-                localStorage.setItem("cartItems", JSON.stringify(cartItems));
+                
+                    try {
+                        const respon = await axiosInstance.get(
+                            "/listCart",
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            },
+                        );
+                localStorage.setItem("cartItems", JSON.stringify(respon.data.data));
 
                 window.dispatchEvent(new Event("storage"));
 
                 message.success("Thêm vào giỏ hàng thành công.");
+                    } catch (error) {
+                                    message.error("Có lỗi xảy ra khi lấy giỏ hàng.");
+                                }
             } else {
                 message.error("Thêm vào giỏ hàng thất bại.");
             }
