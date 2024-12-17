@@ -340,7 +340,6 @@ const PayCombo: React.FC = () => {
                                                     >
                                                         Kích thước
                                                     </th>
-                                                   
                                                 </tr>
                                             </thead>
                                             {/* {combo && (
@@ -521,7 +520,7 @@ const PayCombo: React.FC = () => {
                                                     value="2"
                                                 />
                                                 <label htmlFor="bank">
-                                                    Thanh toán VNP
+                                                    Thanh toán ngân hàng
                                                 </label>
                                             </div>
                                             <div className="fieldset-radio mb_20">
