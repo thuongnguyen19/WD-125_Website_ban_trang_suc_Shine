@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { HeartFilled, HeartOutlined } from "@ant-design/icons";
-import { message, Modal, Card, Row, Col } from "antd";
+import { HeartFilled } from "@ant-design/icons";
+import { message, Modal, Spin } from "antd";
 import Footer from "../../../components/common/Footer";
 import Header from "../../../components/common/Header";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../configs/axios";
 
 interface Variant {
@@ -122,8 +121,8 @@ const FavoritesList = () => {
         });
     };
 
-    if (loading) return <p>Đang tải...</p>;
-    if (error) return <p>{error}</p>;
+    if (loading) return <Spin size="large" />;
+    if (error) return <p>{error}</p>
 
     function handleProductClick(id: number): void {
         throw new Error("Function not implemented.");

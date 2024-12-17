@@ -216,6 +216,7 @@ const handleCancel = () => {
     };
 
     const handleConfirmReceived = async (orderId: number) => {
+        setIsOrderLoading(true);
         try {
             const token = localStorage.getItem("authToken");
             if (!token) {
@@ -246,6 +247,8 @@ const handleCancel = () => {
             }
         } catch (error) {
             message.error("Không thể kết nối với server.");
+        } finally {
+            setIsOrderLoading(false);
         }
     };
 
@@ -263,7 +266,7 @@ const handleCancel = () => {
         navigate(`/detail/${id}`);
     };
 
-    if (loading) return <Spin size="large" />;
+    if (loading) return <p>Đang tải...</p>
 
 
     if (error) {
@@ -272,7 +275,24 @@ const handleCancel = () => {
 
     return (
         <>
-            
+                {isOrderLoading && (
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "rgba(255, 255, 255, 0.7)",
+                            zIndex: 1000,
+                        }}
+                    >
+                        <Spin size="large" />
+                    </div>
+                )}
                 <div className="col-lg-15">
                     {orders.map((order) => (
                         <div className="wd-form-order" key={order.id}>
@@ -324,23 +344,21 @@ const handleCancel = () => {
                                         </div>
                                     )}
 
-                                    {Number(
-                                        order.status,
-                                    ) === 4 && (
-                                        <div className="button">
-                                            <a
-                                                className="view-btn"
-                                                onClick={() =>
+                                    {Number(order.status) === 4 && (
+    <div className="button">
+        <button
+            className="view-btn"
+            disabled={isOrderLoading}
+onClick={() =>
                                                     handleConfirmReceived(
                                                         order.id,
                                                     )
-                                                }
-                                            >
-                                                Đã nhận được
-                                                hàng
-                                            </a>
-                                        </div>
-                                    )}
+                                                }        >
+            Đã nhận được hàng
+        </button>
+    </div>
+)}
+
 
 
                                 </div>
