@@ -14,7 +14,6 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
-import axios from "axios";
 import axiosInstance from "../../../configs/axios";
 
 // Interface cho CartItem và Voucher
