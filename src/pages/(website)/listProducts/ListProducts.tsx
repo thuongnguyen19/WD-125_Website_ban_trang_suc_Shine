@@ -74,6 +74,13 @@ const ListProducts: React.FC = () => {
 
     // Gọi API để lấy sản phẩm
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const categoryId = params.get("category");
+        const query = params.get("query");
+        const selectedCategory = categoryId == 'all'? '':categoryId??'';
+        const search = query ? query : '';
+        // setSearch(query);
+        setSelectedCategory(selectedCategory);
         const loadProducts = async () => {
             try {
                 const { data, total_pages } = await fetchProducts(
@@ -302,7 +309,7 @@ const ListProducts: React.FC = () => {
                                             <ul className="list-categoris current-scrollbar mb_36">
                                                 <li
                                                     className={`cate-item ${selectedCategory === "all" ? "current" : ""}`}
-                                                    onClick={() => handleCategoryClick("all")}
+                                                    onClick={() => handleCategoryClick("")}
                                                 >
                                                     <a>Tất cả</a>
                                                 </li>
