@@ -419,7 +419,7 @@ const handleComboClick = (id: number) => {
     const handleAddProductToFavorite = async (productId: number) => {
         const token = localStorage.getItem("authToken");
         if (!token) {
-            message.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            message.error("Vui lòng đăng nhập để thêm sản phẩm vào yêu thích.");
             navigate("/login");
             return;
         }
@@ -427,7 +427,6 @@ const handleComboClick = (id: number) => {
         try {
 
             if (isFavorite) {
-                // Xóa khỏi danh sách yêu thích nếu đã yêu thích
                 await axiosInstance.delete(
                     `/favoriteProduct/${productId}`,
                     {
@@ -453,7 +452,6 @@ const handleComboClick = (id: number) => {
 
                 message.success("Đã xóa sản phẩm khỏi danh sách yêu thích.");
             } else {
-                // Thêm vào danh sách yêu thích nếu chưa yêu thích
                 const report = await axiosInstance.post(
                     "/favoriteProduct",
                     { product_id: productId },
@@ -530,15 +528,24 @@ const handleComboClick = (id: number) => {
                 },
             );
             if (response.data.status) {
-                const cartItems = JSON.parse(
-                    localStorage.getItem("cartItems") || "[]",
-                );
-                cartItems.push(cartData);
-                localStorage.setItem("cartItems", JSON.stringify(cartItems));
+                
+                    try {
+                        const respon = await axiosInstance.get(
+                            "/listCart",
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            },
+                        );
+                localStorage.setItem("cartItems", JSON.stringify(respon.data.data));
 
                 window.dispatchEvent(new Event("storage"));
 
                 message.success("Thêm vào giỏ hàng thành công.");
+                    } catch (error) {
+                                    message.error("Có lỗi xảy ra khi lấy giỏ hàng.");
+                                }
             } else {
                 message.error("Thêm vào giỏ hàng thất bại.");
             }
