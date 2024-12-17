@@ -888,7 +888,7 @@ const Pay: React.FC = () => {
                                                 id="delivery"
                                                 className="mr-2 form-check-input"
                                                 value="1"
-                                                checked
+                                           
                                                 onChange={(e) =>
                                                     setPaymentRole(
                                                         Number(e.target.value),
