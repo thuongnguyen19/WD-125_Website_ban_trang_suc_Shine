@@ -606,7 +606,7 @@ const handleComboClick = (id: number) => {
     }
 
     if (!combo) {
-  return <p>Không tìm thấy combo!</p>;
+  return <p>Không tìm thấy bộ trang sức!</p>;
 }
 
     return (
@@ -1092,7 +1092,7 @@ const handleComboClick = (id: number) => {
 
                         <div className="combo-promotion">
                             <div className="header">
-                                <h5>Combo khuyến mãi</h5>
+                                <h5>Bộ trang sức</h5>
                             </div>
                             <div className="products">
                                 {/* Lặp qua mảng combo để hiển thị thông tin từng combo */}

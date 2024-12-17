@@ -89,6 +89,7 @@ const Header2 = () => {
                             alt="Slide 1"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
                         />
                     </div>
                     <div className="wrap-slider">
@@ -97,6 +98,7 @@ const Header2 = () => {
                             alt="Slide 2"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
                         />
                     </div>
                     <div className="wrap-slider">
@@ -105,43 +107,17 @@ const Header2 = () => {
                             alt="Slide 4"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
+                            
                         />
                     </div>
                 </Carousel>
             </div>
 
             <div style={{ padding: 20 }}>
-                {adConfig ? (
-                    adConfig.data === "Vị trí này còn trống" ? (
-                        <div
-                            style={{
-                                textAlign: "center",
-                                fontSize: "16px",
-                                color: "gray",
-                                padding: "20px",
-                                border: "1px dashed gray",
-                                margin: "0 auto",
-                                maxWidth: "1000px",
-                            }}
-                        >
-                            Vị trí này còn trống
-                            <Button
-                                type="primary"
-                                style={{
-                                    marginTop: "10px",
-                                    backgroundColor: "#007bff",
-                                    borderColor: "#007bff",
-                                }}
-                                onClick={() => navigate("/banner")}
-                            >
-                                Đăng ký ngay tại đây
-                            </Button>
-                        </div>
-                    ) : (
+                {adConfig?.status ?  (
 
-                        <Card
-                            hoverable
-                            cover={
+                        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
                                 <a
                                     href={adConfig.data?.url}
                                     target="_blank"
@@ -176,6 +152,28 @@ const Header2 = () => {
                                         >
                                             {adConfig.data?.title}
                                         </div>
+
+
+                                        {/* Nút "Xem ngay tại đây" ở giữa */}
+                                        {/* <Button
+                                            type="primary"
+                                            style={{
+                                                position: "absolute",
+                                                bottom: "100px",
+                                                left: "50%",
+                                                transform: "translateX(-50%)",
+                                                backgroundColor: "#ff5722",
+                                                borderColor: "#ff5722",
+                                                padding: "10px 10px",
+                                                width: "120px",
+                                            }}
+                                                className="banner-button"
+                                        >
+                                            Xem ngay tại đây
+                                        </Button> */}
+
+                                        {/* Dòng chữ highlight chạy ở góc dưới */}
+
                                         <div
                                             style={{
                                                 position: "absolute",
@@ -196,25 +194,13 @@ const Header2 = () => {
                                         </div>
                                     </div>
                                 </a>
-                            }
-                            style={{ maxWidth: 1000, margin: "0 auto" }}
-                        />
+                            
+                            
+                       </div>
 
-                    )
+                    
                 ) : (
-                    <div
-                        style={{
-                            textAlign: "center",
-                            fontSize: "16px",
-                            color: "gray",
-                            padding: "20px",
-                            border: "1px dashed gray",
-                            margin: "0 auto",
-                            maxWidth: "1000px",
-                        }}
-                    >
-                        Đang tải dữ liệu...
-                    </div>
+                   ''
                 )}
             </div>
 
@@ -231,7 +217,7 @@ const Header2 = () => {
                             className="active"
                             data-bs-toggle="tab"
                         >
-                            Combo khuyến mãi
+                            Bộ trang sức
                         </a>
                     </li>
                 </ul>

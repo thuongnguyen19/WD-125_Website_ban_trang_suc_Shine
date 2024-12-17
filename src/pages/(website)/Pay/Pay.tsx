@@ -752,10 +752,11 @@ const Pay: React.FC = () => {
                                         <div style={{ marginTop: "20px" }}>
                                             <input
                                                 type="number"
-                                                placeholder="Nhập điểm tích lũy 1 điểm = 10.000 VNĐ"
+                                                placeholder="Nhập điểm tiêu dùng (1 điểm = 10.000 VNĐ)"
                                                 style={{
                                                     marginRight: "10px",
                                                     padding: "8px",
+                                                    marginBottom: "5px",
                                                 }}
                                                 value={
                                                     pointsToUse == 0
@@ -790,15 +791,12 @@ const Pay: React.FC = () => {
                                             </Button>
                                         </div>
 
-                                        <div className="d-flex justify-content-between line pb_20">
+                                        <div className="d-flex justify-content-between line pb_20 mb_10 mt_20">
                                             <h6
                                                 className="fw-5"
-                                                style={{
-                                                    marginBottom: "20px",
-                                                    paddingTop: "10px",
-                                                }}
+                                               
                                             >
-                                                Tổng tiền gốc:
+                                                Tổng tiền:
                                             </h6>
                                             <h6 className="fw-5">
                                                 {originalTotalAmount.toLocaleString(
@@ -814,10 +812,6 @@ const Pay: React.FC = () => {
                                                     <div className="d-flex justify-content-between line pb_20">
                                                         <h6
                                                             className="fw-5"
-                                                            style={{
-                                                                marginBottom:
-                                                                    "20px",
-                                                            }}
                                                         >
                                                             Giảm giá:
                                                         </h6>
@@ -834,12 +828,9 @@ const Pay: React.FC = () => {
                                                     <div className="d-flex justify-content-between line pb_20">
                                                         <h6
                                                             className="fw-5"
-                                                            style={{
-                                                                marginBottom:
-                                                                    "20px",
-                                                            }}
+                                                    
                                                         >
-                                                            Điểm tích lũy :
+                                                            Điểm tiêu dùng :
                                                         </h6>
                                                         <h6 className="fw-5">
                                                             -{" "}
@@ -853,15 +844,15 @@ const Pay: React.FC = () => {
                                                         </h6>
                                                     </div>
                                                 )}
-                                                <div className="d-flex justify-content-between line pb_20">
+                                               
+                                            </>
+                                        )}
+                                         <div className="d-flex justify-content-between line pb_20 mb_10">
                                                     <h6
                                                         className="fw-5"
-                                                        style={{
-                                                            marginBottom:
-                                                                "20px",
-                                                        }}
+                                                       
                                                     >
-                                                        Tổng tiền sau giảm:
+                                                        Thành tiền:
                                                     </h6>
                                                     <h6 className="fw-5">
                                                         {totalAmount.toLocaleString(
@@ -870,17 +861,15 @@ const Pay: React.FC = () => {
                                                         VND
                                                     </h6>
                                                 </div>
-                                            </>
-                                        )}
                                     </div>
 
                                     <div className="wd-check-payment">
-                                        <div className="fieldset-radio mb_20">
+                                        <div className="fieldset-radio mb_10 ">
                                             <input
                                                 type="radio"
                                                 name="payment"
                                                 id="bank"
-                                                className="tf-check"
+                                                className="mr-2 form-check-input"
                                                 value="2"
                                                 onChange={(e) =>
                                                     setPaymentRole(
@@ -889,16 +878,17 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <label htmlFor="bank">
-                                                Thanh toán VNPay
+                                                 Thanh toán VNPay
                                             </label>
                                         </div>
-                                        <div className="fieldset-radio mb_20">
+                                        <div className="fieldset-radio mb_20 ">
                                             <input
                                                 type="radio"
                                                 name="payment"
                                                 id="delivery"
-                                                className="tf-check"
+                                                className="mr-2 form-check-input"
                                                 value="1"
+                                           
                                                 onChange={(e) =>
                                                     setPaymentRole(
                                                         Number(e.target.value),
@@ -906,7 +896,7 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <label htmlFor="delivery">
-                                                Thanh toán khi nhận hàng
+                                                 Thanh toán khi nhận hàng
                                             </label>
                                         </div>
                                     </div>
