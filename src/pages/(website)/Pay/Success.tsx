@@ -103,7 +103,7 @@ const Success: React.FC = () => {
         };
 
         fetchPaymentResult();
-    }, [location, navigate]);
+    }, [  navigate("/success")]);
 
     if (loading) {
         return (

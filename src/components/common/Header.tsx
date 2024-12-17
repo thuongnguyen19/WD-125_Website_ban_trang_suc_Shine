@@ -79,7 +79,6 @@ const Header: React.FC = () => {
                 setIsAuthenticated(true);
                 setUser(response.data.data.user);
             } catch (error) {
-                message.error("Lấy thông tin người dùng không thành công!");
             }
         };
 

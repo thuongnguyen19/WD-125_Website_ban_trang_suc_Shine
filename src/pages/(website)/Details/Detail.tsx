@@ -895,9 +895,9 @@ const handleComboClick = (id: number) => {
 
                                     <div className="tf-size-selection mt-3">
                                         <h6>
-                                            kích thước{" "}:
+                                            Kích thước{" "}:
                                             <span style={{ color: "Gray" }}>
-                                                (bán kính cm)
+                                                (đường kính cm)
                                             </span>
                                         </h6>
 

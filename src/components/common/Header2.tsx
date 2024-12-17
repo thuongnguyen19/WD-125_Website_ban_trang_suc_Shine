@@ -176,26 +176,6 @@ const Header2 = () => {
                                         >
                                             {adConfig.data?.title}
                                         </div>
-
-                                        {/* Nút "Xem ngay tại đây" ở giữa */}
-                                        {/* <Button
-                                            type="primary"
-                                            style={{
-                                                position: "absolute",
-                                                bottom: "100px",
-                                                left: "50%",
-                                                transform: "translateX(-50%)",
-                                                backgroundColor: "#ff5722",
-                                                borderColor: "#ff5722",
-                                                padding: "10px 10px",
-                                                width: "120px",
-                                            }}
-                                            className="banner-button"
-                                        >
-                                            Xem ngay tại đây
-                                        </Button> */}
-
-                                        {/* Dòng chữ highlight chạy ở góc dưới */}
                                         <div
                                             style={{
                                                 position: "absolute",

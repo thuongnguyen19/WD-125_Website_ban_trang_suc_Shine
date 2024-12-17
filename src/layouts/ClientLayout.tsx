@@ -68,10 +68,10 @@ const Layoutweb: React.FC = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem("authToken");
-            if (!token) {
-                message.error("Vui lòng đăng nhập lại.");
-                return;
-            }
+            // if (!token) {
+            //     message.error("Vui lòng đăng nhập lại.");
+            //     return;
+            // }
 
             try {
                 const response = await axiosInstance.get(
@@ -86,7 +86,6 @@ const Layoutweb: React.FC = () => {
                 setIsAuthenticated(true);
                 setUser(response.data.data.user);
             } catch (error) {
-                message.error("Lấy thông tin người dùng không thành công!");
             }
         };
 
