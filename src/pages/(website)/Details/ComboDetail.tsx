@@ -117,7 +117,9 @@ const getAllUniqueSizes = (variants: Variant[]) => {
         });
     };
     
-
+const getSizesForColor = (variants: Variant[], selectedColor: string) => {
+    return variants.filter((variant) => variant.colors.name === selectedColor);
+};
 
     const handleBuyNow = async () => {
         const token = localStorage.getItem("authToken");
@@ -406,7 +408,6 @@ const getAllUniqueSizes = (variants: Variant[]) => {
                                                         ))}
                                                     </div>
 
-                                                    {/* Kích thước luôn hiển thị */}
                                                     <div className="tf-size-selection d-flex align-items-center">
                                                         <span>
                                                             Kích thước :
@@ -422,77 +423,96 @@ const getAllUniqueSizes = (variants: Variant[]) => {
                                                             {getAllUniqueSizes(
                                                                 product.variants,
                                                             ).map(
-                                                                (sizeName) => (
-                                                                    <div
-                                                                        key={
-                                                                            sizeName
-                                                                        }
-                                                                        className={`size-box ${
-                                                                            selectedSize[
-                                                                                product.id.toString()
-                                                                            ] ===
-                                                                                sizeName &&
-                                                                            (!selectedColor[
-                                                                                product.id.toString()
-                                                                            ] ||
-                                                                                product.variants.some(
-                                                                                    (
-                                                                                        variant,
-                                                                                    ) =>
-                                                                                        variant
-                                                                                            .sizes
-                                                                                            .name ===
-                                                                                            sizeName &&
-                                                                                        variant
-                                                                                            .colors
-                                                                                            .name ===
-                                                                                            selectedColor[
-                                                                                                product.id.toString()
-                                                                                            ],
-                                                                                ))
-                                                                                ? "selected"
-                                                                                : ""
-                                                                        }`}
-                                                                        onClick={() =>
-                                                                            handleSizeChange(
-                                                                                sizeName,
-                                                                                product.id.toString(),
-                                                                            )
-                                                                        }
-                                                                        style={{
-                                                                            display:
-                                                                                "flex",
-                                                                            justifyContent:
-                                                                                "center",
-                                                                            alignItems:
-                                                                                "center",
-                                                                            width: "40px",
-                                                                            height: "40px",
-                                                                            margin: "5px",
-                                                                            cursor: "pointer",
-                                                                            border:
+                                                                (sizeName) => {
+                                                                    const isSizeAvailableForColor =
+                                                                        product.variants.some(
+                                                                            (
+                                                                                variant,
+                                                                            ) =>
+                                                                                variant
+                                                                                    .colors
+                                                                                    .name ===
+                                                                                    selectedColor[
+                                                                                        product.id.toString()
+                                                                                    ] &&
+                                                                                variant
+                                                                                    .sizes
+                                                                                    .name ===
+                                                                                    sizeName,
+                                                                        );
+
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                sizeName
+                                                                            }
+                                                                            className={`size-box ${
                                                                                 selectedSize[
                                                                                     product.id.toString()
                                                                                 ] ===
-                                                                                sizeName
-                                                                                    ? "2px solid lightgray"
-                                                                                    : "1px solid #ccc",
-                                                                            borderRadius:
-                                                                                "5px",
-                                                                            backgroundColor:
-                                                                                selectedSize[
+                                                                                    sizeName &&
+                                                                                selectedColor[
                                                                                     product.id.toString()
-                                                                                ] ===
+                                                                                ]
+                                                                                    ? "selected"
+                                                                                    : ""
+                                                                            }`}
+                                                                            onClick={() =>
+                                                                                isSizeAvailableForColor &&
+                                                                                selectedColor[
+                                                                                    product.id.toString()
+                                                                                ]
+                                                                                    ? handleSizeChange(
+                                                                                          sizeName,
+                                                                                          product.id.toString(),
+                                                                                      )
+                                                                                    : undefined
+                                                                            }
+                                                                            style={{
+                                                                                display:
+                                                                                    "flex",
+                                                                                justifyContent:
+                                                                                    "center",
+                                                                                alignItems:
+                                                                                    "center",
+                                                                                width: "40px",
+                                                                                height: "40px",
+                                                                                margin: "5px",
+                                                                                cursor:
+                                                                                    selectedColor[
+                                                                                        product.id.toString()
+                                                                                    ] &&
+                                                                                    isSizeAvailableForColor
+                                                                                        ? "pointer"
+                                                                                        : "not-allowed", 
+                                                                                border:
+                                                                                    selectedSize[
+                                                                                        product.id.toString()
+                                                                                    ] ===
+                                                                                    sizeName
+                                                                                        ? "2px solid lightgray"
+                                                                                        : "1px solid #ccc",
+                                                                                borderRadius:
+                                                                                    "5px",
+                                                                                backgroundColor:
+                                                                                    selectedSize[
+                                                                                        product.id.toString()
+                                                                                    ] ===
+                                                                                    sizeName
+                                                                                        ? "lightgray"
+                                                                                        : "#f9f9f9",
+                                                                                opacity:
+                                                                                    isSizeAvailableForColor
+                                                                                        ? 1
+                                                                                        : 0.5,
+                                                                            }}
+                                                                        >
+                                                                            {
                                                                                 sizeName
-                                                                                    ? "lightgray"
-                                                                                    : "#f9f9f9",
-                                                                        }}
-                                                                    >
-                                                                        {
-                                                                            sizeName
-                                                                        }
-                                                                    </div>
-                                                                ),
+                                                                            }
+                                                                        </div>
+                                                                    );
+                                                                },
                                                             )}
                                                         </div>
                                                     </div>
