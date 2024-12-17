@@ -89,6 +89,7 @@ const Header2 = () => {
                             alt="Slide 1"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
                         />
                     </div>
                     <div className="wrap-slider">
@@ -97,6 +98,7 @@ const Header2 = () => {
                             alt="Slide 2"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
                         />
                     </div>
                     <div className="wrap-slider">
@@ -105,6 +107,8 @@ const Header2 = () => {
                             alt="Slide 4"
                             loading="lazy"
                             className="carousel-image"
+                            style={{ height: "800px" }}
+                            
                         />
                     </div>
                 </Carousel>
