@@ -205,7 +205,7 @@ const Footer = () => {
                                                 href="lienhe"
                                                 className="footer-menu_item"
                                             >
-                                                liên hệ
+                                                Liên hệ
                                             </a>
                                         </li>
                                         <li>
@@ -218,7 +218,7 @@ const Footer = () => {
                                         </li>
                                     </ul>
                                 </div>
-                               
+
                             </div>
                         </div>
                     </div>

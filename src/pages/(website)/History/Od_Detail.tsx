@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchOrders, Order, Review, submitReview } from "../../../Interface/Order";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Input, message, Modal, Rate } from "antd";
+import { Button, Input, message, Modal, Rate, Spin } from "antd";
 import axiosInstance from "../../../configs/axios";
 
 const Od_Detail = () => {
@@ -33,6 +33,7 @@ const Od_Detail = () => {
 
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [error, setError] = useState<string | null>(null);
@@ -172,7 +173,7 @@ const handleCancel = () => {
             message.error("Lý do hủy không được để trống.");
             return;
         }
-
+        setIsOrderLoading(true);
         try {
             const token = localStorage.getItem("authToken");
             if (!token) {
@@ -204,23 +205,11 @@ const handleCancel = () => {
                 window.location.reload();
             },
         });
+    } finally {
+        setIsOrderLoading(false); // Tắt loading
     }
     };
 
-    const showCancelWarning = (order: Order ) => {
-    if (order.payment_role === 2) {
-        // Nếu phương thức thanh toán là VNPay
-        Modal.confirm({
-            title: "Cảnh báo",
-            content: "Hủy đơn hàng sẽ không hoàn tiền. Bạn có chắc chắn muốn tiếp tục?",
-            okText: "Đồng ý",
-            cancelText: "Hủy",
-            onOk: () => setIsModalVisible(true), // Hiển thị modal nhập lý do hủy đơn
-        });
-    } else {
-        setIsModalVisible(true); // Hiển thị modal trực tiếp nếu không phải VNPay
-    }
-};
 
     const handleReasonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCancelReason(e.target.value);
@@ -274,9 +263,8 @@ const handleCancel = () => {
         navigate(`/detail/${id}`);
     };
 
-    if (loading) {
-        return <p>Đang tải trang...</p>;
-    }
+    if (loading) return <Spin size="large" />;
+
 
     if (error) {
         return <p>{error}</p>;
@@ -473,9 +461,12 @@ const handleCancel = () => {
                                                                     )
                                                                 }
                                                                 >
+                                                                    <a>
                                                                     {
                                                                         item.product_name
                                                                     }
+                                                                    </a>
+                                                                    
                                                                 </div>
                                                                 <div className="mt_4">
                                                                     <span className="fw-6">
@@ -760,6 +751,7 @@ const handleCancel = () => {
                                                         }
                                                         okText="Xác nhận"
                                                         cancelText="Hủy"
+                                                        confirmLoading={isOrderLoading} 
                                                     >
                                                         <Input.TextArea
                                                             value={cancelReason}

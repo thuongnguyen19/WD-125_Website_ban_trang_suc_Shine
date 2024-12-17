@@ -194,7 +194,7 @@ const ComboDetail: React.FC = () => {
   };
     if (loading) return <div>Đang tải...</div>;
     if (error) return <div>{error}</div>;
-    if (!combo) return <div>Không tìm thấy combo!</div>;
+    if (!combo) return <div>Không tìm thấy bộ trang sức!</div>;
 
     return (
         <div>
@@ -405,11 +405,11 @@ const ComboDetail: React.FC = () => {
                                                     </div>
                                                     <div className="tf-size-selection d-flex align-items-center">
                                                            <span>
-                                            kích thước{" "}:
-                                            <span style={{ color: "Gray" }}>
-                                                (bán kính cm)
-                                            </span>
-                                        </span>
+                                                                Kích thước{" "}:
+                                                                <span style={{ color: "Gray" }}>
+                                                                    (đường kính cm)
+                                                                </span>
+                                                            </span>
                                                         <div className="tf-variant-sizes d-flex flex-wrap">
                                                             {product.variants.map(
                                                                 (variant) => (

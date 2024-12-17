@@ -52,50 +52,50 @@ const ListComments = () => {
   return (
     <div>
       
-      <div className="wd-form-order">
-        {Array.isArray(comments) && comments.length > 0 ? (
-          comments.map(comment => (
-            <div className='list-comment'>
-            <div key={comment.id} className="product-infor"
-            onClick={() =>
-                handleProductClick(
-                    comment.product_id
-                )
-            }
-            >
-              <img
-                  className="product-image"
-                  src={comment.image_variant}
-                  alt={comment.product_name}
-              />
-              <div className="product-details">
-                  <div className="product-name"
-                  onClick={() =>
-                      handleProductClick(
-                          comment.product_id
-                      )
-                  }
-                  >
-                    {comment.product_name}</div>
-                  <div className="stars">
-                    {Array.from({ length: 5 }, (_, i) => (
-                                                <span key={i} className={`star ${i < comment.rating ? "filled" : ""}`}>
-                                                    ★
-                                                </span>
-                                            ))}
-                  </div>
-                  <div className="product-type">{new Date(comment.created_at).toLocaleString()} | Phân loại: {comment.color}, {comment.size}</div>
-                  
-                  <div className="review-details">{comment.content}</div>
-              </div>
-            </div>
-        
-            </div>
-        ))
-        ):(
-          <p>Không có đánh giá nào để hiển thị.</p>
-        )}
-         <div className="phantrang">
+        <div className="wd-form-order">
+            {Array.isArray(comments) && comments.length > 0 ? (
+            comments.map(comment => (
+                <div className='list-comment'>
+                <div key={comment.id} className="product-infor"
+                onClick={() =>
+                    handleProductClick(
+                        comment.product_id
+                    )
+                }
+                >
+                <img
+                    className="product-image"
+                    src={comment.image_variant}
+                    alt={comment.product_name}
+                />
+                <div className="product-details">
+                    <div className="product-name"
+                    onClick={() =>
+                        handleProductClick(
+                            comment.product_id
+                        )
+                    }
+                    >
+                        {comment.product_name}</div>
+                    <div className="stars">
+                        {Array.from({ length: 5 }, (_, i) => (
+                                                    <span key={i} className={`star ${i < comment.rating ? "filled" : ""}`}>
+                                                        ★
+                                                    </span>
+                                                ))}
+                    </div>
+                    <div className="product-type">{new Date(comment.created_at).toLocaleString()} | Phân loại: {comment.color}, {comment.size}</div>
+                    
+                    <div className="review-details">{comment.content}</div>
+                </div>
+                </div>
+            
+                </div>
+            ))
+            ):(
+            <p>Không có đánh giá nào để hiển thị.</p>
+            )}
+            <div className="phantrang">
                 <ul className="tf-pagination-wrap tf-pagination-list tf-pagination-btn">
                     {/* Nút chuyển đến trang trước */}
                     <li className={page === 1 ? "disabled" : ""}>
@@ -160,7 +160,7 @@ const ListComments = () => {
                     </li>
                 </ul>
             </div>
-</div>
+        </div>
 
     </div>
   )
