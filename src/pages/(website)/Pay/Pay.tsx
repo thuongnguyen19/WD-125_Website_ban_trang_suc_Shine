@@ -771,7 +771,7 @@ const Pay: React.FC = () => {
                                                 }
                                             />
                                             <p>
-                                                Điểm tích lũy :{" "}
+                                                Điểm tiêu dùng :{" "}
                                                 {Point &&
                                                 parseInt(Point, 10) > 0
                                                     ? Point
