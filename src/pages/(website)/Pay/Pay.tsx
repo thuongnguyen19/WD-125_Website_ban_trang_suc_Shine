@@ -214,7 +214,7 @@ const Pay: React.FC = () => {
          return;
      }
 
-     const pointsDiscount = pointsToUse * 1000; // Quy đổi điểm thành VND
+     const pointsDiscount = pointsToUse * 10000; // Quy đổi điểm thành VND
      const discountedTotal = originalTotalAmount - discount - pointsDiscount;
 
      if (discountedTotal >= 0) {
@@ -235,7 +235,7 @@ const Pay: React.FC = () => {
         setDiscountError(""); // Xóa lỗi khi người dùng thay đổi mã
 
         if (!newDiscountCode.trim() || newDiscountCode !== discountCode) {
-            setTotalAmount(originalTotalAmount - pointsToUse * 1000);
+            setTotalAmount(originalTotalAmount - pointsToUse * 10000);
             setIsDiscountApplied(false);
             setVoucherId(null);
             setDiscount(0);
@@ -252,7 +252,7 @@ const Pay: React.FC = () => {
                 "Mã giảm giá không hợp lệ. Vui lòng nhập mã khác.",
             );
             setDiscountLoading(false);
-            setTotalAmount(originalTotalAmount - pointsToUse * 1000);
+            setTotalAmount(originalTotalAmount - pointsToUse * 10000);
             setTotalAmount(originalTotalAmount);
             return;
         }
@@ -261,7 +261,7 @@ const Pay: React.FC = () => {
         if (!userString) {
             message.error("Không tìm thấy thông tin người dùng.");
             setDiscountLoading(false);
-            setTotalAmount(originalTotalAmount - pointsToUse * 1000);
+            setTotalAmount(originalTotalAmount - pointsToUse * 10000);
             return;
         }
 
@@ -288,20 +288,20 @@ const Pay: React.FC = () => {
                     response.data.data;
                 setVoucherId(voucherId);
                 setDiscount(discount);
-                setTotalAmount(final_amount - pointsToUse * 1000);
+                setTotalAmount(final_amount - pointsToUse * 10000);
                 setIsDiscountApplied(true);
                 setDiscountCode(code);
                 message.success("Mã giảm giá đã được áp dụng thành công.");
             } else {
                 setDiscountError("Mã không tồn tại hoặc không đủ điều kiện.");
-                setTotalAmount(originalTotalAmount - pointsToUse * 1000);
+                setTotalAmount(originalTotalAmount - pointsToUse * 10000);
                 setIsDiscountApplied(false);
                 setVoucherId(null);
                 setDiscount(0);
             }
         } catch (error) {
             setDiscountError("Có lỗi xảy ra khi áp dụng mã giảm giá.");
-            setTotalAmount(originalTotalAmount - pointsToUse * 1000);
+            setTotalAmount(originalTotalAmount - pointsToUse * 10000);
             setIsDiscountApplied(false);
             setVoucherId(null);
             setDiscount(0);
@@ -378,7 +378,7 @@ const Pay: React.FC = () => {
         setVoucherId(voucherId); // Cập nhật voucherId
         applyDiscount(voucherCode);
         setDiscountError(""); // Xóa lỗi khi người dùng chọn voucher
-        const discountedTotal = originalTotalAmount - pointsToUse * 1000;
+        const discountedTotal = originalTotalAmount - pointsToUse * 10000;
         setTotalAmount(discountedTotal);
         setIsModalVisible(false); // Đóng modal sau khi chọn voucher
         // }
