@@ -435,8 +435,8 @@ const ComboDetail: React.FC = () => {
                                                                                 "center",
                                                                             alignItems:
                                                                                 "center",
-                                                                            width: "30px",
-                                                                            height: "30px",
+                                                                            width: "40px",
+                                                                            height: "40px",
                                                                             margin: "5px",
                                                                             cursor:
                                                                                 variant

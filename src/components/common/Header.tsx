@@ -78,7 +78,6 @@ const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 setIsAuthenticated(true);
                 setUser(response.data.data.user);
             } catch (error) {
-                message.error("Lấy thông tin người dùng không thành công!");
             }
         };
 
