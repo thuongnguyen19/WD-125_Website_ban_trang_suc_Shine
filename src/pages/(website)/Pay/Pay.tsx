@@ -793,12 +793,7 @@ const Pay: React.FC = () => {
                                         </div>
 
                                         <div className="d-flex justify-content-between line pb_20 mb_10 mt_20">
-                                            <h6
-                                                className="fw-5"
-                                               
-                                            >
-                                                Tổng tiền:
-                                            </h6>
+                                            <h6 className="fw-5">Tổng tiền:</h6>
                                             <h6 className="fw-5">
                                                 {originalTotalAmount.toLocaleString(
                                                     "vi-VN",
@@ -811,9 +806,7 @@ const Pay: React.FC = () => {
                                             <>
                                                 {isDiscountApplied && (
                                                     <div className="d-flex justify-content-between line pb_20">
-                                                        <h6
-                                                            className="fw-5"
-                                                        >
+                                                        <h6 className="fw-5">
                                                             Giảm giá:
                                                         </h6>
                                                         <h6 className="fw-5">
@@ -827,10 +820,7 @@ const Pay: React.FC = () => {
                                                 )}
                                                 {isPoint && (
                                                     <div className="d-flex justify-content-between line pb_20">
-                                                        <h6
-                                                            className="fw-5"
-                                                    
-                                                        >
+                                                        <h6 className="fw-5">
                                                             Điểm tiêu dùng :
                                                         </h6>
                                                         <h6 className="fw-5">
@@ -845,62 +835,40 @@ const Pay: React.FC = () => {
                                                         </h6>
                                                     </div>
                                                 )}
-                                               
                                             </>
                                         )}
-                                         <div className="d-flex justify-content-between line pb_20 mb_10">
-                                                    <h6
-                                                        className="fw-5"
-                                                       
-                                                    >
-                                                        Thành tiền:
-                                                    </h6>
-                                                    <h6 className="fw-5">
-                                                        {totalAmount.toLocaleString(
-                                                            "vi-VN",
-                                                        )}{" "}
-                                                        VND
-                                                    </h6>
-                                                </div>
+                                        <div className="d-flex justify-content-between line pb_20 mb_10">
+                                            <h6 className="fw-5">
+                                                Thành tiền:
+                                            </h6>
+                                            <h6 className="fw-5">
+                                                {totalAmount.toLocaleString(
+                                                    "vi-VN",
+                                                )}{" "}
+                                                VND
+                                            </h6>
+                                        </div>
                                     </div>
 
                                     <div className="wd-check-payment">
-                                        <div className="fieldset-radio mb_20">
-                                            <input
-                                                type="radio"
-                                                name="payment"
-                                                id="bank"
-                                                className="tf-check"
-                                                value="2"
-                                                onChange={(e) =>
-                                                    setPaymentRole(
-                                                        Number(e.target.value),
-                                                    )
-                                                }
-                                            />
-                                            <label htmlFor="bank">
-                                                Thanh toán VNPay
-                                            </label>
-                                        </div>
-                                        <div className="fieldset-radio mb_20">
-                                            <input
-                                                type="radio"
-                                                name="payment"
-                                                id="delivery"
-                                                className="tf-check"
-                                                value="1"
-                                                onChange={(e) =>
-                                                    setPaymentRole(
-                                                        Number(e.target.value),
-                                                    )
-                                                }
-                                            />
-                                            <label htmlFor="delivery">
-                                                Thanh toán khi nhận hàng
-                                            </label>
-                                        </div>
+                                        <Radio.Group
+                                            onChange={(e) =>
+                                                setPaymentRole(e.target.value)
+                                            }
+                                            value={paymentRole}
+                                        >
+                                            <div className="fieldset-radio mb_20">
+                                                <Radio value={2}>
+                                                    Thanh toán ngân hàng
+                                                </Radio>
+                                            </div>
+                                            <div className="fieldset-radio mb_20">
+                                                <Radio value={1}>
+                                                    Thanh toán khi nhận hàng
+                                                </Radio>
+                                            </div>
+                                        </Radio.Group>
                                     </div>
-
                                     <button
                                         className="tf-btn radius-3 btn-fill btn-icon animate-hover-btn justify-content-center"
                                         onClick={handleOrder}
