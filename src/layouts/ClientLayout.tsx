@@ -17,6 +17,12 @@ import { Category, fetchCategorys } from "../Interface/Category";
 import axiosInstance from "../configs/axios";
 import { fetchSearchs, Search } from "../Interface/Product";
 
+interface Favorite {
+    id: number;
+    id_user: number;
+    id_product: number;
+}
+
 const Layoutweb: React.FC = () => {
     const navigate = useNavigate();
     const [messageAPI, contextHolder] = message.useMessage();
@@ -65,33 +71,64 @@ const Layoutweb: React.FC = () => {
       window.location.reload();
     }
   };
-    useEffect(() => {
-        const fetchUserData = async () => {
+  useEffect(() => {
+    const fetchFavorites = async () => {
+        try {
             const token = localStorage.getItem("authToken");
-            // if (!token) {
-            //     message.error("Vui lòng đăng nhập lại.");
-            //     return;
-            // }
-
-            try {
+            if (token) {
                 const response = await axiosInstance.get(
-                    "/listInformationOrder",
+                    "/favoriteProduct",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     },
                 );
-
-                setIsAuthenticated(true);
-                setUser(response.data.data.user);
-            } catch (error) {
+    
+                updateLocalStorageFavorite(response.data);
             }
+
+           
+
+        } catch (error) {
+         
+            console.error("Error fetching favorites:", error);
+        } 
+    };
+
+    fetchFavorites();
+}, []);
+
+const updateLocalStorageFavorite = (favorite: Favorite[]) => {
+    localStorage.setItem("favorite", JSON.stringify(favorite));
+    window.dispatchEvent(new Event("storage"));
+};
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem("authToken");
+            if (token) {
+                try {
+                    const response = await axiosInstance.get(
+                        "/listInformationOrder",
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        },
+                    );
+    
+                    setIsAuthenticated(true);
+                    setUser(response.data.data.user);
+                } catch (error) {
+                }
+            }
+
+            
         };
 
         fetchUserData();
     }, []);
-    console.log(user);
+   
 
     useEffect(() => {
     // Hàm tải danh mục sản phẩm
