@@ -357,6 +357,18 @@ const Pay: React.FC = () => {
 
             if (response.data.status) {
                 message.success("Đặt hàng thành công!");
+               
+                    const respon = await axiosInstance.get(
+                        "/listCart",
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        },
+                    );
+            localStorage.setItem("cartItems", JSON.stringify(respon.data.data));
+
+            window.dispatchEvent(new Event("storage"));
                 if (paymentRole === 1) {
                     navigate("/success");
                 } else if (paymentRole === 2 && response.data.data) {
