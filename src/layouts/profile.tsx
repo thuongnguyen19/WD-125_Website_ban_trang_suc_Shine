@@ -13,26 +13,24 @@ const Profile = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [messageAPI, contextHolder] = message.useMessage();
-    const [user, setUser] = useState<{ name: string } | null>(null); // User state to store user's name
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Auth state
+    const [user, setUser] = useState<{ name: string } | null>(null); 
+    const [isAuthenticated, setIsAuthenticated] = useState(false); 
 
-    // Fetch user data when component mounts
     useEffect(() => {
         const token = localStorage.getItem("authToken");
 
         if (token) {
             setIsAuthenticated(true);
 
-            // Fetch user data from API using the token
             axiosInstance
                 .get("/user", {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Sending the token to authorize the request
+                        Authorization: `Bearer ${token}`, 
                     },
                 })
                 .then((response) => {
                     if (response.data.user && response.data.user.name) {
-                        setUser(response.data.user); // Store user data, particularly the name
+                        setUser(response.data.user); 
                     }
                 })
                 .catch((error) => {
@@ -41,7 +39,6 @@ const Profile = () => {
         }
     }, []);
 
-    // Handle logout functionality
     const handleLogout = () => {
         Modal.confirm({
             title: "Xác nhận",
@@ -52,7 +49,6 @@ const Profile = () => {
                 try {
                     const token = localStorage.getItem("authToken");
 
-                    // Call API to log out
                     await axiosInstance.post(
                         "/logout",
                         {},
@@ -63,7 +59,6 @@ const Profile = () => {
                         },
                     );
 
-                    // Remove token from localStorage and clear cache
                     localStorage.removeItem("authToken");
                     localStorage.clear();
                     queryClient.clear();
