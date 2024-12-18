@@ -199,15 +199,15 @@ const Pay: React.FC = () => {
  const handlePointsApply = () => {
      const availablePoints = parseInt(Point, 10); // Chuyển đổi số điểm hiện có từ chuỗi sang số nguyên
 
+     if (pointsToUse < 0) {
+        message.error("Số điểm không được là số âm.");
+        return;
+    }
      if (!availablePoints || availablePoints <= 0) {
          message.error("Bạn không có điểm tích lũy để áp dụng.");
          return;
      }
 
-     if (pointsToUse < 0) {
-         message.error("Số điểm không được là số âm.");
-         return;
-     }
 
      if (pointsToUse > availablePoints) {
          message.error("Số điểm nhập vượt quá số điểm hiện có.");
@@ -357,6 +357,18 @@ const Pay: React.FC = () => {
 
             if (response.data.status) {
                 message.success("Đặt hàng thành công!");
+               
+                    const respon = await axiosInstance.get(
+                        "/listCart",
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        },
+                    );
+            localStorage.setItem("cartItems", JSON.stringify(respon.data.data));
+
+            window.dispatchEvent(new Event("storage"));
                 if (paymentRole === 1) {
                     navigate("/success");
                 } else if (paymentRole === 2 && response.data.data) {
