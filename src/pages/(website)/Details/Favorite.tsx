@@ -123,9 +123,13 @@ const FavoritesList = () => {
 
     if (loading) return <Spin size="large" />;
     if (error) return <p>{error}</p>
+    
+    // const hadleproduct = (id: number) => {
+    //     navigate();
+    // };
 
     function handleProductClick(id: number): void {
-        throw new Error("Function not implemented.");
+       navigate(`/detail/${id}`);
     }
 
     return (
@@ -152,6 +156,7 @@ const FavoritesList = () => {
                                         }
                                     >
                                         <img
+                                        
                                             className="lazyload img-product"
                                             src={item.product.thumbnail}
                                             alt={item.product.name}

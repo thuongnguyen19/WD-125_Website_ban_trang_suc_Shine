@@ -47,7 +47,7 @@ const Pripaci = () => {
                                     <p className="mb_15">
                                         <strong>Số điện thoại </strong>
                                     </p>
-                                    <p>(212) 555-1234</p>
+                                    <p>0339219385</p>
                                 </div>
                                 <div className="mb_20">
                                     <p className="mb_15">
