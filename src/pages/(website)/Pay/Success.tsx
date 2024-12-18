@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../components/common/Header";
 import Footer from "../../../components/common/Footer";
 import axios from "axios";
+import { DoubleRightOutlined } from "@ant-design/icons";
 
 const Success: React.FC = () => {
     const [status, setStatus] = useState<boolean | null>(null);
@@ -39,14 +40,14 @@ const Success: React.FC = () => {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
-                        },
+                        }
                     );
 
                     if (responsePaymentResult.data.status) {
                         setStatus(true);
                         setMessageText(
                             responsePaymentResult.data.message ||
-                                "Đặt hàng thành công!",
+                                "Đặt hàng thành công!"
                         );
 
                         navigate("/success", { replace: true });
@@ -63,7 +64,7 @@ const Success: React.FC = () => {
                                 headers: {
                                     Authorization: `Bearer ${token}`,
                                 },
-                            },
+                            }
                         );
 
                         if (responsePaymentComboResult.data.status) {
@@ -71,20 +72,20 @@ const Success: React.FC = () => {
 
                             setMessageText(
                                 responsePaymentComboResult.data.message ||
-                                    "Đơn hàng combo thanh toán thành công!",
+                                    "Đơn hàng combo thanh toán thành công!"
                             );
                         } else {
                             setStatus(false);
                             setMessageText(
                                 responsePaymentComboResult.data.message ||
-                                    "Thanh toán combo thất bại.",
+                                    "Thanh toán combo thất bại."
                             );
                         }
                     } else {
                         setStatus(false);
                         setMessageText(
                             responsePaymentResult.data.message ||
-                                "Đặt hàng thất bại.",
+                                "Đặt hàng thất bại."
                         );
                     }
                 } catch (error) {
@@ -103,7 +104,11 @@ const Success: React.FC = () => {
         };
 
         fetchPaymentResult();
-    }, [  navigate("/success")]);
+    }, []);
+
+    const handleProductClick = () => {
+        navigate(`/profile/od_histori`); // Điều hướng đến trang tất cả đơn hàng
+    };
 
     if (loading) {
         return (
@@ -155,12 +160,11 @@ const Success: React.FC = () => {
                                         </a>
                                     )}
                                     <p>
-                                        Mọi thắc mắc vui lòng!{" "}
                                         <a
-                                            href="contact-1.html"
                                             className="text_primary"
+                                            onClick={handleProductClick} // Gọi hàm chuyển hướng
                                         >
-                                            Liên hệ Hỗ trợ
+                                            Chi tiết đơn hàng <DoubleRightOutlined />
                                         </a>
                                     </p>
                                 </div>

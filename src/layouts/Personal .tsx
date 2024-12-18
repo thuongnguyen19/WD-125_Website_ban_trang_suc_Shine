@@ -29,6 +29,7 @@ interface FormData {
     address: string | null;
     email: string | null;
     avatar: string | null;
+    accum_point: string | null;
 }
 
 interface ChangePasswordData {
@@ -47,6 +48,7 @@ const Personal = () => {
         address: null,
         email: null,
         avatar: null,
+        accum_point : null,
     });
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -84,6 +86,7 @@ const Personal = () => {
                         address: user.address || null,
                         email: user.email || null,
                         avatar: user.image || null,
+                        accum_point: user.accum_point || null
                     });
                     setAvatarPreview(user.image || null);
                 } else {
@@ -104,6 +107,7 @@ const Personal = () => {
         updatedData.append("email", formData.email || "");
         updatedData.append("phone_number", formData.phone || "");
         updatedData.append("address", formData.address || "");
+        updatedData.append("accum_point", formData.accum_point || "")
 
         if (avatarFile) {
             updatedData.append("image", avatarFile);
@@ -323,6 +327,15 @@ const Personal = () => {
                     <Row gutter={[16, 16]} style={{ marginTop: "30px" }}>
                         <Col span={24}>
                             <Form layout="vertical">
+                                   <div
+                             
+                                    style={{ marginBottom: "20px" }}
+                                >
+                                   
+                                     Điểm tiêu dùng:   {formData.accum_point}
+                                      
+                                  
+                                </div>
                                 <Form.Item
                                     label="Tên người dùng"
                                     style={{ marginBottom: "20px" }}
@@ -338,6 +351,7 @@ const Personal = () => {
                                         disabled={!isEditing}
                                     />
                                 </Form.Item>
+                               
 
                                 <Form.Item
                                     label="Email"
